@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cut Calculator</title>
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  <link href="./css/bootstrap.css" rel="stylesheet" />
+  <link href="./css/style.css" rel="stylesheet" />
+</head>
+<body>
+<div id="wrap">
+  <div id="UserInput">
+    <button id="ButtonAction" class="blueButton">Go</button>
+
+    <div class="row">
+      <div id="LengthsNeeded" class="col-xs-6 panel-group">
+        <div class="panel-heading">Lengths Needed</div>
+        <div id="CutList" class="panel"></div>
+        <div class="panel-footer row">
+          <button id="ButtonAddCutRow" class="greenButton col-xs-3">Add Row</button>
+          <button id="ButtonRemoveCutRow" class="redButton col-xs-3">Remove Row</button>
+        </div>
+
+      </div>
+
+      <div id="LengthsInStock" class="col-xs-6 panel-group">
+        <div class="panel-heading">Lengths In Stock</div>
+        <div id="StockList" class="panel"></div>
+        <div class="panel-footer row">
+          <button id="ButtonAddStockRow" class="greenButton col-xs-3">Add Row</Button>
+          <button id="ButtonRemoveStockRow" class="redButton col-xs-3">Remove Row</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="Results">
+    <button id="ButtonRestart" class="blueButton">Restart</button>
+    <div id="ResultList"></div>
+
+  </div>
+
+</div>
+
+<input type="hidden" id="HiddenCutIndex" />
+<input type="hidden" id="HiddenStockIndex" />
+<input type="hidden" id="HiddenResultSetIndex" />
+
+<script src="./scripts/jquery.js"></script>
+<script src="./scripts/class.js"></script>
+<script src="./scripts/calc.js"></script>
+<script src="./scripts/page.js"></script>
+<script src="./scripts/tests.js"></script>
+</body>
+</html>

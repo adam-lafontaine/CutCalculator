@@ -1,0 +1,256 @@
+
+body {
+  background-color: white;
+}
+
+#wrap {
+  width: 80%;
+  margin: 0 auto;
+}
+/*#UserInput {
+  height: 200px;
+}
+
+#Results {
+  height: 200px;
+}*/
+div.error {
+    background-color: #f3e636;
+    border-color: #924949;
+    border-style: solid solid solid solid;
+    border-width: 2px;
+    width: 50%;
+    text-align: center;
+}
+.trWhite {
+    background-color: #FFFFFF;
+    color: black;
+    font-weight: normal;
+}
+.trLightGray {
+    background-color: lightgray;
+    color: black;
+    font-weight: normal;
+}
+.trAdamBlue:hover,
+.trWhite:hover,
+.trLightGray:hover {
+    background-color: darkgray;
+    color: #ffffff;
+}
+.trBlack {
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: normal;
+}
+
+.adamBlue {
+    background-color: #6495ed;
+    color: white;
+    font-weight: normal;
+}
+.trAdamBlue {
+    background-color: #6495ed;
+    color: white;
+    font-weight: normal;
+}
+.adamLinkBlue {
+    background-color: #6495ed;
+    color: white;
+    font-weight: normal;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.adamLinkBlue:hover {
+    background-color: darkblue;
+    color: white;
+    font-weight: normal;
+}
+
+/***************** Buttons *************************/
+
+.blueButton {
+    color: #fff;
+    background-color: #0000ff;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.blueButton:focus,
+.blueButton:active:focus,
+.blueButton.active:focus,
+.blueButton.focus,
+.blueButton:active.focus,
+.blueButton.active.focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.blueButton:hover,
+.blueButton:focus,
+.blueButton.focus {
+    background-color: #3333ff;
+  text-decoration: none;
+}
+.blueButton:active,
+.blueButton.active {
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+.blueButton.disabled,
+.blueButton[disabled],
+fieldset[disabled] .blueButton {
+  cursor: not-allowed;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  opacity: .65;
+}
+a.blueButton.disabled,
+fieldset[disabled] a.blueButton {
+  pointer-events: none;
+}
+
+/*--------------------------------------*/
+
+.greenButton {
+    color: #fff;
+    background-color: #00aa00;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.greenButton:focus,
+.greenButton:active:focus,
+.greenButton.active:focus,
+.greenButton.focus,
+.greenButton:active.focus,
+.greenButton.active.focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.greenButton:hover,
+.greenButton:focus,
+.greenButton.focus {
+    background-color: #11cc11;
+  text-decoration: none;
+}
+.greenButton:active,
+.greenButton.active {
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+.greenButton.disabled,
+.greenButton[disabled],
+fieldset[disabled] .greenButton {
+  cursor: not-allowed;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  opacity: .65;
+}
+a.greenButton.disabled,
+fieldset[disabled] a.greenButton {
+  pointer-events: none;
+}
+
+/*--------------------------------------*/
+
+.redButton {
+    color: #fff;
+    background-color: #dd0000;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.redButton:focus,
+.redButton:active:focus,
+.redButton.active:focus,
+.redButton.focus,
+.redButton:active.focus,
+.redButton.active.focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.redButton:hover,
+.redButton:focus,
+.redButton.focus {
+    background-color: #ff0000;
+  text-decoration: none;
+}
+.redButton:active,
+.redButton.active {
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+.redButton.disabled,
+.redButton[disabled],
+fieldset[disabled] .redButton {
+  cursor: not-allowed;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  opacity: .65;
+}
+a.redButton.disabled,
+fieldset[disabled] a.redButton {
+  pointer-events: none;
+}
+
+/********************************************/
