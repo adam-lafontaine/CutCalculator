@@ -69,188 +69,48 @@ div.error {
 
 /***************** Buttons *************************/
 
-.blueButton {
+.btn-blue {
     color: #fff;
-    background-color: #0000ff;
-  display: inline-block;
-  padding: 6px 12px;
-  margin-bottom: 0;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.42857143;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-      touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
+    background-color: #0000bb;
+    border-color: #000;
 }
-.blueButton:focus,
-.blueButton:active:focus,
-.blueButton.active:focus,
-.blueButton.focus,
-.blueButton:active.focus,
-.blueButton.active.focus {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-.blueButton:hover,
-.blueButton:focus,
-.blueButton.focus {
-    background-color: #3333ff;
+
+.btn-blue:hover,
+.btn-blue:focus,
+.btn-blue.focus {
+  color: #fff;
+  background-color: #0000ff;
   text-decoration: none;
-}
-.blueButton:active,
-.blueButton.active {
-  background-image: none;
-  outline: 0;
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-}
-.blueButton.disabled,
-.blueButton[disabled],
-fieldset[disabled] .blueButton {
-  cursor: not-allowed;
-  filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  opacity: .65;
-}
-a.blueButton.disabled,
-fieldset[disabled] a.blueButton {
-  pointer-events: none;
+  border-color: #aabfeb;
 }
 
-/*--------------------------------------*/
-
-.greenButton {
+.btn-green {
     color: #fff;
     background-color: #00aa00;
-  display: inline-block;
-  padding: 6px 12px;
-  margin-bottom: 0;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.42857143;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-      touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
+    border-color: #aabfeb;
 }
-.greenButton:focus,
-.greenButton:active:focus,
-.greenButton.active:focus,
-.greenButton.focus,
-.greenButton:active.focus,
-.greenButton.active.focus {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-.greenButton:hover,
-.greenButton:focus,
-.greenButton.focus {
-    background-color: #11cc11;
+
+.btn-green:hover,
+.btn-green:focus,
+.btn-green.focus {
+  color: #fff;
+  background-color: #00cc00;
   text-decoration: none;
-}
-.greenButton:active,
-.greenButton.active {
-  background-image: none;
-  outline: 0;
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-}
-.greenButton.disabled,
-.greenButton[disabled],
-fieldset[disabled] .greenButton {
-  cursor: not-allowed;
-  filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  opacity: .65;
-}
-a.greenButton.disabled,
-fieldset[disabled] a.greenButton {
-  pointer-events: none;
+  border-color: #aabfeb;
 }
 
-/*--------------------------------------*/
-
-.redButton {
+.btn-red {
     color: #fff;
-    background-color: #dd0000;
-  display: inline-block;
-  padding: 6px 12px;
-  margin-bottom: 0;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.42857143;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-      touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-.redButton:focus,
-.redButton:active:focus,
-.redButton.active:focus,
-.redButton.focus,
-.redButton:active.focus,
-.redButton.active.focus {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-.redButton:hover,
-.redButton:focus,
-.redButton.focus {
-    background-color: #ff0000;
-  text-decoration: none;
-}
-.redButton:active,
-.redButton.active {
-  background-image: none;
-  outline: 0;
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-}
-.redButton.disabled,
-.redButton[disabled],
-fieldset[disabled] .redButton {
-  cursor: not-allowed;
-  filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  opacity: .65;
-}
-a.redButton.disabled,
-fieldset[disabled] a.redButton {
-  pointer-events: none;
+    background-color: #aa0000;
+    border-color: #aabfeb;
 }
 
+.btn-red:hover,
+.btn-red:focus,
+.btn-red.focus {
+  color: #fff;
+  background-color: #cc0000;
+  text-decoration: none;
+  border-color: #aabfeb;
+}
 /********************************************/
