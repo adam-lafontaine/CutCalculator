@@ -7,20 +7,12 @@ body {
   width: 80%;
   margin: 0 auto;
 }
-/*#UserInput {
-  height: 200px;
-}
 
-#Results {
-  height: 200px;
-}*/
-div.error {
+.invalid {
     background-color: #f3e636;
     border-color: #924949;
     border-style: solid solid solid solid;
     border-width: 2px;
-    width: 50%;
-    text-align: center;
 }
 .trWhite {
     background-color: #FFFFFF;

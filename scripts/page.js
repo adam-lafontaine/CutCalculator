@@ -42,15 +42,20 @@ $(function()
   // runs the sorting algorithm and displays in #Results
   $('#ButtonAction').click(function(e)
   {
-    $('#UserInput').hide();
-
-    var resultSetArray = sortLengths(getLengthGroups('Cut'), getLengthGroups('Stock'));
-    for(var i = 0; i < resultSetArray.length; i++)
+    if(inputValid())
     {
-      addResultSet(resultSetArray[i]);
+      $('#UserInput').hide();
+
+      var resultSetArray = sortLengths(getLengthGroups('Cut'), getLengthGroups('Stock'));
+      for(var i = 0; i < resultSetArray.length; i++)
+      {
+        addResultSet(resultSetArray[i]);
+      }
+
+      $('#Results').show();
     }
 
-    $('#Results').show();
+
   });
 
   //------------------------------------------------------
@@ -122,22 +127,6 @@ function removeInputRow(tag)
 
 //--------------------------------------------------
 
-// gets an int value from an input element
-function getIntFromInput(selector)
-{
-  return $(selector).val() == "" ? 0 : parseInt($(selector).val());
-}
-
-//---------------------------------------------
-
-// gets a float value from an input element
-function getFloatFromInput(selector)
-{
-  return $(selector).val() == "" ? 0 : parseFloat($(selector).val());
-}
-
-//---------------------------------------------
-
 // creates and array of LengthGroups from input on the page
 // tag = 'Cut' or 'Stock'
 function getLengthGroups(tag)
@@ -198,8 +187,8 @@ function createInputRow(tag)
   var c2 = $('<div/>', {'class': 'col-xs-4'});
   var c3 = $('<div/>', {'class': 'col-xs-4'});
 
-  c1.append(createTextBox('TextBoxQty' + tag, 'Quantity'));
-  c2.append(createTextBox('TextBoxLength' + tag, 'Length'));
+  c1.append(createTextBox('TextBoxQty' + tag, 'Quantity').addClass("notblank posint"));
+  c2.append(createTextBox('TextBoxLength' + tag, 'Length').addClass("notblank posnumeric"));
   c3.append(createTextBox('TextBoxLabel' + tag, 'Label'));
 
   row.append(c1);
@@ -249,7 +238,7 @@ function createResultSetDiv(result_set, idx)
   // list
   var list = $('<div/>', {
     'id': 'ResultList' + idx,
-    'class': 'panel'
+    'class': 'panel-heading'
   });
 
   for(var i = 0; i < result_set.lengthGroupArray.length; i++)
