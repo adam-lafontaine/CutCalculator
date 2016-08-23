@@ -16,6 +16,8 @@ function inputValid()
     result = false;
   if(!validatePosNumeric())
     result = false;
+  if(!validateNotZero())
+    result = false;
 
   return result;
 }
@@ -72,6 +74,24 @@ function validateNotBlank()
   return result;
 }
 
+//---------------------------------------
+
+function validateNotZero()
+{
+  var result = true;
+
+  $(".notzero").each(function(){
+    var value = $(this).val();
+    if(isZero(value))
+    {
+      $(this).addClass("invalid");
+      result = false;
+    }
+  });
+
+  return result;
+}
+
 //************************************************
 
 // positive integer, only digits
@@ -85,4 +105,11 @@ function isPosInt(n)
 function isPosNumeric(n)
 {
   return (n + "").match(/^\d+.?\d+$/) || isPosInt(n);
+}
+
+//-------------------------------------
+
+function isZero(n)
+{
+  return (n + "").match(/^[0]+$/) || (n + "").match(/^[0]+.[0]+$/);
 }
