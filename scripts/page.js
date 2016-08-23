@@ -189,8 +189,8 @@ function createInputRow(tag)
   var c2 = $('<div/>', {'class': 'col-xs-3'});
   var c3 = $('<div/>', {'class': 'col-xs-6'});
 
-  c1.append(createTextBox('TextBoxQty' + tag, 'Quantity').addClass("notblank posint"));
-  c2.append(createTextBox('TextBoxLength' + tag, 'Length').addClass("notblank posnumeric"));
+  c1.append(createTextBox('TextBoxQty' + tag, 'Quantity').addClass("notblank posint notzero"));
+  c2.append(createTextBox('TextBoxLength' + tag, 'Length').addClass("notblank posnumeric notzero"));
   c3.append(createTextBox('TextBoxLabel' + tag, 'Label'));
 
   row.append(c1);
