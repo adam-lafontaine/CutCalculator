@@ -120,14 +120,20 @@ function addInputRow(tag)
 // and decrements the coresponding index saved in the hidden field
 function removeInputRow(tag)
 {
-  var idx = getIntFromInput('#Hidden' + tag + 'Index') - 1;
-  $('#Row' + tag + idx).remove();
-  $('#Hidden' + tag + 'Index').val(idx);
+  var idx = getIntFromInput('#Hidden' + tag + 'Index');
+
+  if(idx > 1)
+  {
+    idx-= 1;
+    $('#Row' + tag + idx).remove();
+    $('#Hidden' + tag + 'Index').val(idx);
+  }
+
 }
 
 //--------------------------------------------------
 
-// creates and array of LengthGroups from input on the page
+// creates an array of LengthGroups from input on the page
 // tag = 'Cut' or 'Stock'
 function getLengthGroups(tag)
 {
@@ -150,14 +156,10 @@ function getLengthGroups(tag)
 // adds the values from a ResultSet object to the output on the page
 function addResultSet(result_set)
 {
-  var div = $('<div/>',{'class': 'row'});
-
   var idx = getIntFromInput('#HiddenResultSetIndex');
   $('#HiddenResultSetIndex').val(idx + 1);
 
-  div.append(createResultSetDiv(result_set, idx));
-
-  div.appendTo('#ResultList');
+  $("#ResultList").append(createResultSetDiv(result_set, idx));
 }
 
 //--------------------------------------------
@@ -183,9 +185,9 @@ function createTextBox(id, placeholder)
 function createInputRow(tag)
 {
   var row = $('<div/>',{'id':'Row' + tag, 'class': 'row'});
-  var c1 = $('<div/>', {'class': 'col-xs-4'});
-  var c2 = $('<div/>', {'class': 'col-xs-4'});
-  var c3 = $('<div/>', {'class': 'col-xs-4'});
+  var c1 = $('<div/>', {'class': 'col-xs-3'});
+  var c2 = $('<div/>', {'class': 'col-xs-3'});
+  var c3 = $('<div/>', {'class': 'col-xs-6'});
 
   c1.append(createTextBox('TextBoxQty' + tag, 'Quantity').addClass("notblank posint"));
   c2.append(createTextBox('TextBoxLength' + tag, 'Length').addClass("notblank posnumeric"));
@@ -221,79 +223,46 @@ function createResultRow(qty, length, label)
 // idx = unique identifier for div
 function createResultSetDiv(result_set, idx)
 {
-  var div = $('<div/>', {
+  var table = $('<table/>', {
     'id': 'ResultSet' + idx,
-    'class': 'col-xs-6 panel-group'
+    'class': 'table table-bordered'
   });
 
-  // heading
-  var heading = $('<div/>',{
-    'class': 'panel-heading'
+  //heading
+  var heading = $('<thead/>', {});
+  heading.append(create3ColumnRow('<th/>', 'Quantity', 'Length', 'Label'));
+
+  //body
+  var body = $('<tbody/>', {});
+  $.each(result_set.lengthGroupArray, function(index, group){
+    body.append(create3ColumnRow('<td/>', group.quantity, group.groupLength, group.groupLabel));
   });
 
-  var titleRow = create3ColumnRow('Quantity', 'Length', 'Label');
-  heading.append(titleRow);
+  //footer
+  var footer = $('<tfoot/>', {'class': 'bold'});
+  footer.append(create3ColumnRow('<td/>', 'Stock', result_set.stockLength.pieceLength, result_set.stockLength.pieceLabel));
+  footer.append(create3ColumnRow('<td/>', 'Leftover', result_set.leftover, ''));
 
+  table.append(heading);
+  table.append(footer);
+  table.append(body);
 
-  // list
-  var list = $('<div/>', {
-    'id': 'ResultList' + idx,
-    'class': 'panel-heading'
-  });
-
-  for(var i = 0; i < result_set.lengthGroupArray.length; i++)
-  {
-    var group = result_set.lengthGroupArray[i];
-    list.append(create3ColumnRow(group.quantity, group.groupLength, group.groupLabel));
-  }
-
-  // footer
-  var footer = $('<div/>',{
-    'class': 'panel-footer'
-  });
-
-  var stockRow = create3ColumnRow('Stock', result_set.stockLength.pieceLength, result_set.stockLength.pieceLabel);
-  footer.append(stockRow);
-
-  var leftoverRow = create3ColumnRow('Leftover', result_set.leftover, '');
-  footer.append(leftoverRow);
-
-  // complete div
-  div.append(heading);
-  div.append(list);
-  div.append(footer);
-
-  return div;
+  return table;
 }
 
 //-----------------------------------
 
-function create3ColumnRow(c1Text, c2Text, c3Text)
+function create3ColumnRow(element, c1Text, c2Text, c3Text)
 {
-  var row = $('<div/>',{'class': 'row'});
+  var tableRow = $('<tr/>', {});
 
-  var c1 = $('<div/>',{'class': 'col-xs-4', text: c1Text});
-  var c2 = $('<div/>',{'class': 'col-xs-4', text: c2Text});
-  var c3 = $('<div/>',{'class': 'col-xs-4', text: c3Text});
+  var c1 = $(element,{text: c1Text});
+  var c2 = $(element,{text: c2Text});
+  var c3 = $(element,{text: c3Text});
 
-  row.append(c1);
-  row.append(c2);
-  row.append(c3);
+  tableRow.append(c1);
+  tableRow.append(c2);
+  tableRow.append(c3);
 
-  return row;
-}
-
-//----------------------------------
-
-function createLeftoverRow(length)
-{
-  var row = $('<div/>',{'class': 'row'});
-  var c1 = $('<div/>', {'class': 'col-xs-4', text: 'Leftover:'});
-
-  var c2 = $('<div/>', {'class': 'col-xs-4', text: length});
-
-  row.append(c1);
-  row.append(c2);
-
-  return row;
+  return tableRow;
 }

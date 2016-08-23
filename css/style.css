@@ -14,49 +14,9 @@ body {
     border-style: solid solid solid solid;
     border-width: 2px;
 }
-.trWhite {
-    background-color: #FFFFFF;
-    color: black;
-    font-weight: normal;
-}
-.trLightGray {
-    background-color: lightgray;
-    color: black;
-    font-weight: normal;
-}
-.trAdamBlue:hover,
-.trWhite:hover,
-.trLightGray:hover {
-    background-color: darkgray;
-    color: #ffffff;
-}
-.trBlack {
-    background-color: #000000;
-    color: #ffffff;
-    font-weight: normal;
-}
 
-.adamBlue {
-    background-color: #6495ed;
-    color: white;
-    font-weight: normal;
-}
-.trAdamBlue {
-    background-color: #6495ed;
-    color: white;
-    font-weight: normal;
-}
-.adamLinkBlue {
-    background-color: #6495ed;
-    color: white;
-    font-weight: normal;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-.adamLinkBlue:hover {
-    background-color: darkblue;
-    color: white;
-    font-weight: normal;
+.bold {
+  font-weight: bold;
 }
 
 /***************** Buttons *************************/
