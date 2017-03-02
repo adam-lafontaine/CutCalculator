@@ -19,6 +19,11 @@ body {
   font-weight: bold;
 }
 
+.col-wide {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
 /***************** Buttons *************************/
 
 .btn-blue {
