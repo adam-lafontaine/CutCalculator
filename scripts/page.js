@@ -185,9 +185,9 @@ function createTextBox(id, placeholder)
 function createInputRow(tag)
 {
   var row = $('<div/>',{'id':'Row' + tag, 'class': 'row'});
-  var c1 = $('<div/>', {'class': 'col-xs-3'});
-  var c2 = $('<div/>', {'class': 'col-xs-3'});
-  var c3 = $('<div/>', {'class': 'col-xs-6'});
+  var c1 = $('<div/>', {'class': 'col-xs-3 col-wide'});
+  var c2 = $('<div/>', {'class': 'col-xs-4 col-wide'});
+  var c3 = $('<div/>', {'class': 'col-xs-5 col-wide'});
 
   c1.append(createTextBox('TextBoxQty' + tag, 'Quantity').addClass("notblank posint notzero"));
   c2.append(createTextBox('TextBoxLength' + tag, 'Length').addClass("notblank posnumeric notzero"));
@@ -206,9 +206,9 @@ function createInputRow(tag)
 function createResultRow(qty, length, label)
 {
   var row = $('<div/>',{'class': 'row'});
-  var c1 = $('<div/>', {'class': 'col-xs-4', text: qty});
-  var c2 = $('<div/>', {'class': 'col-xs-4', text: length});
-  var c3 = $('<div/>', {'class': 'col-xs-4', text: label});
+  var c1 = $('<div/>', {'class': 'col-xs-4 col-wide', text: qty});
+  var c2 = $('<div/>', {'class': 'col-xs-4 col-wide', text: length});
+  var c3 = $('<div/>', {'class': 'col-xs-4 col-wide', text: label});
 
   row.append(c1);
   row.append(c2);
