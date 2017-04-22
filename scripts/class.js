@@ -37,18 +37,18 @@ function ResultSet(stockLength, lengthArray, leftover)
 // compresses an array of Lengths into an array of LengthGroups
 function groupLengths(lengthArray)
 {
-  var result = [];
-  var isNewLength = true;
-  var len = lengthArray[0].pieceLength;
-  var lab = lengthArray[0].pieceLabel;
+  let result = [];
+  let isNewLength = true;
+  let len = lengthArray[0].pieceLength;
+  let lab = lengthArray[0].pieceLabel;
   result.push(new LengthGroup(1, len, lab));
 
-  for(var i = 1; i < lengthArray.length; i++)
+  for(let i = 1; i < lengthArray.length; i++)
   {
     len = lengthArray[i].pieceLength;
     lab = lengthArray[i].pieceLabel;
     isNewLength = true;
-    for(var j = 0; j < result.length; j++)
+    for(let j = 0; j < result.length; j++)
     {
       if(result[j].groupLength === len && result[j].groupLabel === lab)
       {
@@ -72,8 +72,8 @@ function groupLengths(lengthArray)
 // converts a LengthGroup object to an array of identical Lengths
 function ungroupLengths(group)
 {
-  var result = [];
-  for(var i = 0; i < group.quantity; i++)
+  let result = [];
+  for(let i = 0; i < group.quantity; i++)
   {
     result.push(new Length(group.groupLength, group.groupLabel));
   }

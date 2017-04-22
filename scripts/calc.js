@@ -8,37 +8,37 @@ calc.js - computational functions
 // takes an array of LengthGroups to cut
 // and an array of LengthGroups in stock to be cut from
 // returns an array of ResultSet objects
-function sortLengths(cutLengthGroupArray, stockLengthGroupArray)
+function sortLengths(cutLengthGroupArray, stockLengthGroupArray, cutLoss)
 {
-	var results = []; // array of ResultSet objects
+	let results = []; // array of ResultSet objects
 
 	// convert arrays of LengthGroups to arrays of Lengths
-	var cutArray = convertToLengthArray(cutLengthGroupArray);
-	var stockArray = convertToLengthArray(stockLengthGroupArray);
+	let cutArray = convertToLengthArray(cutLengthGroupArray);
+	let stockArray = convertToLengthArray(stockLengthGroupArray);
 
 	// sort arrays
-	var descending = function(lhs, rhs){return rhs.pieceLength - lhs.pieceLength};
-	var ascending = function(lhs, rhs){return lhs.pieceLength - rhs.pieceLength};
+	let descending = function(lhs, rhs){ return rhs.pieceLength - lhs.pieceLength };
+	let ascending = function(lhs, rhs){ return lhs.pieceLength - rhs.pieceLength };
 
 	cutArray.sort(descending);
 	stockArray.sort(ascending);
 
 	// hash of bool array for combo and coresponding length
-	var comboList = makeComboList(cutArray, stockArray[stockArray.length - 1].pieceLength);
+	let comboList = makeComboList(cutArray, stockArray[stockArray.length - 1].pieceLength, cutLoss);
 
 
 	// loop until no combos remain
 	while(Object.keys(comboList).length > 0)
 	{
 		// choose best stock/combo
-		var bestStockAndCombo = findBestStockAndCombo(stockArray, comboList);
+		let bestStockAndCombo = findBestStockAndCombo(stockArray, comboList);
 
 		// get stock from stockArray and remove
-		var bestStock = stockArray.splice(bestStockAndCombo.stockIndex, 1)[0];
+		let bestStock = stockArray.splice(bestStockAndCombo.stockIndex, 1)[0];
 
 		// get array of Lengths from cutArray and remove
-		var bestCombo = bestStockAndCombo.binary;
-		var lengthArray = getLengthArrayFromCombo(bestCombo, cutArray);
+		let bestCombo = bestStockAndCombo.binary;
+		let lengthArray = getLengthArrayFromCombo(bestCombo, cutArray);
 
 		// remove redundant combos
 		removeCombos(comboList, bestCombo, stockArray[stockArray.length - 1].pieceLength);
@@ -57,11 +57,11 @@ function sortLengths(cutLengthGroupArray, stockLengthGroupArray)
 // returns an array Lengths from cutArray based on the combination
 function getLengthArrayFromCombo(binary, cutArray)
 {
-	var result = [];
+	let result = [];
 
-	for(var i = cutArray.length - 1; i >= 0; i--)
+	for(let i = cutArray.length - 1; i >= 0; i--)
 	{
-		var bit = binary[i];
+		let bit = binary[i];
 		if(binary[i] === 1)
 		{
 			result.push(cutArray[i]);
@@ -76,11 +76,11 @@ function getLengthArrayFromCombo(binary, cutArray)
 // converts an array of LengthGroup objects to and array of Length objects
 function convertToLengthArray(lgArray)
 {
-	var result = [];
-	for(var i = 0; i < lgArray.length; i++)
+	let result = [];
+	for(let i = 0; i < lgArray.length; i++)
 	{
-		var array = ungroupLengths(lgArray[i]);
-		for(var j = 0; j < array.length; j++)
+		let array = ungroupLengths(lgArray[i]);
+		for(let j = 0; j < array.length; j++)
 		{
 			result.push(array[j]);
 		}
@@ -91,19 +91,24 @@ function convertToLengthArray(lgArray)
 
 //----------------------------------------------
 
-// calculates the total length of a combination of Lengths
+// calculates the total length of material required for a combination of Lengths
 // using a binary string to represent the Lengths in the combo
-function calcComboLength(binary, cutArray)
+function calcComboLength(binary, cutArray, cutLoss)
 {
-	var result = 0;
+	let result = 0;
 
-	for(var i = 0; i < binary.length; i++)
+	for(let i = 0; i < binary.length; i++)
 	{
-		var binaryIndex = binary.length - 1 - i;
-		var arrayIndex = cutArray.length - 1 - i;
+		let binaryIndex = binary.length - 1 - i;
+		let arrayIndex = cutArray.length - 1 - i;
 
-		if(binary[binaryIndex] === 1) {result += cutArray[arrayIndex].pieceLength;}
+		if(binary[binaryIndex] === 1) { result += cutArray[arrayIndex].pieceLength; }
 	}
+
+
+	// account for extra material required from cutting
+	if(cutLoss)
+		result += cutLoss * (binary.length - 1);
 
 	return result;
 }
@@ -112,19 +117,19 @@ function calcComboLength(binary, cutArray)
 
 function findBestStockAndCombo(stockArray, comboList)
 {
-	var okLeftover = 0;
+	let okLeftover = 0;
 
-	var result = {};
-	var max = stockArray[stockArray.length - 1].pieceLength; // longest Length in stock
-	var bestDiff = max;
-	var diff = max;
+	let result = {};
+	let max = stockArray[stockArray.length - 1].pieceLength; // longest Length in stock
+	let bestDiff = max;
+	let diff = max;
 
-	var array = Object.keys(comboList);
-	for(var b = array.length - 1; b >= 0; b--)
+	let array = Object.keys(comboList);
+	for(let b = array.length - 1; b >= 0; b--)
 	{
-		var bin = array[b];
-		var len = comboList[bin];
-		for(var i = 0; i < stockArray.length; i++)
+		let bin = array[b];
+		let len = comboList[bin];
+		for(let i = 0; i < stockArray.length; i++)
 		{
 			diff = stockArray[i].pieceLength - len;
 			if(0 <= diff && diff < bestDiff)
@@ -143,14 +148,14 @@ function findBestStockAndCombo(stockArray, comboList)
 
 //------------------------------------------------------
 
-function makeComboList(cutArray, max)
+function makeComboList(cutArray, max, cutLoss)
 {
-	var comboList = {};
-	var binary = convertToBinaryArray(1, cutArray.length);
+	let comboList = {};
+	let binary = convertToBinaryArray(1, cutArray.length);
 
 	while(hasBit(binary))
 	{
-		var len = calcComboLength(binary, cutArray);
+		let len = calcComboLength(binary, cutArray, cutLoss);
 		if(len <= max)
 		{
 			comboList[binary] = len;
@@ -169,7 +174,7 @@ function makeComboList(cutArray, max)
 // returns true if binary has at least one true value
 function hasBit(binary)
 {
-	for(var i = 0; i < binary.length; i++)
+	for(let i = 0; i < binary.length; i++)
 	{
 		if(binary[i] === 1) {return true;}
 	}
@@ -180,10 +185,10 @@ function hasBit(binary)
 // gets next combination that isn't guaranteed to be longer than the max stock length
 function getSkippedBinary(binary)
 {
-	var array = binary;
+	let array = binary;
 
 	array[array.length - 1] = 1;
-	for(var i = array.length - 2; i >= 0; i--)
+	for(let i = array.length - 2; i >= 0; i--)
 	{
 		if(array[i] === 1) { break; }
 		else {
@@ -200,11 +205,11 @@ function getSkippedBinary(binary)
 // increments binary number by 1
 function getNextBinary(binary)
 {
-	var flip = function(bit){ return bit === 1 ? 0 : 1; };
-	var array = binary;
+	let flip = function(bit){ return bit === 1 ? 0 : 1; };
+	let array = binary;
 
 	array[array.length - 1] = flip(array[array.length - 1]);
-	for(var i = array.length - 2; i >= 0; i--)
+	for(let i = array.length - 2; i >= 0; i--)
 	{
 		if(array[i + 1] === 1) { break; }
 		else {
@@ -224,12 +229,12 @@ function getNextBinary(binary)
 /**       Returns: void, modifies comboList
 */function removeCombos(comboList, combo, max)
 {
-	var array = Object.keys(comboList);
+	let array = Object.keys(comboList);
 
-	for(var i = array.length - 1; i >= 0; i--)
+	for(let i = array.length - 1; i >= 0; i--)
 	{
-		var len = comboList[array[i]];
-		var thisCombo = JSON.parse("[" +array[i] + "]");
+		let len = comboList[array[i]];
+		let thisCombo = JSON.parse("[" +array[i] + "]");
 		if(comboList[array[i]] > max || hasCommonBit(thisCombo, combo))
 		{
 			delete comboList[array[i]];
@@ -242,10 +247,10 @@ function getNextBinary(binary)
 // returns true if both arrays have a true bit in the same position
 function hasCommonBit(bin1, bin2)
 {
-	for(var i = 0; i < bin1.length && i < bin2.length; i++)
+	for(let i = 0; i < bin1.length && i < bin2.length; i++)
 	{
-		var idx1 = bin1.length - 1 - i;
-		var idx2 = bin2.length - 1 - i;
+		let idx1 = bin1.length - 1 - i;
+		let idx2 = bin2.length - 1 - i;
 		if(bin1[idx1] === 1 && bin2[idx2] === 1) {return true;}
 	}
 	return false;
@@ -261,12 +266,12 @@ function hasCommonBit(bin1, bin2)
 function convertToBinaryArray(value, numBits)
 {
 	// array of false elements
-	var result =[];
-	for(var i = 0; i < numBits; i++) {result.push(0);}
+	let result =[];
+	for(let i = 0; i < numBits; i++) {result.push(0);}
 
-	var binValues = [0, 1];
+	let binValues = [0, 1];
 
-	var idx = result.length - 1;
+	let idx = result.length - 1;
 	while(value > 0)
 	{
 		result[idx] = binValues[value % 2];
@@ -288,10 +293,10 @@ function convertToBinaryArray(value, numBits)
 */
 function convertFromBinaryArray(value)
 {
-  var result = 0;
-	var numBits = value.length;
+  let result = 0;
+	let numBits = value.length;
 
-	for (var i = 0; i < numBits; i++)
+	for (let i = 0; i < numBits; i++)
 	{
 		if (value[numBits - i - 1] === 1)
 			result += Math.pow(2, i);

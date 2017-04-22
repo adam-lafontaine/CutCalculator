@@ -42,20 +42,20 @@ $(function()
   // runs the sorting algorithm and displays in #Results
   $('#ButtonAction').click(function(e)
   {
-    if(inputValid())
+    if(!inputValid())
+      return;
+
+    $('#UserInput').hide();
+
+    let cutLoss = getFloatFromInput('#TextBoxCutLoss');
+
+    let resultSetArray = sortLengths(getLengthGroups('Cut'), getLengthGroups('Stock'), cutLoss);
+    for(let i = 0; i < resultSetArray.length; i++)
     {
-      $('#UserInput').hide();
-
-      var resultSetArray = sortLengths(getLengthGroups('Cut'), getLengthGroups('Stock'));
-      for(var i = 0; i < resultSetArray.length; i++)
-      {
-        addResultSet(resultSetArray[i]);
-      }
-
-      $('#Results').show();
+      addResultSet(resultSetArray[i]);
     }
 
-
+    $('#Results').show();
   });
 
   //------------------------------------------------------
@@ -84,6 +84,9 @@ function resetInput()
   // begin with one row for input
   addInputRow('Cut');
   addInputRow('Stock');
+
+  //clear cut loss field
+  $('#TextBoxCutLoss').val('0')
 }
 
 //-------------------------------------------------------
@@ -109,7 +112,7 @@ function removeAllInputRows(tag)
 // and increments the coresponding index saved in the hidden field
 function addInputRow(tag)
 {
-  var idx = getIntFromInput('#Hidden' + tag + 'Index');
+  let idx = getIntFromInput('#Hidden' + tag + 'Index');
   $('#Hidden' + tag + 'Index').val(idx + 1);
   createInputRow(tag + idx).appendTo('#' + tag + 'List');
 }
@@ -120,7 +123,7 @@ function addInputRow(tag)
 // and decrements the coresponding index saved in the hidden field
 function removeInputRow(tag)
 {
-  var idx = getIntFromInput('#Hidden' + tag + 'Index');
+  let idx = getIntFromInput('#Hidden' + tag + 'Index');
 
   if(idx > 1)
   {
@@ -137,13 +140,13 @@ function removeInputRow(tag)
 // tag = 'Cut' or 'Stock'
 function getLengthGroups(tag)
 {
-  var result = [];
-  var index = getIntFromInput('#Hidden' + tag + 'Index');
-  for(var i = 0; i < index; i++)
+  let result = [];
+  let index = getIntFromInput('#Hidden' + tag + 'Index');
+  for(let i = 0; i < index; i++)
   {
-    var qty = getIntFromInput('#TextBoxQty' + tag + i);
-    var length = getFloatFromInput('#TextBoxLength' + tag + i);
-    var label = $('#TextBoxLabel' + tag + i).val();
+    let qty = getIntFromInput('#TextBoxQty' + tag + i);
+    let length = getFloatFromInput('#TextBoxLength' + tag + i);
+    let label = $('#TextBoxLabel' + tag + i).val();
 
     result.push(new LengthGroup(qty, length, label));
   }
@@ -156,7 +159,7 @@ function getLengthGroups(tag)
 // adds the values from a ResultSet object to the output on the page
 function addResultSet(result_set)
 {
-  var idx = getIntFromInput('#HiddenResultSetIndex');
+  let idx = getIntFromInput('#HiddenResultSetIndex');
   $('#HiddenResultSetIndex').val(idx + 1);
 
   $("#ResultList").append(createResultSetDiv(result_set, idx));
@@ -184,10 +187,10 @@ function createTextBox(id, placeholder)
 // tag = used to uniquely identify id attributes
 function createInputRow(tag)
 {
-  var row = $('<div/>',{'id':'Row' + tag, 'class': 'row'});
-  var c1 = $('<div/>', {'class': 'col-xs-3 col-wide'});
-  var c2 = $('<div/>', {'class': 'col-xs-4 col-wide'});
-  var c3 = $('<div/>', {'class': 'col-xs-5 col-wide'});
+  let row = $('<div/>',{'id':'Row' + tag, 'class': 'row'});
+  let c1 = $('<div/>', {'class': 'col-xs-3 col-wide'});
+  let c2 = $('<div/>', {'class': 'col-xs-4 col-wide'});
+  let c3 = $('<div/>', {'class': 'col-xs-5 col-wide'});
 
   c1.append(createTextBox('TextBoxQty' + tag, 'Quantity').addClass("notblank posint notzero"));
   c2.append(createTextBox('TextBoxLength' + tag, 'Length').addClass("notblank posnumeric notzero"));
@@ -205,10 +208,10 @@ function createInputRow(tag)
 // creates a new row within a ResultSet to display
 function createResultRow(qty, length, label)
 {
-  var row = $('<div/>',{'class': 'row'});
-  var c1 = $('<div/>', {'class': 'col-xs-4 col-wide', text: qty});
-  var c2 = $('<div/>', {'class': 'col-xs-4 col-wide', text: length});
-  var c3 = $('<div/>', {'class': 'col-xs-4 col-wide', text: label});
+  let row = $('<div/>',{'class': 'row'});
+  let c1 = $('<div/>', {'class': 'col-xs-4 col-wide', text: qty});
+  let c2 = $('<div/>', {'class': 'col-xs-4 col-wide', text: length});
+  let c3 = $('<div/>', {'class': 'col-xs-4 col-wide', text: label});
 
   row.append(c1);
   row.append(c2);
@@ -223,23 +226,23 @@ function createResultRow(qty, length, label)
 // idx = unique identifier for div
 function createResultSetDiv(result_set, idx)
 {
-  var table = $('<table/>', {
+  let table = $('<table/>', {
     'id': 'ResultSet' + idx,
     'class': 'table table-bordered'
   });
 
   //heading
-  var heading = $('<thead/>', {});
+  let heading = $('<thead/>', {});
   heading.append(create3ColumnRow('<th/>', 'Quantity', 'Length', 'Label'));
 
   //body
-  var body = $('<tbody/>', {});
+  let body = $('<tbody/>', {});
   $.each(result_set.lengthGroupArray, function(index, group){
     body.append(create3ColumnRow('<td/>', group.quantity, group.groupLength, group.groupLabel));
   });
 
   //footer
-  var footer = $('<tfoot/>', {'class': 'bold'});
+  let footer = $('<tfoot/>', {'class': 'bold'});
   footer.append(create3ColumnRow('<td/>', 'Stock', result_set.stockLength.pieceLength, result_set.stockLength.pieceLabel));
   footer.append(create3ColumnRow('<td/>', 'Leftover', result_set.leftover, ''));
 
@@ -254,11 +257,11 @@ function createResultSetDiv(result_set, idx)
 
 function create3ColumnRow(element, c1Text, c2Text, c3Text)
 {
-  var tableRow = $('<tr/>', {});
+  let tableRow = $('<tr/>', {});
 
-  var c1 = $(element,{text: c1Text});
-  var c2 = $(element,{text: c2Text});
-  var c3 = $(element,{text: c3Text});
+  let c1 = $(element,{text: c1Text});
+  let c2 = $(element,{text: c2Text});
+  let c3 = $(element,{text: c3Text});
 
   tableRow.append(c1);
   tableRow.append(c2);
