@@ -58,6 +58,11 @@ $(function()
     $('#Results').show();
   });
 
+  $('#ButtonReset').click(function(e)
+  {
+    resetInput();    
+  });
+
   //------------------------------------------------------
 
   $('#ButtonRestart').click(function(e)
@@ -69,6 +74,8 @@ $(function()
   });
 
   //-------------------------------------------------------
+
+
 
 });
 
