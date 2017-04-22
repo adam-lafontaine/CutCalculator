@@ -17,14 +17,14 @@ function sortLengths(cutLengthGroupArray, stockLengthGroupArray, cutLoss)
 	let stockArray = convertToLengthArray(stockLengthGroupArray);
 
 	// sort arrays
-	let descending = function(lhs, rhs){return rhs.pieceLength - lhs.pieceLength};
-	let ascending = function(lhs, rhs){return lhs.pieceLength - rhs.pieceLength};
+	let descending = function(lhs, rhs){ return rhs.pieceLength - lhs.pieceLength };
+	let ascending = function(lhs, rhs){ return lhs.pieceLength - rhs.pieceLength };
 
 	cutArray.sort(descending);
 	stockArray.sort(ascending);
 
 	// hash of bool array for combo and coresponding length
-	let comboList = makeComboList(cutArray, stockArray[stockArray.length - 1].pieceLength);
+	let comboList = makeComboList(cutArray, stockArray[stockArray.length - 1].pieceLength, cutLoss);
 
 
 	// loop until no combos remain
@@ -91,9 +91,9 @@ function convertToLengthArray(lgArray)
 
 //----------------------------------------------
 
-// calculates the total length of a combination of Lengths
+// calculates the total length of material required for a combination of Lengths
 // using a binary string to represent the Lengths in the combo
-function calcComboLength(binary, cutArray)
+function calcComboLength(binary, cutArray, cutLoss)
 {
 	let result = 0;
 
@@ -102,8 +102,13 @@ function calcComboLength(binary, cutArray)
 		let binaryIndex = binary.length - 1 - i;
 		let arrayIndex = cutArray.length - 1 - i;
 
-		if(binary[binaryIndex] === 1) {result += cutArray[arrayIndex].pieceLength;}
+		if(binary[binaryIndex] === 1) { result += cutArray[arrayIndex].pieceLength; }
 	}
+
+
+	// account for extra material required from cutting
+	if(cutLoss)
+		result += cutLoss * (binary.length - 1);
 
 	return result;
 }
@@ -143,14 +148,14 @@ function findBestStockAndCombo(stockArray, comboList)
 
 //------------------------------------------------------
 
-function makeComboList(cutArray, max)
+function makeComboList(cutArray, max, cutLoss)
 {
 	let comboList = {};
 	let binary = convertToBinaryArray(1, cutArray.length);
 
 	while(hasBit(binary))
 	{
-		let len = calcComboLength(binary, cutArray);
+		let len = calcComboLength(binary, cutArray, cutLoss);
 		if(len <= max)
 		{
 			comboList[binary] = len;
