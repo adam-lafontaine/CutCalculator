@@ -84,6 +84,9 @@ function resetInput()
   // begin with one row for input
   addInputRow('Cut');
   addInputRow('Stock');
+
+  //clear cut loss field
+  $('#TextBoxCutLoss').val('0')
 }
 
 //-------------------------------------------------------
