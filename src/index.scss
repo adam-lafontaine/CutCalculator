@@ -1,0 +1,55 @@
+.messageBubbleLeft {
+  position:relative;
+  padding:5px;
+  width:40%;
+  margin-bottom: -1em;
+  margin-right:60%;
+  -webkit-border-radius:10px;
+  -moz-border-radius:10px;
+  border-radius:10px;
+}
+
+.messageBubbleRight {
+  position:relative;
+  padding:5px;
+  width:40%;
+  margin-bottom: -1em;
+  margin-left:60%;
+  -webkit-border-radius:10px;
+  -moz-border-radius:10px;
+  border-radius:10px;
+}
+
+.notificationList {
+  margin-top: 2px;
+  margin-bottom: 1px;
+  box-sizing: border-box;
+  height: 50px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.messageList {
+  margin-top: 1px;
+  margin-bottom: 2px;
+  box-sizing: border-box;
+  height: calc(80vh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.messageInput {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.bubbleLabel {
+  font-size: x-small;
+  float: right;
+}
+
+.bubbleText {
+  font-size: smaller;
+  font-weight: bold;
+}
