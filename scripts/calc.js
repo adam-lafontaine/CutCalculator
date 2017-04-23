@@ -23,7 +23,7 @@ function sortLengths(cutLengthGroupArray, stockLengthGroupArray, cutLoss)
 	cutArray.sort(descending);
 	stockArray.sort(ascending);
 
-	// hash of bool array for combo and coresponding length
+	// hash of bool array for combo and corresponding length
 	let comboList = makeComboList(cutArray, stockArray[stockArray.length - 1].pieceLength, cutLoss);
 
 
@@ -233,7 +233,6 @@ function getNextBinary(binary)
 
 	for(let i = array.length - 1; i >= 0; i--)
 	{
-		let len = comboList[array[i]];
 		let thisCombo = JSON.parse("[" +array[i] + "]");
 		if(comboList[array[i]] > max || hasCommonBit(thisCombo, combo))
 		{

@@ -213,19 +213,19 @@ function createInputRow(tag)
 //------------------------------------------------------------
 
 // creates a new row within a ResultSet to display
-function createResultRow(qty, length, label)
-{
-  let row = $('<div/>',{'class': 'row'});
-  let c1 = $('<div/>', {'class': 'col-xs-4 col-wide', text: qty});
-  let c2 = $('<div/>', {'class': 'col-xs-4 col-wide', text: length});
-  let c3 = $('<div/>', {'class': 'col-xs-4 col-wide', text: label});
+/*function createResultRow(qty, length, label)
+ {
+ let row = $('<div/>',{'class': 'row'});
+ let c1 = $('<div/>', {'class': 'col-xs-4 col-wide', text: qty});
+ let c2 = $('<div/>', {'class': 'col-xs-4 col-wide', text: length});
+ let c3 = $('<div/>', {'class': 'col-xs-4 col-wide', text: label});
 
-  row.append(c1);
-  row.append(c2);
-  row.append(c3);
+ row.append(c1);
+ row.append(c2);
+ row.append(c3);
 
-  return row;
-}
+ return row;
+ }*/
 
 //------------------------------------------
 
