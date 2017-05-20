@@ -19,23 +19,22 @@ $(function()
 
 function enterTestData(cutGroupArray, stockGroupArray)
 {
-  removeAllInputRows('Cut');
-  removeAllInputRows('Stock');
+  removeAllInputRows();
 
   for(var i = 0; i < cutGroupArray.length; i++)
   {
-    addInputRow('Cut');
-    $('#TextBoxQtyCut' + i).val(cutGroupArray[i].quantity);
-    $('#TextBoxLengthCut' + i).val(cutGroupArray[i].groupLength);
-    $('#TextBoxLabelCut' + i).val(cutGroupArray[i].groupLabel);
+    addCutRow();
+    $('#TextBoxQtyCut' + (i+1)).val(cutGroupArray[i].quantity);
+    $('#TextBoxLengthCut' + (i+1)).val(cutGroupArray[i].groupLength);
+    $('#TextBoxLabelCut' + (i+1)).val(cutGroupArray[i].groupLabel);
   }
 
   for(var i = 0; i < stockGroupArray.length; i++)
   {
-    addInputRow('Stock');
-    $('#TextBoxQtyStock' + i).val(stockGroupArray[i].quantity);
-    $('#TextBoxLengthStock' + i).val(stockGroupArray[i].groupLength);
-    $('#TextBoxLabelStock' + i).val(stockGroupArray[i].groupLabel);
+    addStockRow();
+    $('#TextBoxQtyStock' + (i+1)).val(stockGroupArray[i].quantity);
+    $('#TextBoxLengthStock' + (i+1)).val(stockGroupArray[i].groupLength);
+    $('#TextBoxLabelStock' + (i+1)).val(stockGroupArray[i].groupLabel);
   }
 
 }

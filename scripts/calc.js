@@ -28,10 +28,10 @@ function sortLengths(cutLengthGroupArray, stockLengthGroupArray, cutLoss)
 
 
 	// loop until no combos remain
-	while(Object.keys(comboList).length > 0)
+	while(Object.keys(comboList).length > 0 && stockArray.length > 0)
 	{
 		// choose best stock/combo
-		let bestStockAndCombo = findBestStockAndCombo(stockArray, comboList);
+		let bestStockAndCombo = findBestStockAndCombo(stockArray, comboList, cutLoss);
 
 		// get stock from stockArray and remove
 		let bestStock = stockArray.splice(bestStockAndCombo.stockIndex, 1)[0];
@@ -41,13 +41,21 @@ function sortLengths(cutLengthGroupArray, stockLengthGroupArray, cutLoss)
 		let lengthArray = getLengthArrayFromCombo(bestCombo, cutArray);
 
 		// remove redundant combos
-		removeCombos(comboList, bestCombo, stockArray[stockArray.length - 1].pieceLength);
+		if(stockArray.length > 0)
+			removeCombos(comboList, bestCombo, stockArray[stockArray.length - 1].pieceLength);
+		else
+			removeCombos(comboList, bestCombo);
 
 		// create ResultSet from stock and array of Lengths
 		results.push(new ResultSet(bestStock, lengthArray, bestStockAndCombo.leftover));
 	}
 
-	return results;
+	let params = {results: results};
+
+	if(Object.keys(comboList).length > 0)
+		params.error = "Not enough stock to complete";
+
+	return params;
 }
 
 //***************** UTILITY FUNCTIONS ********************************
@@ -102,20 +110,21 @@ function calcComboLength(binary, cutArray, cutLoss)
 		let binaryIndex = binary.length - 1 - i;
 		let arrayIndex = cutArray.length - 1 - i;
 
-		if(binary[binaryIndex] === 1) { result += cutArray[arrayIndex].pieceLength; }
+		result += binary[binaryIndex] * cutArray[arrayIndex].pieceLength;
 	}
 
-
 	// account for extra material required from cutting
+	let numPieces = binary.reduce((total, val) => { return total + val; });
+
 	if(cutLoss)
-		result += cutLoss * (binary.length - 1);
+		result += cutLoss * numPieces;
 
 	return result;
 }
 
 //----------------------------------------------
 
-function findBestStockAndCombo(stockArray, comboList)
+function findBestStockAndCombo(stockArray, comboList, cutLoss)
 {
 	let okLeftover = 0;
 
@@ -132,6 +141,10 @@ function findBestStockAndCombo(stockArray, comboList)
 		for(let i = 0; i < stockArray.length; i++)
 		{
 			diff = stockArray[i].pieceLength - len;
+
+			if(diff < 0 && abs(diff) < cutLoss)
+				diff = 0;
+
 			if(0 <= diff && diff < bestDiff)
 			{
 				bestDiff = diff;
@@ -174,10 +187,7 @@ function makeComboList(cutArray, max, cutLoss)
 // returns true if binary has at least one true value
 function hasBit(binary)
 {
-	for(let i = 0; i < binary.length; i++)
-	{
-		if(binary[i] === 1) {return true;}
-	}
+	return binary.indexOf(1) != -1;
 }
 
 //--------------------------------------------------------
@@ -235,7 +245,7 @@ function getNextBinary(binary)
 	{
 		let len = comboList[array[i]];
 		let thisCombo = JSON.parse("[" +array[i] + "]");
-		if(comboList[array[i]] > max || hasCommonBit(thisCombo, combo))
+		if((max && comboList[array[i]] > max) || hasCommonBit(thisCombo, combo))
 		{
 			delete comboList[array[i]];
 		}
