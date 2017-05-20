@@ -108,7 +108,9 @@ function removeAllInputRows()
   setState({
     CutIndex: 0,
     StockIndex: 0,
-    ResultSetIndex: 0
+    ResultSetIndex: 0,
+    TotalStock: 0,
+    TotalCut: 0
   });
 }
 
@@ -156,9 +158,6 @@ function removeCutRow()
     idx-= 1;
     $('#RowCut' + idx).remove();
     setState({CutIndex: idx});
-
-
-    $('#HiddenCutIndex').val(idx);
   }
 
 }
@@ -176,9 +175,6 @@ function removeStockRow()
     idx-= 1;
     $('#RowStock' + idx).remove();
     setState({StockIndex: idx});
-
-
-    $('#HiddenStockIndex').val(idx);
   }
 
 }
@@ -191,7 +187,7 @@ function getLengthGroups(tag)
 {
   let result = [];
   let key = tag + "Index";
-  let index = getState()[key];// getIntFromInput('#Hidden' + tag + 'Index');
+  let index = getState()[key];
   for(let i = 1; i <= index; i++)
   {
     let qty = getIntFromInput('#TextBoxQty' + tag + i);
@@ -209,9 +205,6 @@ function getLengthGroups(tag)
 // adds the values from a ResultSet object to the output on the page
 function addResultSet(result_set)
 {
-  //let idx = getIntFromInput('#HiddenResultSetIndex');
-  //$('#HiddenResultSetIndex').val(idx + 1);
-
   let idx = getState().ResultSetIndex;
 
   $("#ResultList").append(createResultSetDiv(result_set, idx));
