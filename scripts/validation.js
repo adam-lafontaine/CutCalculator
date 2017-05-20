@@ -8,18 +8,16 @@ function inputValid()
     $(this).removeClass("invalid");
   });
 
-  var result = true;
-
   if(!validateNotBlank())
-    result = false;
+    return false;
   if(!validatePosInt())
-    result = false;
+    return false;
   if(!validatePosNumeric())
-    result = false;
+    return false;
   if(!validateNotZero())
-    result = false;
+    return false;
 
-  return result;
+  return true;
 }
 
 //---------------------------------

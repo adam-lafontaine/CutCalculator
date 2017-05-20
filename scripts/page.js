@@ -13,28 +13,28 @@ $(function()
   // event handlers
   $('#ButtonAddCutRow').click(function(e)
   {
-    addInputRow('Cut');
+    addCutRow();
   });
 
   //-----------------------------------------------------
 
   $('#ButtonAddStockRow').click(function(e)
   {
-    addInputRow('Stock');
+    addStockRow();
   });
 
   //------------------------------------------------------
 
   $('#ButtonRemoveStockRow').click(function(e)
   {
-    removeInputRow('Stock');
+    removeStockRow();
   });
 
   //------------------------------------------------------
 
   $('#ButtonRemoveCutRow').click(function(e)
   {
-    removeInputRow('Cut');
+    removeCutRow();
   });
 
   //-----------------------------------------------------
@@ -60,7 +60,7 @@ $(function()
 
   $('#ButtonReset').click(function(e)
   {
-    resetInput();    
+    resetInput();
   });
 
   //------------------------------------------------------
@@ -85,15 +85,31 @@ $(function()
 function resetInput()
 {
   // clear example code
-  removeAllInputRows('Cut');
-  removeAllInputRows('Stock');
+  removeAllInputRows();
 
   // begin with one row for input
-  addInputRow('Cut');
-  addInputRow('Stock');
+  addCutRow();
+  addStockRow();
 
   //clear cut loss field
-  $('#TextBoxCutLoss').val('0')
+  $('#TextBoxCutLoss').val('0');
+
+}
+
+//-------------------------------------
+
+function removeAllInputRows()
+{
+  $('#HiddenCutIndex').val(0);
+  $('#CutList').html("");
+  $('#HiddenStockIndex').val(0);
+  $('#StockList').html("");
+
+  setState({
+    CutIndex: 0,
+    StockIndex: 0,
+    ResultSetIndex: 0
+  });
 }
 
 //-------------------------------------------------------
@@ -101,42 +117,68 @@ function resetInput()
 function resetResults()
 {
   $('#ResultList').html("");
-  $('#HiddenResultSetIndex').val(0);
-}
 
-//--------------------------------------------------
-
-// clears the specified list of all rows for input
-function removeAllInputRows(tag)
-{
-  $('#Hidden' + tag + 'Index').val(0);
-  $('#' + tag + 'List').html("");
+  setState({
+    ResultSetIndex: 0
+  });
 }
 
 //---------------------------------------------------
 
-// adds a row for the input specified
-// and increments the coresponding index saved in the hidden field
-function addInputRow(tag)
+function addCutRow()
 {
-  let idx = getIntFromInput('#Hidden' + tag + 'Index');
-  $('#Hidden' + tag + 'Index').val(idx + 1);
-  createInputRow(tag + idx).appendTo('#' + tag + 'List');
+  let idx = getState().CutIndex + 1;
+  createInputRow("Cut" + idx).appendTo('#CutList');
+
+  setState({CutIndex: idx});
+}
+
+//---------------------------------------------
+
+function addStockRow()
+{
+  let idx = getState().StockIndex + 1;
+  createInputRow("Stock" + idx).appendTo('#StockList');
+
+  setState({StockIndex: idx});
 }
 
 //-------------------------------------------------
 
-// removes the last row of input specified
-// and decrements the coresponding index saved in the hidden field
-function removeInputRow(tag)
+// removes the last cut row
+// and decrements the coresponding state variable
+function removeCutRow()
 {
-  let idx = getIntFromInput('#Hidden' + tag + 'Index');
+  let idx = getState().CutIndex;
 
   if(idx > 1)
   {
     idx-= 1;
-    $('#Row' + tag + idx).remove();
-    $('#Hidden' + tag + 'Index').val(idx);
+    $('#RowCut' + idx).remove();
+    setState({CutIndex: idx});
+
+
+    $('#HiddenCutIndex').val(idx);
+  }
+
+}
+
+//--------------------------------------------------
+
+// removes the last cut row
+// and decrements the coresponding state variable
+function removeStockRow()
+{
+  let idx = getState().StockIndex;
+
+  if(idx > 1)
+  {
+    idx-= 1;
+    $('#RowStock' + idx).remove();
+    setState({StockIndex: idx});
+
+
+    $('#HiddenStockIndex').val(idx);
   }
 
 }
@@ -148,7 +190,8 @@ function removeInputRow(tag)
 function getLengthGroups(tag)
 {
   let result = [];
-  let index = getIntFromInput('#Hidden' + tag + 'Index');
+  let key = tag + "Index";
+  let index = getState()[key];// getIntFromInput('#Hidden' + tag + 'Index');
   for(let i = 0; i < index; i++)
   {
     let qty = getIntFromInput('#TextBoxQty' + tag + i);
@@ -166,10 +209,13 @@ function getLengthGroups(tag)
 // adds the values from a ResultSet object to the output on the page
 function addResultSet(result_set)
 {
-  let idx = getIntFromInput('#HiddenResultSetIndex');
-  $('#HiddenResultSetIndex').val(idx + 1);
+  //let idx = getIntFromInput('#HiddenResultSetIndex');
+  //$('#HiddenResultSetIndex').val(idx + 1);
+
+  let idx = getState().ResultSetIndex;
 
   $("#ResultList").append(createResultSetDiv(result_set, idx));
+  setState({ResultSetIndex: idx + 1});
 }
 
 //--------------------------------------------
@@ -275,4 +321,22 @@ function create3ColumnRow(element, c1Text, c2Text, c3Text)
   tableRow.append(c3);
 
   return tableRow;
+}
+
+//--------------------------------------
+
+function setState(params)
+{
+  let state = JSON.parse($('#State').val());
+  for(var p in params)
+    state[p] = params[p];
+
+  $('#State').val(JSON.stringify(state));
+}
+
+//---------------------------------------
+
+function getState()
+{
+  return JSON.parse($('#State').val());
 }
