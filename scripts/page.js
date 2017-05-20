@@ -192,7 +192,7 @@ function getLengthGroups(tag)
   let result = [];
   let key = tag + "Index";
   let index = getState()[key];// getIntFromInput('#Hidden' + tag + 'Index');
-  for(let i = 0; i < index; i++)
+  for(let i = 1; i <= index; i++)
   {
     let qty = getIntFromInput('#TextBoxQty' + tag + i);
     let length = getFloatFromInput('#TextBoxLength' + tag + i);
