@@ -28,7 +28,7 @@ function sortLengths(cutLengthGroupArray, stockLengthGroupArray, cutLoss)
 
 
 	// loop until no combos remain
-	while(Object.keys(comboList).length > 0)
+	while(Object.keys(comboList).length > 0 && stockArray.length > 0)
 	{
 		// choose best stock/combo
 		let bestStockAndCombo = findBestStockAndCombo(stockArray, comboList, cutLoss);
@@ -41,13 +41,21 @@ function sortLengths(cutLengthGroupArray, stockLengthGroupArray, cutLoss)
 		let lengthArray = getLengthArrayFromCombo(bestCombo, cutArray);
 
 		// remove redundant combos
-		removeCombos(comboList, bestCombo, stockArray[stockArray.length - 1].pieceLength);
+		if(stockArray.length > 0)
+			removeCombos(comboList, bestCombo, stockArray[stockArray.length - 1].pieceLength);
+		else
+			removeCombos(comboList, bestCombo);
 
 		// create ResultSet from stock and array of Lengths
 		results.push(new ResultSet(bestStock, lengthArray, bestStockAndCombo.leftover));
 	}
 
-	return results;
+	let params = {results: results};
+
+	if(Object.keys(comboList).length > 0)
+		params.error = "Not enough stock to complete";
+
+	return params;
 }
 
 //***************** UTILITY FUNCTIONS ********************************
@@ -237,7 +245,7 @@ function getNextBinary(binary)
 	{
 		let len = comboList[array[i]];
 		let thisCombo = JSON.parse("[" +array[i] + "]");
-		if(comboList[array[i]] > max || hasCommonBit(thisCombo, combo))
+		if((max && comboList[array[i]] > max) || hasCommonBit(thisCombo, combo))
 		{
 			delete comboList[array[i]];
 		}

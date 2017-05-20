@@ -7,6 +7,7 @@ $(function()
 {
   // set up page
   $('#Results').hide();
+  $('#Error').hide();
 
   resetInput();
 
@@ -49,13 +50,22 @@ $(function()
 
     let cutLoss = getFloatFromInput('#TextBoxCutLoss');
 
-    let resultSetArray = sortLengths(getLengthGroups('Cut'), getLengthGroups('Stock'), cutLoss);
+    let sortResults = sortLengths(getLengthGroups('Cut'), getLengthGroups('Stock'), cutLoss);
+
+    let resultSetArray = sortResults.results;
     for(let i = 0; i < resultSetArray.length; i++)
     {
       addResultSet(resultSetArray[i]);
     }
 
     $('#Results').show();
+
+    if(sortResults.error)
+    {
+      $('#Error').html(sortResults.error);
+      $('#Error').show();
+    }
+
   });
 
   $('#ButtonReset').click(function(e)
@@ -69,6 +79,7 @@ $(function()
   {
     resetInput();
     $('#Results').hide();
+    $('#Error').hide();
     resetResults();
     $('#UserInput').show();
   });
