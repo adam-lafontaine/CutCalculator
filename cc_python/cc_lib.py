@@ -79,35 +79,40 @@ def get_combo_pieces(binary, all_pieces):
 
 #-------------------------------------------------
 
+# TESTED
 # returns true if binary has at least one true value
 def has_bit(binary):
     return '1' in binary
 
 #-------------------------------------------------
 
+# TESTED
 def flip_bit(bit):
     return '1' if bit == '0' else '0'
 
 #-------------------------------------------------
 
+#TESTED
 # increments binary number by 1
 def next_binary(binary):
-    result = binary
-    for i, e in reversed(list(enumerate(binary))):
-        result[i] = flip_bit(e)
-        if result[i] == '1':
+    rev_list = list(binary[::-1])
+    
+    for i, e in enumerate(rev_list):
+        rev_list[i] = flip_bit(e)
+        if rev_list[i] == '1':
             break
 
-    return result
+    return ''.join(rev_list[::-1])
 
 #------------------------------------------------
 
+#TESTED
 def has_common_bit(bin_1, bin_2):
     rev_1 = bin_1[::-1]
     rev_2 = bin_2[::-1]
 
     for i in range(0, min(len(bin_1), len(bin_2))):
-        if rev_1[i] == rev_2[i]:
+        if rev_1[i] == '1' and rev_2[i] == '1':
             return True
 
     return False
