@@ -34,7 +34,7 @@ class ResultSet:
 
 # params: a list of Piece objects
 # returns a list of PieceGroup objects from the Piece objects grouped by name and length
-def group_pieces(self, pieces):
+def group_pieces(pieces):
     result = {}
 
     for piece in pieces:
@@ -50,7 +50,7 @@ def group_pieces(self, pieces):
 
 # params: a PieceGroup object
 # returns a list of identical Piece objects
-def ungroup(self, group):
+def ungroup(group):
     result = []
     for i in group.quantity:
         result.append(Piece(group.name, group.length))
@@ -59,20 +59,20 @@ def ungroup(self, group):
 
 #-------------------------------------------------
 
-def ungroup_list(self, group_list):
+def ungroup_list(group_list):
     result = []
     for grp in group_list:
         result.extend(grp)
 
     return result
 
-# binary: [0, 1, 1, 0,...]
+# binary: '01101...'
 # all_pieces: list of pieces
 # returns list of pieces in the binary combination
-def get_combo_pieces(self, binary, all_pieces):
+def get_combo_pieces(binary, all_pieces):
     result = []
     for i in binary:
-        if i == 1:
+        if i == '1':
             result.append(all_pieces[i])
 
     return result
@@ -80,24 +80,34 @@ def get_combo_pieces(self, binary, all_pieces):
 #-------------------------------------------------
 
 # returns true if binary has at least one true value
-def has_bit(self, binary):
-    return 1 in binary
+def has_bit(binary):
+    return '1' in binary
 
 #-------------------------------------------------
 
-def flip_bit(self, bit):
-    return bit = 1 if bit == 0 else 0
+def flip_bit(bit):
+    return '1' if bit == '0' else '0'
 
 #-------------------------------------------------
 
 # increments binary number by 1
-def next_binary(self, binary):
+def next_binary(binary):
     result = binary
     for i, e in reversed(list(enumerate(binary))):
-        result[i] = flip_bit[e]
-        if result[i] == 1:
+        result[i] = flip_bit(e)
+        if result[i] == '1':
             break
 
     return result
 
+#------------------------------------------------
 
+def has_common_bit(bin_1, bin_2):
+    rev_1 = bin_1[::-1]
+    rev_2 = bin_2[::-1]
+
+    for i in range(0, min(len(bin_1), len(bin_2))):
+        if rev_1[i] == rev_2[i]:
+            return True
+
+    return False
