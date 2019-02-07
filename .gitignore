@@ -2,6 +2,7 @@
 node_modules
 public
 reference
+__pycache__
 
 
 # Windows image file caches
