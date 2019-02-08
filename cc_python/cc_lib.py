@@ -116,3 +116,36 @@ def has_common_bit(bin_1, bin_2):
             return True
 
     return False
+
+#-------------------------------------------------
+
+# TESTED
+def to_binary(value, num_bits):
+    result = []
+
+    bin_values = ['0', '1']
+    val = value
+
+    while(val > 0):
+        idx = int(val % 2)
+        result.append(bin_values[idx])
+        val -= idx
+        val /= 2
+
+    binary = ''.join(result[::-1])
+    if len(binary) < num_bits:
+        binary = binary.rjust(num_bits, '0')
+
+    return binary
+
+#---------------------------------------------------
+
+def to_integer(binary):
+    result = 0
+    rev = binary[::-1]
+
+    for i in range(0, len(binary)):
+        if rev[i] == '1':
+            result += 2 ** i
+
+    return result

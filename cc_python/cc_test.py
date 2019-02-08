@@ -96,6 +96,67 @@ def test_has_common_bit():
 
     return success
 
+#-----------------------------------------------
+
+def test_to_binary():
+    print("\nTest: to_binary(value, num_bits)")
+
+    success = "Pass"
+    source = [
+        {'p1': 3205, 'p2': 12, 'out': '110010000101'},
+        {'p1': 55, 'p2': 6, 'out': '110111'},
+        {'p1': 55, 'p2': 12, 'out': '000000110111'},
+        {'p1': 3205, 'p2': 5, 'out': '110010000101'},
+        {'p1': 1, 'p2': 12, 'out': '000000000001'},
+    ]
+
+    for src in source:
+        param_1 = src['p1']
+        param_2 = src['p2']
+        src_out = src['out']
+        result = cc_lib.to_binary(param_1, param_2)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {param_1}, {param_2}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#------------------------------------------------
+
+def test_to_integer():
+    print("\nTest: to_integer(binary)")
+
+    success = "Pass"
+    source = [
+        {'in': '1011', 'out': 11}, 
+        {'in': '100011', 'out': 35}, 
+        {'in': '0000000', 'out': 0},
+        {'in': '1001001110001', 'out': 4721},
+        {'in': '00001011', 'out': 11},
+        {'in': '0000100011', 'out': 35},
+        {'in': '00001001001110001', 'out': 4721}
+        ]
+
+    for src in source:
+        src_in = src['in']
+        src_out = src['out']
+        result = cc_lib.to_integer(src_in)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+
+
 #==============================================
 
 def main():
@@ -105,7 +166,9 @@ def main():
         'has_bit()': test_has_bit(),
         'flip_bit()' : test_flip_bit(),
         'next_binary()' : test_next_binary(),
-        'has_common_bit()': test_has_common_bit()
+        'has_common_bit()': test_has_common_bit(),
+        'to_binary()': test_to_binary(),
+        'to_integer()': test_to_integer()
     }
 
     spaces = 0
