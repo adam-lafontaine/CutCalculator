@@ -41,6 +41,7 @@ class ResultSet:
 
 #--------------------------------------------------
 
+# TESTED
 # params: a list of Piece objects
 # returns a list of PieceGroup objects from the Piece objects grouped by name and length
 def group_pieces(pieces):
@@ -57,6 +58,7 @@ def group_pieces(pieces):
 
 #-------------------------------------------------
 
+# TESTED
 # params: a PieceGroup object
 # returns a list of identical Piece objects
 def ungroup(group):

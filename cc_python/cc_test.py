@@ -293,17 +293,19 @@ def test_ungroup():
     ]
 
     for i in range(0, 3):
-        inp = source[i]
+        src = source[i]
         exp = expected[i]
-        result = cc.ungroup(inp)
-        print(f"   input = {inp}")
-        print(f"expected = {exp}")
-        print(f"  result = {result}")
-        print(result_msg(exp, result))
-        if result != exp:
+        result = cc.ungroup(src)
+
+        exp_str = [str(item) for item in exp]
+        res_str = [str(item) for item in result]
+
+        print(f"   input = {src}")
+        print(f"expected = {exp_str}")
+        print(f"  result = {res_str}")
+        print(result_msg(exp_str, res_str))
+        if res_str != exp_str:
             success = "Fail"
-
-
 
     return success
 
@@ -315,7 +317,9 @@ def test_group_pieces():
     success = "Pass"
 
     source = [
-        
+        cc.Piece("3x40", 40), cc.Piece("3x40", 40), cc.Piece("3x40", 40),
+        cc.Piece("2x25", 25), cc.Piece("2x25", 25),
+        cc.Piece("1x99", 99)       
     ]
 
     expected = [
@@ -324,7 +328,18 @@ def test_group_pieces():
         cc.PieceGroup("1x99", 99, 1)
     ]
 
+    result = cc.group_pieces(source)
 
+    src_str = [str(item) for item in source]
+    exp_str = [str(item) for item in expected]
+    res_str = [str(item) for item in result]
+
+    print(f"   input = {src_str}")
+    print(f"expected = {exp_str}")
+    print(f"  result = {res_str}")
+    print(result_msg(exp_str, res_str))
+    if res_str != exp_str:
+        success = "Fail"        
 
     return success
 
@@ -343,7 +358,7 @@ def main():
         'to_integer()': test_to_integer(),
         'Piece.__init__()': test_Piece_init(),
         'Piece.__str__()': test_Piece_str(),
-        'class PieceGroup.__init__()': test_PieceGroup_init(),
+        'PieceGroup.__init__()': test_PieceGroup_init(),
         'ungroup()': test_ungroup(),
         'group_pieces()': test_group_pieces()
     }
