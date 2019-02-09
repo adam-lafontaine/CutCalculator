@@ -66,6 +66,8 @@ def ungroup_list(group_list):
 
     return result
 
+#-------------------------------------------------
+
 # binary: '01101...'
 # all_pieces: list of pieces
 # returns list of pieces in the binary combination
@@ -140,6 +142,7 @@ def to_binary(value, num_bits):
 
 #---------------------------------------------------
 
+# TESTED
 def to_integer(binary):
     result = 0
     rev = binary[::-1]

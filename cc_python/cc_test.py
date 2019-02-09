@@ -155,6 +155,65 @@ def test_to_integer():
 
     return success
 
+#-------------------------------------------
+
+def test_Piece():
+    print("\nTest: Piece class")
+    
+    success = "Pass"
+
+    source = [
+        {'name': 'piece1', 'length': 45},
+        {'name': 'piece2', 'length': 66},
+        {'name': 'piece3', 'length': 2}
+        ]
+
+    for src in source:
+        name = src['name']
+        length = src['length']
+        piece = cc_lib.Piece(name, length)
+        src_in = f"name: {name}, length: {length}"
+        src_out = src_in
+        result = f"name: {piece.name}, length: {piece.length}"
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+        if result != src_out:
+            success = "Fail"
+
+    return success
+
+#-----------------------------------------------
+
+def test_PieceGroup():
+    print("\nTest: PieceGroup class")
+    
+    success = "Pass"
+
+    source = [
+        {'name': 'piece1', 'length': 45, 'qty': 10},
+        {'name': 'piece2', 'length': 66, 'qty': 8},
+        {'name': 'piece3', 'length': 2, 'qty': 99}
+    ]
+
+    for src in source:
+        name = src['name']
+        length = src['length']
+        qty = src['qty']
+        piece_group = cc_lib.PieceGroup(name, length, qty)
+        src_in = f"name: {name}, length: {length}, qty: {qty}"
+        src_out = src_in
+        result = f"name: {piece_group.name}, length: {piece_group.length}, qty: {piece_group.quantity}"
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+        if result != src_out:
+            success = "Fail"
+
+
+    return success
 
 
 #==============================================
@@ -168,7 +227,9 @@ def main():
         'next_binary()' : test_next_binary(),
         'has_common_bit()': test_has_common_bit(),
         'to_binary()': test_to_binary(),
-        'to_integer()': test_to_integer()
+        'to_integer()': test_to_integer(),
+        'class Piece': test_Piece(),
+        'class PieceGroup': test_PieceGroup()
     }
 
     spaces = 0
