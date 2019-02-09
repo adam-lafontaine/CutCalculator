@@ -1,14 +1,23 @@
-
+# TESTED
 class Piece:
     def __init__(self, name, length):
         self.name = name
         self.length = length
 
+    def __str__(self):
+        return f"name: {self.name}, length: {self.length}"
+
+#------------------------------------------------
+
+# TESTED
 class PieceGroup:
     def __init__(self, name, length, quantity):
         self.name = name
         self.length = length
         self.quantity = quantity
+
+    def __str__(self):
+        return f"name: {self.name}, length: {self.length}, quantity: {self.quantity}"
 
 #------------------------------------------------
 
@@ -52,7 +61,7 @@ def group_pieces(pieces):
 # returns a list of identical Piece objects
 def ungroup(group):
     result = []
-    for i in group.quantity:
+    for i in range(group.quantity):
         result.append(Piece(group.name, group.length))
 
     return result
