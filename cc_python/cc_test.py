@@ -343,6 +343,77 @@ def test_group_pieces():
 
     return success
 
+#-------------------------------------------------
+
+def test_ungroup_pieces():
+    print("Test: ungroup_pieces(group_list)")
+
+    success = "Pass"
+
+    source = [
+        cc.PieceGroup("3x40", 40, 3),
+        cc.PieceGroup("2x25", 25, 2),
+        cc.PieceGroup("1x99", 99, 1)
+    ]
+
+    expected = [
+        cc.Piece("3x40", 40), cc.Piece("3x40", 40), cc.Piece("3x40", 40),
+        cc.Piece("2x25", 25), cc.Piece("2x25", 25),
+        cc.Piece("1x99", 99)
+    ]
+
+    result = cc.ungroup_list(source)
+
+    src_str = [str(item) for item in source]
+    exp_str = [str(item) for item in expected]
+    res_str = [str(item) for item in result]
+
+    print(f"   input = {src_str}")
+    print(f"expected = {exp_str}")
+    print(f"  result = {res_str}")
+    print(result_msg(exp_str, res_str))
+    if res_str != exp_str:
+        success = "Fail"        
+
+    return success
+
+#-------------------------------------------------
+
+def test_get_combo_pieces():
+    print("\nTest: get_combo_pieces(binary, all_pieces")
+
+    success = "Pass"
+    source = [
+        cc.Piece("piece_0", 40), cc.Piece("piece_1", 40), cc.Piece("piece_2", 40),
+        cc.Piece("piece_3", 25), cc.Piece("piece_4", 25),
+        cc.Piece("piece_5", 99)
+    ]
+
+    combo_list = ["111111", "000000", "101010", "001011", "000111"]
+
+    expected = [
+        [item.name for item in source],
+        [],
+        [ source[0].name, source[2].name, source[4].name ],
+        [ source[2].name, source[4].name, source[5].name ],
+        [ source[3].name, source[4].name, source[5].name ]
+    ]
+
+    source_names = [item.name for item in source]
+
+    for i, combo in enumerate(combo_list):
+        src_str = f"{combo} | {source_names}"
+        exp_str = expected[i]
+        result = cc.get_combo_pieces(combo, source)
+        res_str = [item.name for item in result]
+        print(f"   input = {src_str}")
+        print(f"expected = {exp_str}")
+        print(f"  result = {res_str}")
+        print(result_msg(exp_str, res_str))
+        if res_str != exp_str:
+            success = "Fail"
+
+    return success
 
 #==============================================
 
@@ -360,7 +431,9 @@ def main():
         'Piece.__str__()': test_Piece_str(),
         'PieceGroup.__init__()': test_PieceGroup_init(),
         'ungroup()': test_ungroup(),
-        'group_pieces()': test_group_pieces()
+        'group_pieces()': test_group_pieces(),
+        'ungroup_pieces()': test_ungroup_pieces(),
+        'get_combo_pieces()': test_get_combo_pieces()
     }
 
     spaces = 0

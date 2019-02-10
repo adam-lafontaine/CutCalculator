@@ -70,23 +70,13 @@ def ungroup(group):
 
 #-------------------------------------------------
 
+# TESTED
+# params: a list of PieceGroup objects
+# returns a list of Piece objects
 def ungroup_list(group_list):
     result = []
     for grp in group_list:
-        result.extend(grp)
-
-    return result
-
-#-------------------------------------------------
-
-# binary: '01101...'
-# all_pieces: list of pieces
-# returns list of pieces in the binary combination
-def get_combo_pieces(binary, all_pieces):
-    result = []
-    for i in binary:
-        if i == '1':
-            result.append(all_pieces[i])
+        result.extend(ungroup(grp))
 
     return result
 
@@ -158,8 +148,31 @@ def to_integer(binary):
     result = 0
     rev = binary[::-1]
 
-    for i in range(0, len(binary)):
-        if rev[i] == '1':
+    for i, bit in enumerate(rev):
+        if bit == '1':
             result += 2 ** i
 
     return result
+
+#--------------------------------------------------
+
+# TESTED
+# binary: '01101...'
+# all_pieces: list of pieces
+# returns list of pieces in the binary combination
+# assert: 
+def get_combo_pieces(binary, all_pieces):
+    result = []    
+
+    rev_binary = binary[::-1] # makes a copy
+    all_pieces.reverse()
+
+    for i, bit in enumerate(rev_binary):
+        if bit == '1':
+            result.insert(0, all_pieces[i])
+
+    all_pieces.reverse() # by reference
+    
+    return result
+
+#-------------------------------------------------
