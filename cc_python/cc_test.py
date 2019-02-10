@@ -478,6 +478,57 @@ def test_get_combo_pieces():
 
     return success
 
+#-------------------------------------------
+
+def test_ResultSet_init():
+    print("\nTest ResultSet.__init__()")
+
+    success = "Pass"
+
+    name = "result_set"
+    stock = cc.Piece("stock", 240)
+    pieces = [
+        cc.Piece("50in", 50), cc.Piece("50in", 50), cc.Piece("50in", 50),
+        cc.Piece("25in", 25), cc.Piece("25in", 25),
+        cc.Piece("30in", 30)
+    ]
+    leftover = 10
+
+    expected_str = {
+        'name': name,
+        'stock': str(stock),
+        'pieces': [str(item) for item in cc.group_pieces(pieces)],
+        'leftover': leftover
+    }
+
+    result = cc.ResultSet(name, stock, pieces, leftover)
+
+    result_str = {
+        'name': result.name,
+        'stock': str(result.stock),
+        'pieces': [str(item) for item in result.piece_groups],
+        'leftover': result.leftover
+    }
+
+    print("input:")
+    print(f"name = {name}")
+    print(f"stock = {str(stock)}")
+    print(f"pieces = {[str(item) for item in pieces]}")
+    print(f"leftover = {leftover}")
+
+    for key in expected_str:
+        exp_str = expected_str[key]
+        res_str = result_str[key]
+        print(f"expected: {key} = {exp_str}")
+        print(f"  result: {key} = {res_str}")
+        print(result_msg(exp_str, res_str))
+        if res_str != exp_str:
+            success = "Fail"
+
+    return success
+
+
+
 #==============================================
 
 def main():
@@ -499,7 +550,8 @@ def main():
         'ungroup()': test_ungroup(),
         'group_pieces()': test_group_pieces(),
         'ungroup_pieces()': test_ungroup_pieces(),
-        'get_combo_pieces()': test_get_combo_pieces()
+        'get_combo_pieces()': test_get_combo_pieces(),
+        'ResultSet.__init()__': test_ResultSet_init()
     }
 
     spaces = 0

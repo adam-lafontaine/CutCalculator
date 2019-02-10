@@ -39,12 +39,13 @@ class ResultSet:
         return {
             'name': self.name,
             'stock': self.stock.to_dictionary(),
-            'pieces': [item.to_dictionary() for item in self.piece_groups]
+            'pieces': [item.to_dictionary() for item in self.piece_groups],
+            'leftover': self.leftover
         }
 
 
     def __str__(self):
-        return f"name: {self.name}\nstock: {str(self.stock)}\npieces: {[str(item) for item in self.piece_groups]}"
+        return f"name: {self.name}\nstock: {str(self.stock)}\npieces: {[str(item) for item in self.piece_groups]}\nleftover: {self.leftover}"
 
 #--------------------------------------------------
 
