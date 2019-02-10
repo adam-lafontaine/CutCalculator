@@ -1,4 +1,5 @@
 import cc_lib as cc
+import json
 
 def result_msg(expected, result):
     return f"{'Success' if result == expected else 'Fail'}"
@@ -216,6 +217,35 @@ def test_Piece_str():
 
 #-----------------------------------------------
 
+def test_Piece_to_dictionary():
+    print("\nTest: Piece.to_dictionary()")
+    
+    success = "Pass"
+    source = [
+        cc.Piece("piece_0", 40), cc.Piece("piece_1", 25), cc.Piece("piece_2", 99)
+    ]
+
+    expected = [
+        {'name': "piece_0", 'length': 40}, {'name': "piece_1", 'length': 25}, {'name': "piece_2", 'length': 99}
+    ]
+
+    for i, src in enumerate (source):
+        result = src.to_dictionary()
+        exp = expected[i]
+        src_str = str(src)
+        res_str = json.dumps(result)
+        exp_str = json.dumps(exp)
+        print(f"   input = {src_str}")
+        print(f"expected = {exp_str}")
+        print(f"  result = {res_str}")
+        print(result_msg(exp_str, res_str))
+        if res_str != exp_str:
+            success = "Fail"
+
+    return success
+
+#-----------------------------------------------
+
 def test_PieceGroup_init():
     print("\nTest: PieceGroup.__init__()")
     
@@ -270,6 +300,39 @@ def test_PieceGroup_str():
         print(f"  result = {result}")
         print(result_msg(exp, result))
         if result != exp:
+            success = "Fail"
+
+    return success
+
+#---------------------------------------------
+
+def test_PieceGroup_to_dictionary():
+    print("\nTest: PieceGroup.to_dictionary()")
+    success = "Pass"
+
+    source = [
+        cc.PieceGroup("3x40", 40, 3),
+        cc.PieceGroup("2x25", 25, 2),
+        cc.PieceGroup("1x99", 99, 1)
+    ]
+
+    expected = [
+        {'name': "3x40", 'length': 40, 'quantity': 3},
+        {'name': "2x25", 'length': 25, 'quantity': 2},
+        {'name': "1x99", 'length': 99, 'quantity': 1}
+    ]
+
+    for i, src in enumerate(source):
+        result = src.to_dictionary()
+        exp = expected[i]
+        src_str = str(src)
+        res_str = json.dumps(result)
+        exp_str = json.dumps(exp)
+        print(f"   input = {src_str}")
+        print(f"expected = {exp_str}")
+        print(f"  result = {res_str}")
+        print(result_msg(exp_str, res_str))
+        if res_str != exp_str:
             success = "Fail"
 
     return success
@@ -429,7 +492,10 @@ def main():
         'to_integer()': test_to_integer(),
         'Piece.__init__()': test_Piece_init(),
         'Piece.__str__()': test_Piece_str(),
+        'Piece.to_dictionary()': test_Piece_to_dictionary(),
         'PieceGroup.__init__()': test_PieceGroup_init(),
+        'PieceGroup.__str__()': test_PieceGroup_str(),
+        'PieceGroup.to_dictionary()': test_PieceGroup_to_dictionary(),
         'ungroup()': test_ungroup(),
         'group_pieces()': test_group_pieces(),
         'ungroup_pieces()': test_ungroup_pieces(),

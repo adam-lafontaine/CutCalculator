@@ -4,6 +4,9 @@ class Piece:
         self.name = name
         self.length = length
 
+    def to_dictionary(self):
+        return { 'name': self.name, 'length': self.length } # json.dumps()
+
     def __str__(self):
         return f"name: {self.name}, length: {self.length}"
 
@@ -16,6 +19,9 @@ class PieceGroup:
         self.length = length
         self.quantity = quantity
 
+    def to_dictionary(self):
+        return { 'name': self.name, 'length': self.length, 'quantity': self.quantity }
+
     def __str__(self):
         return f"name: {self.name}, length: {self.length}, quantity: {self.quantity}"
 
@@ -23,21 +29,22 @@ class PieceGroup:
 
 
 class ResultSet:
-    def __init__(self, stock, pieces, leftover):
+    def __init__(self, name, stock, pieces, leftover):
+        self.name = name
         self.stock = stock
-        self.piece_groups = self.group(pieces)
+        self.piece_groups = group_pieces(pieces)
         self.leftover = leftover
 
-    def group(self, pieces):
-        result = {}
-        for piece in pieces:
-            key = f"[{piece.name}][{piece.length}]"
-            if key not in result:
-                result[key] = PieceGroup(piece.name, piece.length, 0)
+    def to_dictionary(self):
+        return {
+            'name': self.name,
+            'stock': self.stock.to_dictionary(),
+            'pieces': [item.to_dictionary() for item in self.piece_groups]
+        }
 
-            result[key].quantity += 1
 
-        return list(result.values())
+    def __str__(self):
+        return f"name: {self.name}\nstock: {str(self.stock)}\npieces: {[str(item) for item in self.piece_groups]}"
 
 #--------------------------------------------------
 
