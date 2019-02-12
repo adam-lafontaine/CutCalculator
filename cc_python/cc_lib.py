@@ -1,5 +1,8 @@
 # TESTED
 class Piece:
+    name = ""
+    length = 0
+
     def __init__(self, name, length):
         self.name = name
         self.length = length
@@ -14,6 +17,10 @@ class Piece:
 
 # TESTED
 class PieceGroup:
+    name = ""
+    length = 0
+    quantity = 0
+
     def __init__(self, name, length, quantity):
         self.name = name
         self.length = length
@@ -29,6 +36,11 @@ class PieceGroup:
 
 
 class ResultSet:
+    name = ""
+    stock = {}
+    pieces = []
+    leftover = 0
+
     def __init__(self, name, stock, pieces, leftover):
         self.name = name
         self.stock = stock
@@ -184,3 +196,74 @@ def get_combo_pieces(binary, all_pieces):
     return result
 
 #-------------------------------------------------
+
+#=================================================
+
+
+
+class XXY:
+    _piece_combos = {}                        # { 1: { 'binary': [0, 0, 1], 'size': 30 }, 2: { 'binary': [0, 1, 0], 'size': 25 } }
+    _pieces = [{}, {}, {}, {}, {}, {}, {}]    # size
+    _containers = [{}, {}, {}]                # capacity, pieces, cap_remaining
+    _max_capacity = 100
+    _loss_per_piece = 0
+
+    #  and generates _piece_combos
+    def set_inputs(self, pieces, containers):
+        """ 
+        list of pieces { 'size': number }
+        list of empty containers { 'capacity': number, 'pieces': [], 'cap_remaining': number }
+        generates _piece_combos
+         """
+        self._pieces = pieces
+        self._containers = containers
+        _max_capacity = max([item.capacity for item in self._containers])
+
+        int_val = 1
+        binary = self.to_binary(int_val, len(self._pieces))
+
+        while self.has_bit(binary):
+            size = self.combo_size(binary)
+            if size < _max_capacity:
+                self._piece_combos[int_val] = {'binary': binary, 'size': size}
+
+
+
+
+    # returns subset of _pieces based on the combo passed
+    def filter_pieces(self, combo):
+        result = []
+
+
+        return result
+
+    def to_binary(self, int_value, num_bits):
+        result = []
+
+        bin_values = [0, 1]
+        val = int_value
+
+        while(val > 0):
+            idx = int(val % 2)
+            result.insert(0, bin_values[idx])
+            val -= idx
+            val /= 2
+
+        while len(result) < num_bits:
+            result.insert(0, 0)
+
+        return result
+
+    def has_bit(self, binary):
+        return 1 in binary
+
+    def combo_size(self, binary):
+        result = 0
+        for i, bit in enumerate(binary):
+            result += bit * self._pieces[i]
+
+        return result
+
+
+
+
