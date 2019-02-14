@@ -147,21 +147,9 @@ class CC:
          """
         self._pieces = sorted(pieces, key=lambda i: i['size'], reverse=True) # descending
         self._containers = sorted(containers, key=lambda i: i['capacity'])   # ascending
+        self._loss_per_piece = loss       
 
-        max_capacity = self._containers[-1]['capacity'] # last element
-
-        self._loss_per_piece = loss
-
-        int_val = 1
-        binary = self.to_binary(int_val, len(self._pieces))
-
-        while self.has_bit(binary):
-            size = self.combo_size(binary)
-            if size <= max_capacity:
-                self._piece_combos[binary] = { 'combo_size': size }
-                binary = self.next_binary(binary)
-            else:
-                binary = self.skip_binary(binary)
+        self.build_piece_combos()
 
     #------------------------------------------------------    
 
@@ -256,11 +244,25 @@ class CC:
     def combo_size(self, binary):
         result = 0
         for i, bit in enumerate(binary):
-            result += int(bit) * (self._pieces[i]['size'] + self._loss_per_piece)        
+            result += int(bit) * (self._pieces[i]['size'] + self._loss_per_piece) # wrong   
 
         return result   
 
     #----------------------------------------
+
+    def build_piece_combos(self):
+        int_val = 1
+        binary = self.to_binary(int_val, len(self._pieces))
+        max_capacity = self._containers[-1]['capacity']  # last element
+
+        while self.has_bit(binary):
+            size = self.combo_size(binary)
+            if size <= max_capacity:
+                self._piece_combos[binary] = {'combo_size': size}
+                binary = self.next_binary(binary)
+            else:
+                binary = self.skip_binary(binary)
+
 
     # returns subset of _pieces based on the combo passed
     def filter_pieces(self, combo):

@@ -571,7 +571,122 @@ def test_to_integer():
 
 #------------------------------------------
 
+def test_set_inputs():
+    print("\nTest: set_inputs(pieces, containers, loss)")
+    
+    success = "Pass"
 
+    source = {
+        'pieces': [{'size': 30}, {'size': 60}, {'size': 20}, {'size': 40}],
+        'containers': [{'capacity': 300}, {'capacity': 200}, {'capacity': 150}],
+        'loss': 0.25
+    }
+
+    expected = {
+        'pieces': [{'size': 60}, {'size': 40}, {'size': 30}, {'size': 20}],
+        'containers': [{'capacity': 150}, {'capacity': 200}, {'capacity': 300}],
+        'loss': 0.25
+    }
+
+    c_c = cc.CC()
+    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+
+    result = {
+        'pieces': c_c._pieces,
+        'containers': c_c._containers,
+        'loss': c_c._loss_per_piece
+    }
+
+    for key in source:
+        src = json.dumps(source[key])
+        exp = json.dumps(expected[key])
+        res = json.dumps(result[key])
+        print(f"   input {key} = {src}")
+        print(f"expected {key} = {exp}")
+        print(f"  output {key} = {res}")
+        if exp != res:
+            success = "Fail"
+
+    return success
+
+#------------------------------------------
+
+
+def test_combo_size():
+    print("\nTest: combo_size(binary)")
+
+    success = "PassNO"
+
+    source = {
+        'pieces': [{'size': 30}, {'size': 60}, {'size': 20}],
+        'containers': [{'capacity': 300}, {'capacity': 200}, {'capacity': 150}],
+        'loss': 0.25        
+    }
+
+    # sorted: [{'size': 60}, {'size': 30}, {'size': 20}]
+    combos = ["001", "101", "111", "110"] 
+    expected = []   
+
+    c_c = cc.CC()
+    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+
+    for key in source:
+        src = json.dumps(source[key])
+        print(f"   input {key} = {src}")
+
+    for combo in combos:
+        
+
+
+
+
+    return success
+
+
+
+#---------------------------------------------
+
+def test_build_piece_combos():
+    print("\nTest: build_piece_combos()")
+
+    success = "Pass"
+
+    source = {
+        'pieces': [{'size': 30}, {'size': 60}, {'size': 20}],
+        'containers': [{'capacity': 300}, {'capacity': 200}, {'capacity': 150}],
+        'loss': 0.25
+    }
+
+    # sorted: [{'size': 60}, {'size': 30}, {'size': 20}]
+
+    expected = {
+        '001': {'size': 20}, 
+        '010': {'size': 30}, 
+        '011': {'size': 50}, 
+        '100': {'size': 60}, 
+        '101': {'size': 80},
+        '110': {'size': 90},
+        '111': {'size': 110}
+    }
+
+    c_c = cc.CC()
+    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+
+    result = c_c._piece_combos
+
+    exp = json.dumps(expected)
+    res = json.dumps(result)
+
+    for key in source:
+        src = json.dumps(source[key])
+        print(f"   input {key} = {src}")
+
+    print(f"expected combos = {exp}")
+    print(f"  output combos = {res}")
+    if res != exp:
+        success = "Fail"
+
+    return success
 
 
 
@@ -588,7 +703,9 @@ def main():
         'skip_binary()': test_skip_binary(),
         'to_binary()': test_to_binary(),        
         'to_integer()': test_to_integer(),
-        
+        'set_inputs()': test_set_inputs(),
+        'combo_size()': test_combo_size(),
+        'build_piece_combos': test_build_piece_combos(),
         
         #'Piece.__init__()': test_Piece_init(),
         #'Piece.__str__()': test_Piece_str(),
