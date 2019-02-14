@@ -100,81 +100,9 @@ def ungroup_list(group_list):
 
     return result
 
-#-------------------------------------------------
-
-# TESTED
-# returns true if binary has at least one true value
-def has_bit(binary):
-    return '1' in binary
 
 #-------------------------------------------------
 
-# TESTED
-def flip_bit(bit):
-    return '1' if bit == '0' else '0'
-
-#-------------------------------------------------
-
-#TESTED
-# increments binary number by 1
-def next_binary(binary):
-    rev_list = list(binary[::-1])
-    
-    for i, e in enumerate(rev_list):
-        rev_list[i] = flip_bit(e)
-        if rev_list[i] == '1':
-            break
-
-    return ''.join(rev_list[::-1])
-
-#------------------------------------------------
-
-#TESTED
-def has_common_bit(bin_1, bin_2):
-    rev_1 = bin_1[::-1]
-    rev_2 = bin_2[::-1]
-
-    for i in range(0, min(len(bin_1), len(bin_2))):
-        if rev_1[i] == '1' and rev_2[i] == '1':
-            return True
-
-    return False
-
-#-------------------------------------------------
-
-# TESTED
-def to_binary(value, num_bits):
-    result = []
-
-    bin_values = ['0', '1']
-    val = value
-
-    while(val > 0):
-        idx = int(val % 2)
-        result.append(bin_values[idx])
-        val -= idx
-        val /= 2
-
-    binary = ''.join(result[::-1])
-    if len(binary) < num_bits:
-        binary = binary.rjust(num_bits, '0')
-
-    return binary
-
-#---------------------------------------------------
-
-# TESTED
-def to_integer(binary):
-    result = 0
-    rev = binary[::-1]
-
-    for i, bit in enumerate(rev):
-        if bit == '1':
-            result += 2 ** i
-
-    return result
-
-#--------------------------------------------------
 
 # TESTED
 # binary: '01101...'
@@ -201,7 +129,7 @@ def get_combo_pieces(binary, all_pieces):
 
 
 
-class XXY:
+class CC:
     _piece_combos = {} # { "001": { 'combo_size': 30 }, '010': { 'combo_size': 25 } }
     _pieces = []       # [ { 'size': 60, 'meta': {} }, {'size': 60, 'meta': {} } ]
     _containers = []   # [{ 'capacity': 200 }, { 'capacity': 150}]
@@ -235,20 +163,9 @@ class XXY:
             else:
                 binary = self.skip_binary(binary)
 
-    #------------------------------------------------------
+    #------------------------------------------------------    
 
-    # returns subset of _pieces based on the combo passed
-    def filter_pieces(self, combo):
-        result = []
-
-        for i, bit in enumerate(combo):
-            if bit == '1':
-                result.append(self._pieces[i])
-
-        return result
-
-    #-----------------------------------------
-
+    # TESTED
     def to_binary(self, int_value, num_bits):
         result = []
 
@@ -269,25 +186,50 @@ class XXY:
 
     #--------------------------------------------
 
+    # TESTED
+    def to_integer(self, binary):
+        result = 0
+        rev = binary[::-1]
+
+        for i, bit in enumerate(rev):
+            if bit == '1':
+                result += 2 ** i
+
+        return result
+
+    #--------------------------------------------
+
+    # TESTED
     def has_bit(self, binary):
         return '1' in binary
 
     #---------------------------------------------
 
-    def combo_size(self, binary):
-        result = 0
-        for i, bit in enumerate(binary):
-            result += int(bit) * (self._pieces[i]['size'] + self._loss_per_piece)        
+    # TESTED
+    def flip_bit(self, bit):
+        return '1' if bit == '0' else '0'
 
-        return result
+    #---------------------------------------------
+
+    # TESTED
+    def has_common_bit(self, bin_1, bin_2):
+        rev_1 = bin_1[::-1]
+        rev_2 = bin_2[::-1]
+
+        for i in range(0, min(len(bin_1), len(bin_2))):
+            if rev_1[i] == '1' and rev_2[i] == '1':
+                return True
+
+        return False
 
     #-----------------------------------------
 
+    # TESTED
     def next_binary(self, binary):
         rev_list = list(binary[::-1])
 
         for i, e in enumerate(rev_list):
-            rev_list[i] = flip_bit(e)
+            rev_list[i] = self.flip_bit(e)
             if rev_list[i] == '1':
                 break
 
@@ -295,6 +237,7 @@ class XXY:
 
     #-----------------------------------------
 
+    # TESTED
     def skip_binary(self, binary):
         rev_list = list(binary[::-1])
 
@@ -306,22 +249,44 @@ class XXY:
             else:
                 rev_list[i] = '1'
 
-        return ''.join(rev_list[::-1])
+        return self.next_binary(''.join(rev_list[::-1]))
+
+    #---------------------------------------------
+
+    def combo_size(self, binary):
+        result = 0
+        for i, bit in enumerate(binary):
+            result += int(bit) * (self._pieces[i]['size'] + self._loss_per_piece)        
+
+        return result   
 
     #----------------------------------------
+
+    # returns subset of _pieces based on the combo passed
+    def filter_pieces(self, combo):
+        result = []
+
+        for i, bit in enumerate(combo):
+            if bit == '1':
+                result.append(self._pieces[i])
+
+        return result
+
+    #-----------------------------------------
 
     def best_match(self):
         result = {}
         max_capacity = self._containers[-1]['capacity']  # last element
         diff = max_capacity
         best_diff = max_capacity
+        container_index = 0
 
         sorted_combos = sorted(self._piece_combos.keys(), reverse=True)
 
         for binary in sorted_combos:
             size = self._piece_combos[binary]['combo_size']
 
-            for container in self._containers:
+            for i, container in enumerate(self._containers):
                 diff = container['capacity'] - size
 
                 if diff < 0 and abs(diff) < self._loss_per_piece:
@@ -330,14 +295,22 @@ class XXY:
                 if 0 <= diff and diff < best_diff:
                     best_diff = diff
                     result['binary'] = binary
-                    result['combo'] = self._piece_combos[binary]
-                    result['pieces'] = self.filter_pieces(binary)
-                    result['container'] = container
-                    result['difference'] = diff
+                    container_index = i   
+                    
                     if diff <= self._tolerance:
+                        result['combo'] = self._piece_combos[binary]
+                        result['pieces'] = self.filter_pieces(binary)
+                        result['container'] = self._containers.pop(i)
+                        result['difference'] = diff
                         return result
 
+        result['combo'] = self._piece_combos[result['binary']]
+        result['pieces'] = self.filter_pieces(result['binary'])
+        result['container'] = self._containers.pop(container_index)
+        result['difference'] = best_diff
+
         return result
+
 
 
 

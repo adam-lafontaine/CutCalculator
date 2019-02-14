@@ -4,169 +4,17 @@ import json
 def result_msg(expected, result):
     return f"{'Success' if result == expected else 'Fail'}"
 
-def test_has_bit():
-    print("\nTest: has_bit(binary)")
-
-    source = [{'in': '01001', 'out': True}, {'in': '1010', 'out': True}, {'in': '0000000', 'out': False}]
-    success = "Pass"
-
-    for src in source:
-        src_in = src['in']
-        src_out = src['out']
-        result = cc.has_bit(src_in)
-        if result != src_out:
-            success = "Fail"
-
-        print(f"   input = {src_in}")
-        print(f"expected = {src_out}")
-        print(f"  result = {result}")
-        print(result_msg(src_out, result))
-
-    return success
-
-#---------------------------------------
-
-def test_flip_bit():
-    print("\nTest: flip_bit(binary)")
-
-    source = [{'in': '0', 'out': '1'}, {'in': '1', 'out': '0'}]
-    success = "Pass"
-
-    for src in source:
-        src_in = src['in']
-        src_out = src['out']
-        result = cc.flip_bit(src_in)
-        if result != src_out:
-            success = "Fail"
-
-        print(f"   input = {src_in}")
-        print(f"expected = {src_out}")
-        print(f"  result = {result}")
-        print(result_msg(src_out, result))
-
-    return success
-
-#-------------------------------------------
-
-def test_next_binary():
-    print("\nTest: next_binary(binary)")
-
-    success = "Pass"
-    source = [{'in': '1011', 'out': '1100'}, {'in': '100011', 'out': '100100'}, {'in': '0000000', 'out': '0000001'}]
-
-    for src in source:
-        src_in = src['in']
-        src_out = src['out']
-        result = cc.next_binary(src_in)
-        if result != src_out:
-            success = "Fail"
-
-        print(f"   input = {src_in}")
-        print(f"expected = {src_out}")
-        print(f"  result = {result}")
-        print(result_msg(src_out, result))
-
-    return success
-
-#--------------------------------------------
-
-def test_has_common_bit():
-    print("\nTest: has_common_bit(bin_1, bin_2)")
-
-    success = "Pass"
-    source = [
-        {'p1': '0', 'p2': '0', 'out': False},
-        {'p1': '0', 'p2': '1', 'out': False},
-        {'p1': '100110', 'p2': '000100', 'out': True},
-        {'p1': '0100110011', 'p2': '0010', 'out': True},
-        {'p1': '1001001', 'p2': '0110110', 'out': False}
-        ]
-
-    for src in source:
-        param_1 = src['p1']
-        param_2 = src['p2']
-        src_out = src['out']
-        result = cc.has_common_bit(param_1, param_2)
-        if result != src_out:
-            success = "Fail"
-
-        print(f"   input = {param_1}, {param_2}")
-        print(f"expected = {src_out}")
-        print(f"  result = {result}")
-        print(result_msg(src_out, result))
-
-    return success
-
-#-----------------------------------------------
-
-def test_to_binary():
-    print("\nTest: to_binary(value, num_bits)")
-
-    success = "Pass"
-    source = [
-        {'p1': 3205, 'p2': 12, 'out': '110010000101'},
-        {'p1': 55, 'p2': 6, 'out': '110111'},
-        {'p1': 55, 'p2': 12, 'out': '000000110111'},
-        {'p1': 3205, 'p2': 5, 'out': '110010000101'},
-        {'p1': 1, 'p2': 12, 'out': '000000000001'},
-    ]
-
-    for src in source:
-        param_1 = src['p1']
-        param_2 = src['p2']
-        src_out = src['out']
-        result = cc.to_binary(param_1, param_2)
-        if result != src_out:
-            success = "Fail"
-
-        print(f"   input = {param_1}, {param_2}")
-        print(f"expected = {src_out}")
-        print(f"  result = {result}")
-        print(result_msg(src_out, result))
-
-    return success
-
-#------------------------------------------------
-
-def test_to_integer():
-    print("\nTest: to_integer(binary)")
-
-    success = "Pass"
-    source = [
-        {'in': '1011', 'out': 11}, 
-        {'in': '100011', 'out': 35}, 
-        {'in': '0000000', 'out': 0},
-        {'in': '1001001110001', 'out': 4721},
-        {'in': '00001011', 'out': 11},
-        {'in': '0000100011', 'out': 35},
-        {'in': '00001001001110001', 'out': 4721}
-        ]
-
-    for src in source:
-        src_in = src['in']
-        src_out = src['out']
-        result = cc.to_integer(src_in)
-        if result != src_out:
-            success = "Fail"
-
-        print(f"   input = {src_in}")
-        print(f"expected = {src_out}")
-        print(f"  result = {result}")
-        print(result_msg(src_out, result))
-
-    return success
-
 #-------------------------------------------
 
 def test_Piece_init():
     print("\nTest: Piece.__init__()")
-    
+
     success = "Pass"
     source = [
         {'name': 'piece1', 'length': 45},
         {'name': 'piece2', 'length': 66},
         {'name': 'piece3', 'length': 2}
-        ]
+    ]
 
     for src in source:
         name = src['name']
@@ -204,7 +52,7 @@ def test_Piece_str():
     for i in range(0, 3):
         src = source[i]
         exp = expected[i]
-        piece = cc.Piece(src['name'], src['length'])        
+        piece = cc.Piece(src['name'], src['length'])
         result = str(piece)
         print(f"   input = {src}")
         print(f"expected = {exp}")
@@ -219,17 +67,19 @@ def test_Piece_str():
 
 def test_Piece_to_dictionary():
     print("\nTest: Piece.to_dictionary()")
-    
+
     success = "Pass"
     source = [
-        cc.Piece("piece_0", 40), cc.Piece("piece_1", 25), cc.Piece("piece_2", 99)
+        cc.Piece("piece_0", 40), cc.Piece(
+            "piece_1", 25), cc.Piece("piece_2", 99)
     ]
 
     expected = [
-        {'name': "piece_0", 'length': 40}, {'name': "piece_1", 'length': 25}, {'name': "piece_2", 'length': 99}
+        {'name': "piece_0", 'length': 40}, {'name': "piece_1",
+                                            'length': 25}, {'name': "piece_2", 'length': 99}
     ]
 
-    for i, src in enumerate (source):
+    for i, src in enumerate(source):
         result = src.to_dictionary()
         exp = expected[i]
         src_str = str(src)
@@ -248,7 +98,7 @@ def test_Piece_to_dictionary():
 
 def test_PieceGroup_init():
     print("\nTest: PieceGroup.__init__()")
-    
+
     success = "Pass"
     source = [
         {'name': 'piece1', 'length': 45, 'qty': 10},
@@ -376,13 +226,13 @@ def test_ungroup():
 
 def test_group_pieces():
     print("\nTest group_pieces(pieces)")
-    
+
     success = "Pass"
 
     source = [
         cc.Piece("3x40", 40), cc.Piece("3x40", 40), cc.Piece("3x40", 40),
         cc.Piece("2x25", 25), cc.Piece("2x25", 25),
-        cc.Piece("1x99", 99)       
+        cc.Piece("1x99", 99)
     ]
 
     expected = [
@@ -402,7 +252,7 @@ def test_group_pieces():
     print(f"  result = {res_str}")
     print(result_msg(exp_str, res_str))
     if res_str != exp_str:
-        success = "Fail"        
+        success = "Fail"
 
     return success
 
@@ -436,7 +286,7 @@ def test_ungroup_pieces():
     print(f"  result = {res_str}")
     print(result_msg(exp_str, res_str))
     if res_str != exp_str:
-        success = "Fail"        
+        success = "Fail"
 
     return success
 
@@ -447,7 +297,8 @@ def test_get_combo_pieces():
 
     success = "Pass"
     source = [
-        cc.Piece("piece_0", 40), cc.Piece("piece_1", 40), cc.Piece("piece_2", 40),
+        cc.Piece("piece_0", 40), cc.Piece(
+            "piece_1", 40), cc.Piece("piece_2", 40),
         cc.Piece("piece_3", 25), cc.Piece("piece_4", 25),
         cc.Piece("piece_5", 99)
     ]
@@ -457,9 +308,9 @@ def test_get_combo_pieces():
     expected = [
         [item.name for item in source],
         [],
-        [ source[0].name, source[2].name, source[4].name ],
-        [ source[2].name, source[4].name, source[5].name ],
-        [ source[3].name, source[4].name, source[5].name ]
+        [source[0].name, source[2].name, source[4].name],
+        [source[2].name, source[4].name, source[5].name],
+        [source[3].name, source[4].name, source[5].name]
     ]
 
     source_names = [item.name for item in source]
@@ -528,6 +379,201 @@ def test_ResultSet_init():
     return success
 
 
+#------------------------------------------------
+
+def test_has_bit():
+    print("\nTest: has_bit(binary)")
+
+    source = [{'in': '01001', 'out': True}, {'in': '1010', 'out': True}, {'in': '0000000', 'out': False}]
+    success = "Pass"
+
+    c_c = cc.CC()
+
+    for src in source:
+        src_in = src['in']
+        src_out = src['out']
+        result = c_c.has_bit(src_in)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#---------------------------------------
+
+def test_flip_bit():
+    print("\nTest: flip_bit(binary)")
+
+    source = [{'in': '0', 'out': '1'}, {'in': '1', 'out': '0'}]
+    success = "Pass"
+
+    c_c = cc.CC()
+
+    for src in source:
+        src_in = src['in']
+        src_out = src['out']
+        result = c_c.flip_bit(src_in)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#-------------------------------------------
+
+def test_next_binary():
+    print("\nTest: next_binary(binary)")
+
+    success = "Pass"
+    source = [{'in': '1011', 'out': '1100'}, {'in': '100011', 'out': '100100'}, {'in': '0000000', 'out': '0000001'}]
+
+    c_c = cc.CC()
+
+    for src in source:
+        src_in = src['in']
+        src_out = src['out']
+        result = c_c.next_binary(src_in)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#--------------------------------------------
+
+def test_skip_binary():
+    print("\nTest: skip_binary(binary)")
+
+    success = "Pass"
+    source = [{'in': '1100100', 'out': '1101000'}, {'in': '0010001000', 'out': '0010010000'}, {'in': '11111', 'out': '00000'}]
+
+    c_c = cc.CC()
+
+    for src in source:
+        src_in = src['in']
+        src_out = src['out']
+        result = c_c.skip_binary(src_in)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#--------------------------------------------
+
+def test_has_common_bit():
+    print("\nTest: has_common_bit(bin_1, bin_2)")
+
+    success = "Pass"
+    source = [
+        {'p1': '0', 'p2': '0', 'out': False},
+        {'p1': '0', 'p2': '1', 'out': False},
+        {'p1': '100110', 'p2': '000100', 'out': True},
+        {'p1': '0100110011', 'p2': '0010', 'out': True},
+        {'p1': '1001001', 'p2': '0110110', 'out': False}
+        ]
+
+    c_c = cc.CC()
+
+    for src in source:
+        param_1 = src['p1']
+        param_2 = src['p2']
+        src_out = src['out']
+        result = c_c.has_common_bit(param_1, param_2)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {param_1}, {param_2}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#-----------------------------------------------
+
+def test_to_binary():
+    print("\nTest: to_binary(value, num_bits)")
+
+    success = "Pass"
+    source = [
+        {'p1': 3205, 'p2': 12, 'out': '110010000101'},
+        {'p1': 55, 'p2': 6, 'out': '110111'},
+        {'p1': 55, 'p2': 12, 'out': '000000110111'},
+        {'p1': 3205, 'p2': 5, 'out': '110010000101'},
+        {'p1': 1, 'p2': 12, 'out': '000000000001'},
+    ]
+
+    c_c = cc.CC()
+
+    for src in source:
+        param_1 = src['p1']
+        param_2 = src['p2']
+        src_out = src['out']
+        result = c_c.to_binary(param_1, param_2)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {param_1}, {param_2}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#------------------------------------------------
+
+def test_to_integer():
+    print("\nTest: to_integer(binary)")
+
+    success = "Pass"
+    source = [
+        {'in': '1011', 'out': 11}, 
+        {'in': '100011', 'out': 35}, 
+        {'in': '0000000', 'out': 0},
+        {'in': '1001001110001', 'out': 4721},
+        {'in': '00001011', 'out': 11},
+        {'in': '0000100011', 'out': 35},
+        {'in': '00001001001110001', 'out': 4721}
+        ]
+
+    c_c = cc.CC()
+
+    for src in source:
+        src_in = src['in']
+        src_out = src['out']
+        result = c_c.to_integer(src_in)
+        if result != src_out:
+            success = "Fail"
+
+        print(f"   input = {src_in}")
+        print(f"expected = {src_out}")
+        print(f"  result = {result}")
+        print(result_msg(src_out, result))
+
+    return success
+
+#------------------------------------------
+
+
+
+
 
 #==============================================
 
@@ -537,21 +583,24 @@ def main():
     tests = {
         'has_bit()': test_has_bit(),
         'flip_bit()' : test_flip_bit(),
-        'next_binary()' : test_next_binary(),
         'has_common_bit()': test_has_common_bit(),
-        'to_binary()': test_to_binary(),
+        'next_binary()': test_next_binary(),
+        'skip_binary()': test_skip_binary(),
+        'to_binary()': test_to_binary(),        
         'to_integer()': test_to_integer(),
-        'Piece.__init__()': test_Piece_init(),
-        'Piece.__str__()': test_Piece_str(),
-        'Piece.to_dictionary()': test_Piece_to_dictionary(),
-        'PieceGroup.__init__()': test_PieceGroup_init(),
-        'PieceGroup.__str__()': test_PieceGroup_str(),
-        'PieceGroup.to_dictionary()': test_PieceGroup_to_dictionary(),
-        'ungroup()': test_ungroup(),
-        'group_pieces()': test_group_pieces(),
-        'ungroup_pieces()': test_ungroup_pieces(),
-        'get_combo_pieces()': test_get_combo_pieces(),
-        'ResultSet.__init()__': test_ResultSet_init()
+        
+        
+        #'Piece.__init__()': test_Piece_init(),
+        #'Piece.__str__()': test_Piece_str(),
+        #'Piece.to_dictionary()': test_Piece_to_dictionary(),
+        #'PieceGroup.__init__()': test_PieceGroup_init(),
+        #'PieceGroup.__str__()': test_PieceGroup_str(),
+        #'PieceGroup.to_dictionary()': test_PieceGroup_to_dictionary(),
+        #'ungroup()': test_ungroup(),
+        #'group_pieces()': test_group_pieces(),
+        #'ungroup_pieces()': test_ungroup_pieces(),
+        #'get_combo_pieces()': test_get_combo_pieces(),
+        #'ResultSet.__init()__': test_ResultSet_init()
     }
 
     spaces = 0
