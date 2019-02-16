@@ -705,6 +705,46 @@ def test_build_piece_combos():
 
     return success
 
+#--------------------------------------------------
+
+def test_filter_pieces():
+    print("\nTest: filter_pieces(combo)")
+    success = "Pass"
+
+    source = {
+        'pieces': [{'size': 30}, {'size': 20}, {'size': 60}],
+        'containers': [{'capacity': 300}, {'capacity': 200}, {'capacity': 150}],
+        'loss': 0
+    }
+
+    c_c = cc.CC()
+    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+
+    # sorted: [{'size': 60}, {'size': 30}, {'size': 20}]
+    combos = ["001", "010", "100", "101", "011", "110", "111"]
+    expected = [
+        [{'size': 20}],
+        [{'size': 30}],
+        [{'size': 60}],
+        [{'size': 60}, {'size': 20}],
+        [{'size': 30}, {'size': 20}],
+        [{'size': 60}, {'size': 30}],
+        [{'size': 60}, {'size': 30}, {'size': 20}]
+    ]
+
+    print(f"pieces: {json.dumps(c_c._pieces)}")
+
+    for i, combo in enumerate(combos):
+        exp = json.dumps(expected[i])
+        res = json.dumps(c_c.filter_pieces(combo))
+        print(f"   input = {combo}")
+        print(f"expected = {exp}")
+        print(f"  result = {res}")
+        if exp != res:
+            success = "Fail"
+
+    return success
+
 
 
 #==============================================
@@ -722,7 +762,8 @@ def main():
         'to_integer()': test_to_integer(),
         'set_inputs()': test_set_inputs(),
         'combo_size()': test_combo_size(),
-        'build_piece_combos': test_build_piece_combos(),
+        'build_piece_combos()': test_build_piece_combos(),
+        'filter_pieces()': test_filter_pieces(),
         
         #'Piece.__init__()': test_Piece_init(),
         #'Piece.__str__()': test_Piece_str(),

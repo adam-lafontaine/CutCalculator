@@ -138,7 +138,7 @@ class CC:
     _loss_per_piece = 0
     _tolerance = 0
 
-    
+    # TESTED
     def set_inputs(self, pieces, containers, loss=0):
         """ 
         list of pieces { 'size': number }
@@ -253,6 +253,7 @@ class CC:
 
     #----------------------------------------
 
+    # TESTED
     def build_piece_combos(self):
         int_val = 1
         binary = self.to_binary(int_val, len(self._pieces))
@@ -267,8 +268,11 @@ class CC:
                 binary = self.skip_binary(binary)
 
 
-    # returns subset of _pieces based on the combo passed
+    # TESTED
     def filter_pieces(self, combo):
+        '''
+        returns subset of _pieces based on the combo passed
+        '''
         result = []
 
         for i, bit in enumerate(combo):
