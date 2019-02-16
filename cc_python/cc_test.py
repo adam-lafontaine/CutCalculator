@@ -615,30 +615,47 @@ def test_set_inputs():
 def test_combo_size():
     print("\nTest: combo_size(binary)")
 
-    success = "PassNO"
+    success = "Pass"
 
     source = {
-        'pieces': [{'size': 30}, {'size': 60}, {'size': 20}],
+        'pieces': [{'size': 40}, {'size': 30}, {'size': 60}],
         'containers': [{'capacity': 300}, {'capacity': 200}, {'capacity': 150}],
-        'loss': 0.25        
+        'loss': 0       
     }
 
     # sorted: [{'size': 60}, {'size': 30}, {'size': 20}]
-    combos = ["001", "101", "111", "110"] 
-    expected = []   
+    combos = ["001", "010", "100", "101", "011", "110", "111"] 
+    expected = [30, 40, 60, 90, 70, 100, 130]   
 
     c_c = cc.CC()
     c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
 
-    for key in source:
-        src = json.dumps(source[key])
-        print(f"   input {key} = {src}")
+    print(f"pieces: {json.dumps(c_c._pieces)}")
+    print(f"loss = {c_c._loss_per_piece}")
 
-    for combo in combos:
-        
+    for i, combo in enumerate(combos):
+        exp = expected[i]
+        res = c_c.combo_size(combo)
+        print(f"   input = {combo}")
+        print(f"expected = {exp}")
+        print(f"  result = {res}")
+        if exp != res:
+            success = "Fail"
 
+    c_c.set_inputs(source['pieces'], source['containers'], 0.25)
+    expected = [30.25, 40.25, 60.25, 90.5, 70.5, 100.5, 130.75]
 
+    print(f"pieces: {json.dumps(c_c._pieces)}")
+    print(f"loss = {c_c._loss_per_piece}")
 
+    for i, combo in enumerate(combos):
+        exp = expected[i]
+        res = c_c.combo_size(combo)
+        print(f"   input = {combo}")
+        print(f"expected = {exp}")
+        print(f"  result = {res}")
+        if exp != res:
+            success = "Fail"
 
     return success
 
@@ -705,7 +722,7 @@ def main():
         'to_integer()': test_to_integer(),
         'set_inputs()': test_set_inputs(),
         'combo_size()': test_combo_size(),
-        'build_piece_combos': test_build_piece_combos(),
+        #'build_piece_combos': test_build_piece_combos(),
         
         #'Piece.__init__()': test_Piece_init(),
         #'Piece.__str__()': test_Piece_str(),
