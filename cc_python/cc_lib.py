@@ -147,7 +147,9 @@ class CC:
          """
         self._pieces = sorted(pieces, key=lambda i: i['size'], reverse=True) # descending
         self._containers = sorted(containers, key=lambda i: i['capacity'])   # ascending
-        self._loss_per_piece = loss       
+        self._loss_per_piece = loss
+        self._piece_combos = {}
+        self._results = []
 
         self.build_piece_combos()
 
@@ -241,6 +243,7 @@ class CC:
 
     #---------------------------------------------
 
+    # TESTED
     def combo_size(self, binary):
         result = 0
         for i, bit in enumerate(binary):
@@ -253,8 +256,8 @@ class CC:
     def build_piece_combos(self):
         int_val = 1
         binary = self.to_binary(int_val, len(self._pieces))
-        max_capacity = self._containers[-1]['capacity']  # last element
-
+        max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
+        
         while self.has_bit(binary):
             size = self.combo_size(binary)
             if size <= max_capacity:

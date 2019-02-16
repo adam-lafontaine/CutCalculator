@@ -671,19 +671,19 @@ def test_build_piece_combos():
     source = {
         'pieces': [{'size': 30}, {'size': 60}, {'size': 20}],
         'containers': [{'capacity': 300}, {'capacity': 200}, {'capacity': 150}],
-        'loss': 0.25
+        'loss': 0
     }
 
     # sorted: [{'size': 60}, {'size': 30}, {'size': 20}]
 
     expected = {
-        '001': {'size': 20}, 
-        '010': {'size': 30}, 
-        '011': {'size': 50}, 
-        '100': {'size': 60}, 
-        '101': {'size': 80},
-        '110': {'size': 90},
-        '111': {'size': 110}
+        '001': {'combo_size': 20}, 
+        '010': {'combo_size': 30},
+        '011': {'combo_size': 50},
+        '100': {'combo_size': 60},
+        '101': {'combo_size': 80},
+        '110': {'combo_size': 90},
+        '111': {'combo_size': 110}
     }
 
     c_c = cc.CC()
@@ -722,7 +722,7 @@ def main():
         'to_integer()': test_to_integer(),
         'set_inputs()': test_set_inputs(),
         'combo_size()': test_combo_size(),
-        #'build_piece_combos': test_build_piece_combos(),
+        'build_piece_combos': test_build_piece_combos(),
         
         #'Piece.__init__()': test_Piece_init(),
         #'Piece.__str__()': test_Piece_str(),
