@@ -745,6 +745,49 @@ def test_filter_pieces():
 
     return success
 
+#----------------------------------------
+
+def test_best_match():
+    print("\nTest: best_match()")
+    success = "Pass"
+
+    source = {
+        'pieces': [{'size': 30}, {'size': 60}, {'size': 20}, {'size': 40}, {'size': 50}],
+        'containers': [{'capacity': 85}, {'capacity': 90}, {'capacity': 110}],
+        'loss': 0.25
+    }
+
+    # sorted: [{'size': 60}, {'size': 50}, {'size': 40}, {'size': 30}, {'size': 20}]
+
+    expected = {
+        'binary': "10001",
+        'combo': {'combo_size': 80.5,},
+        'pieces': [{'size': 60}, {'size': 20}],
+        'container': {'capacity': 85},
+        'difference': 4.5
+    }
+
+    expected['remaining_containers'] = [{'capacity': 90}, {'capacity': 110}]
+
+    c_c = cc.CC()
+    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+
+    print(f"pieces: {json.dumps(c_c._pieces)}")
+    print(f"containers: {json.dumps(c_c._containers)}")
+
+    result = c_c.best_match()
+
+    result['remaining_containers'] = c_c._containers
+
+    for key in expected:
+        exp = json.dumps(expected[key])
+        res = json.dumps(result[key])
+        print(f"expected {key} = {exp}")
+        print(f"  output {key} = {res}")
+        if exp != res:
+            success = "Fail"    
+
+    return success
 
 
 #==============================================
@@ -764,6 +807,7 @@ def main():
         'combo_size()': test_combo_size(),
         'build_piece_combos()': test_build_piece_combos(),
         'filter_pieces()': test_filter_pieces(),
+        'best_match()': test_best_match(),
         
         #'Piece.__init__()': test_Piece_init(),
         #'Piece.__str__()': test_Piece_str(),

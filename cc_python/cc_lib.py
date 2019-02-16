@@ -283,9 +283,10 @@ class CC:
 
     #-----------------------------------------
 
+    # TESTED
     def best_match(self):
         result = {}
-        max_capacity = self._containers[-1]['capacity']  # last element
+        max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
         diff = max_capacity
         best_diff = max_capacity
         container_index = 0
@@ -297,9 +298,6 @@ class CC:
 
             for i, container in enumerate(self._containers):
                 diff = container['capacity'] - size
-
-                if diff < 0 and abs(diff) < self._loss_per_piece:
-                    diff = 0
 
                 if 0 <= diff and diff < best_diff:
                     best_diff = diff
@@ -315,7 +313,7 @@ class CC:
 
         result['combo'] = self._piece_combos[result['binary']]
         result['pieces'] = self.filter_pieces(result['binary'])
-        result['container'] = self._containers.pop(container_index)
+        result['container'] = self._containers.pop(container_index) # remove container
         result['difference'] = best_diff
 
         return result
