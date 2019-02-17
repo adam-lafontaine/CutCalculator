@@ -789,6 +789,43 @@ def test_best_match():
 
     return success
 
+#---------------------------------------
+
+def test_remove_combos():
+    print("\nTest: remove_combos(binary)")
+    success = "Pass"
+
+    source = {
+        'pieces': [{'size': 30}, {'size': 60}, {'size': 20}],
+        'containers': [{'capacity': 300}, {'capacity': 200}, {'capacity': 150}],
+        'loss': 0
+    }
+
+    c_c = cc.CC()
+    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+
+    binary = "010"
+    print(f"binary = {binary}")
+    print(f"before = {json.dumps(c_c._piece_combos)}")
+    c_c.remove_combos(binary)
+
+    expected = {
+        '001': {'combo_size': 20},
+        '100': {'combo_size': 60},
+        '101': {'combo_size': 80},
+    }
+
+    result = c_c._piece_combos
+
+    exp = json.dumps(expected)
+    res = json.dumps(result)
+    print(f"expected = {exp}")
+    print(f"  output = {res}")
+    if exp != res:
+            success = "Fail"
+
+    return success
+
 
 #==============================================
 
@@ -808,6 +845,7 @@ def main():
         'build_piece_combos()': test_build_piece_combos(),
         'filter_pieces()': test_filter_pieces(),
         'best_match()': test_best_match(),
+        'remove_combos()': test_remove_combos(),
         
         #'Piece.__init__()': test_Piece_init(),
         #'Piece.__str__()': test_Piece_str(),

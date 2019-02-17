@@ -267,6 +267,7 @@ class CC:
             else:
                 binary = self.skip_binary(binary)
 
+    #-----------------------------------------------------
 
     # TESTED
     def filter_pieces(self, combo):
@@ -284,8 +285,11 @@ class CC:
     #-----------------------------------------
 
     # TESTED
-    def best_match(self):
+    def best_match(self):        
         result = {}
+        if len(self._containers) == 0:
+            return result
+
         max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
         diff = max_capacity
         best_diff = max_capacity
@@ -317,6 +321,25 @@ class CC:
         result['difference'] = best_diff
 
         return result
+
+    #------------------------------------------------
+
+    def remove_combos(self, binary):
+        '''
+        deletes all combos that share a bit with binary
+        or have a size larger than the max container capacity
+        '''
+        if len(self._containers) == 0:
+            return
+
+        max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
+        combos = [key for key in self._piece_combos.keys()]
+
+        for combo in combos:
+            if self.has_common_bit(binary, combo) or (self._piece_combos[combo]['combo_size'] > max_capacity):
+                del self._piece_combos[combo]
+
+
 
 
 
