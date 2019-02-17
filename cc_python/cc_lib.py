@@ -130,10 +130,10 @@ def get_combo_pieces(binary, all_pieces):
 
 
 class CC:
-    _piece_combos = {} # { "001": { 'combo_size': 30 }, '010': { 'combo_size': 25 } }
+    _piece_combos = {} # { "001": { 'combo_size': 30, 'meta': {} }, '010': { 'combo_size': 25, 'meta': {} } }
     _pieces = []       # [ { 'size': 60, 'meta': {} }, {'size': 60, 'meta': {} } ]
-    _containers = []   # [{ 'capacity': 200 }, { 'capacity': 150}]
-    _results = []      # [{ 'binary': "001" 'combo': {}, 'pieces': [], 'container': {}, 'difference': 10 }, ]
+    _containers = []   # [ { 'capacity': 200, 'meta': {} }, { 'capacity': 150, 'meta': {} } ]
+    _results = []      # [ { 'binary': "001" 'combo': {}, 'pieces': [], 'container': {}, 'difference': 10 }, ]
 
     _loss_per_piece = 0
     _tolerance = 0
@@ -285,7 +285,7 @@ class CC:
     #-----------------------------------------
 
     # TESTED
-    def best_match(self):        
+    def best_match(self):
         result = {}
         if len(self._containers) == 0:
             return result
@@ -324,20 +324,46 @@ class CC:
 
     #------------------------------------------------
 
+    # TESTED
     def remove_combos(self, binary):
         '''
         deletes all combos that share a bit with binary
         or have a size larger than the max container capacity
         '''
-        if len(self._containers) == 0:
-            return
 
-        max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
+        has_max = len(self._containers) > 0
+        max_capacity = 0
+        if has_max:
+            max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
+        
         combos = [key for key in self._piece_combos.keys()]
 
         for combo in combos:
-            if self.has_common_bit(binary, combo) or (self._piece_combos[combo]['combo_size'] > max_capacity):
+            if self.has_common_bit(binary, combo) or (has_max and self._piece_combos[combo]['combo_size'] > max_capacity):
                 del self._piece_combos[combo]
+
+    #---------------------------------------------
+
+    def sort(self):
+
+        result = {
+            'data': {},
+            'success': False,
+            'message': ""
+        }
+
+        while len(self._containers) > 0 and len(self._piece_combos) > 0:
+            match = self.best_match()
+            self.remove_combos(match['binary'])
+            self._results.append(match)
+
+        result['data'] = self._results
+
+        if len(self._piece_combos) > 0:
+            result['message'] = "Not enough containers"
+            result['success'] = False
+
+        return result
 
 
 

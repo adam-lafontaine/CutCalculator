@@ -611,7 +611,6 @@ def test_set_inputs():
 
 #------------------------------------------
 
-
 def test_combo_size():
     print("\nTest: combo_size(binary)")
 
@@ -658,8 +657,6 @@ def test_combo_size():
             success = "Fail"
 
     return success
-
-
 
 #---------------------------------------------
 
@@ -826,6 +823,78 @@ def test_remove_combos():
 
     return success
 
+#---------------------------------------------
+
+def test_sort():
+    print(f"\nTest: sort()")
+    success = "Pass"
+
+    pieces = [
+        {'size': 10}, {'size': 10}, {'size': 10},
+        {'size': 48}, {'size': 48}, {'size': 48},
+        {'size': 30}, {'size': 30}, {'size': 30},
+    ]
+
+    containers = [
+        {'capacity': 100}, {'capacity': 100}, {'capacity': 100}, {'capacity': 100}, {'capacity': 100},
+        {'capacity': 100}, {'capacity': 100}, {'capacity': 100}, {'capacity': 100}, {'capacity': 100},
+    ]
+
+    expected = [
+        { 'pieces': [{'size': 10}, {'size': 30}, {'size': 30}, {'size': 30}], 'difference': 0 },
+        { 'pieces': [{'size': 48}, {'size': 48} ], 'difference': 4 },
+        { 'pieces': [{'size': 10}, {'size': 10}, {'size': 48}], 'difference': 32 }
+    ]
+
+    c_c = cc.CC()
+
+    print("No loss per piece")
+    c_c.set_inputs(pieces, containers)
+    result = c_c.sort()
+
+    # massage data to compare with expected
+    data = sorted(result['data'], key=lambda i: i['difference'])
+    to_compare = []
+    for item in data:
+        to_compare.append({'pieces': sorted(item['pieces'], key=lambda i: i['size']), 'difference': item['difference']})
+
+    for i, item in enumerate(expected):        
+        exp = json.dumps(item)
+        res = json.dumps(to_compare[i])
+        print(f"expected = {exp}")
+        print(f"  output = {res}")
+        if exp != res:
+            success = "Fail"
+
+    print("With loss per piece")
+
+    expected = [
+        { 'pieces': [{'size': 10}, {'size': 10}, {'size': 30}, {'size': 48}], 'difference': 1.0 },
+        { 'pieces': [{'size': 48}, {'size': 48} ], 'difference': 3.5 },
+        { 'pieces': [{'size': 10}, {'size': 30}, {'size': 30}], 'difference': 29.25 }
+    ]
+
+    c_c.set_inputs(pieces, containers, 0.25)
+    result = c_c.sort()
+
+    # massage data to compare with expected
+    data = sorted(result['data'], key=lambda i: i['difference'])
+    to_compare = []
+    for item in data:
+        to_compare.append({'pieces': sorted(
+            item['pieces'], key=lambda i: i['size']), 'difference': item['difference']})
+
+    for i, item in enumerate(expected):
+        exp = json.dumps(item)
+        res = json.dumps(to_compare[i])
+        print(f"expected = {exp}")
+        print(f"  output = {res}")
+        if exp != res:
+            success = "Fail"
+
+
+    return success
+
 
 #==============================================
 
@@ -846,6 +915,7 @@ def main():
         'filter_pieces()': test_filter_pieces(),
         'best_match()': test_best_match(),
         'remove_combos()': test_remove_combos(),
+        'test_sort()': test_sort()
         
         #'Piece.__init__()': test_Piece_init(),
         #'Piece.__str__()': test_Piece_str(),
