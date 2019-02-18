@@ -193,6 +193,8 @@ function hasBit(binary)
 //--------------------------------------------------------
 
 // gets next combination that isn't guaranteed to be longer than the max stock length
+// starting from the right, keep changing 0's to 1's until a 1 is found
+// then return the next value
 function getSkippedBinary(binary)
 {
 	let array = binary;
@@ -244,7 +246,7 @@ function getNextBinary(binary)
 	for(let i = array.length - 1; i >= 0; i--)
 	{
 		let len = comboList[array[i]];
-		let thisCombo = JSON.parse("[" +array[i] + "]");
+		let thisCombo = JSON.parse("[" + array[i] + "]");
 		if((max && comboList[array[i]] > max) || hasCommonBit(thisCombo, combo))
 		{
 			delete comboList[array[i]];
