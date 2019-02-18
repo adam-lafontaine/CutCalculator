@@ -761,7 +761,7 @@ def test_best_match():
         'combo': {'combo_size': 80.5,},
         'pieces': [{'size': 60}, {'size': 20}],
         'container': {'capacity': 85},
-        'difference': 4.5
+        'delta': 4.5
     }
 
     expected['remaining_containers'] = [{'capacity': 90}, {'capacity': 110}]
@@ -841,9 +841,9 @@ def test_sort():
     ]
 
     expected = [
-        { 'pieces': [{'size': 10}, {'size': 30}, {'size': 30}, {'size': 30}], 'difference': 0 },
-        { 'pieces': [{'size': 48}, {'size': 48} ], 'difference': 4 },
-        { 'pieces': [{'size': 10}, {'size': 10}, {'size': 48}], 'difference': 32 }
+        { 'pieces': [{'size': 10}, {'size': 30}, {'size': 30}, {'size': 30}], 'delta': 0 },
+        { 'pieces': [{'size': 48}, {'size': 48} ], 'delta': 4 },
+        { 'pieces': [{'size': 10}, {'size': 10}, {'size': 48}], 'delta': 32 }
     ]
 
     c_c = cc.CC()
@@ -853,10 +853,10 @@ def test_sort():
     result = c_c.sort()
 
     # massage data to compare with expected
-    data = sorted(result['data'], key=lambda i: i['difference'])
+    data = sorted(result['data'], key=lambda i: i['delta'])
     to_compare = []
     for item in data:
-        to_compare.append({'pieces': sorted(item['pieces'], key=lambda i: i['size']), 'difference': item['difference']})
+        to_compare.append({'pieces': sorted(item['pieces'], key=lambda i: i['size']), 'delta': item['delta']})
 
     for i, item in enumerate(expected):        
         exp = json.dumps(item)
@@ -869,20 +869,20 @@ def test_sort():
     print("With loss per piece")
 
     expected = [
-        { 'pieces': [{'size': 10}, {'size': 10}, {'size': 30}, {'size': 48}], 'difference': 1.0 },
-        { 'pieces': [{'size': 48}, {'size': 48} ], 'difference': 3.5 },
-        { 'pieces': [{'size': 10}, {'size': 30}, {'size': 30}], 'difference': 29.25 }
+        { 'pieces': [{'size': 10}, {'size': 10}, {'size': 30}, {'size': 48}], 'delta': 1.0 },
+        { 'pieces': [{'size': 48}, {'size': 48} ], 'delta': 3.5 },
+        { 'pieces': [{'size': 10}, {'size': 30}, {'size': 30}], 'delta': 29.25 }
     ]
 
     c_c.set_inputs(pieces, containers, 0.25)
     result = c_c.sort()
 
     # massage data to compare with expected
-    data = sorted(result['data'], key=lambda i: i['difference'])
+    data = sorted(result['data'], key=lambda i: i['delta'])
     to_compare = []
     for item in data:
         to_compare.append({'pieces': sorted(
-            item['pieces'], key=lambda i: i['size']), 'difference': item['difference']})
+            item['pieces'], key=lambda i: i['size']), 'delta': item['delta']})
 
     for i, item in enumerate(expected):
         exp = json.dumps(item)

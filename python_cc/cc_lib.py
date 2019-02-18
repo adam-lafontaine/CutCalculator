@@ -133,7 +133,7 @@ class CC:
     _piece_combos = {} # { "001": { 'combo_size': 30, 'meta': {} }, '010': { 'combo_size': 25, 'meta': {} } }
     _pieces = []       # [ { 'size': 60, 'meta': {} }, {'size': 60, 'meta': {} } ]
     _containers = []   # [ { 'capacity': 200, 'meta': {} }, { 'capacity': 150, 'meta': {} } ]
-    _results = []      # [ { 'binary': "001" 'combo': {}, 'pieces': [], 'container': {}, 'difference': 10 }, ]
+    _results = []      # [ { 'binary': "001" 'combo': {}, 'pieces': [], 'container': {}, 'delta': 10 }, ]
 
     _loss_per_piece = 0
     _tolerance = 0
@@ -312,13 +312,13 @@ class CC:
                         result['combo'] = self._piece_combos[binary]
                         result['pieces'] = self.filter_pieces(binary)
                         result['container'] = self._containers.pop(i)
-                        result['difference'] = diff
+                        result['delta'] = diff
                         return result
 
         result['combo'] = self._piece_combos[result['binary']]
         result['pieces'] = self.filter_pieces(result['binary'])
         result['container'] = self._containers.pop(container_index) # remove container
-        result['difference'] = best_diff
+        result['delta'] = best_diff
 
         return result
 
