@@ -1,61 +1,80 @@
 #include <map>
 #include <vector>
+#include <memory>
 
-template<typename T>
-using cc_list = std::vector<T>;
+template<typename T> using cc_list = std::vector<T>;
 
 using cc_combo_key = std::string;
 
-template<typename V>
-using cc_dict = std::map<cc_combo_key, V>;
+template<typename V> using cc_dict = std::map<cc_combo_key, V>;
+
+
+struct PieceCombo;
+struct Piece;
+struct Container;
+struct Result;
+
+template<typename T>
+using piece_combo_ptr = std::unique_ptr<PieceCombo<T>>;
+
+template<typename T>
+using piece_ptr = std::unique_ptr<Piece<T>>;
+
+template<typename T>
+using container_ptr = std::unique_ptr<Container<T>>;
+
+template<typename T>
+using result_ptr = std::unique_ptr<Result<T>>;
 
 
 
-//template<typename T>
+template<typename T>
 struct PieceCombo {
     public:
 
-    double combo_size;
+    T combo_size;
     // other properties
 
 };
 
-//template<typename T>
+template<typename T>
 struct Piece {
     public:
 
-    double size;
+    T size;
     // other properties
 };
 
+template<typename T>
 struct Container {
     public:
 
-    double capacity;
+    T capacity;
 
     // other properties
 };
 
+template<typename T>
 struct Result {
     public:
 
     cc_combo_key binary;
-    PieceCombo combo;
-    cc_list<Piece> pieces;
-    Container container;
-    double delta;
+    piece_combo_ptr<T> combo;
+    cc_list<piece_ptr<T>> pieces;
+    container_ptr<T> container;
+    T delta;
 
 };
 
 
-
+template<typename T>
 class CC {
 
 private:
-    cc_dict<PieceCombo> _piece_combos;
-    cc_list<Piece> _pieces;
-    cc_list<Container> _containers;
-    cc_list<Result> _results;
+    cc_dict<piece_combo_ptr<T>> _piece_combos;
+    cc_list<piece_ptr<T>> _pieces;
+    cc_list<container_ptr<T>> _containers;
+    cc_list<result_ptr<T>> _results;
 
     double _loss_per_piece;
     double _tolerance;
