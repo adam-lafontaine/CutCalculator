@@ -38,6 +38,9 @@ struct Piece {
     // other properties
 };
 
+template<typename T> inline
+bool descending(piece_ptr<T> const& lhs, piece_ptr<T> const& rhs) { return lhs->size > rhs->size; }
+
 template<typename T>
 struct Container {
     public:
@@ -46,6 +49,9 @@ struct Container {
 
     // other properties
 };
+
+template<typename T> inline
+bool ascending(container_ptr<T> const& lhs, container_ptr<T> const& rhs) { return lhs->capacity < rhs->capacity; }
 
 template<typename T>
 struct Result {
