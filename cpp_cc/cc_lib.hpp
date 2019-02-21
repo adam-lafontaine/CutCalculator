@@ -82,9 +82,9 @@ class CC {
 private:    
 
     cc_dict<piece_combo_ptr<T>> _piece_combos;
-    piece_list _pieces;
-    container_list _containers;
-    result_list _results;
+    piece_list<T> _pieces;
+    container_list<T> _containers;
+    result_list<T> _results;
 
     T _loss_per_piece;
     T _tolerance;
