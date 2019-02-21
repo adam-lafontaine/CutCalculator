@@ -89,6 +89,8 @@ private:
     T _loss_per_piece;
     T _tolerance;
 
+    public: // temp for testing
+
     cc_combo_key to_binary(int value, int num_bits);
     // to_integer();
     // bool has_bit();
@@ -97,17 +99,17 @@ private:
     // next_binary()
     // skip_binary()
     // combo_size()
-    void build_piece_combos();
+    // void build_piece_combos();
     // filter_pieces()
     // best_match()
     // remove_combos()
 
-public:
+//public:
     CC() {}
     ~CC();
 
     void set_inputs(piece_list<T> const& pieces, container_list<T> const& containers, T loss);
-    void sort();
+    //void sort();
 
 
 
