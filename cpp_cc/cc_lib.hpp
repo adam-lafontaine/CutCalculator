@@ -3,6 +3,7 @@
 #include <memory>
 
 using cc_combo_key = std::string;
+using u_int_t = unsigned long long;
 
 template<typename T> using cc_list = std::vector<T>;
 template<typename V> using cc_dict = std::map<cc_combo_key, V>;
@@ -91,10 +92,11 @@ private:
 
     public: // temp for testing
 
-    cc_combo_key to_binary(int value, int num_bits);
-    // to_integer();
     bool has_bit(cc_combo_key const& binary);
     char flip_bit(char bit);
+    cc_combo_key to_binary(u_int_t value, unsigned num_bits);
+    u_int_t to_decimal(cc_combo_key const& binary);
+    
     // bool has_common_bit();
     // next_binary()
     // skip_binary()

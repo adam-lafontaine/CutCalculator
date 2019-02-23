@@ -81,7 +81,7 @@ string test_to_binary() {
 
     string success = "Pass";
 
-    vector<tuple<int, int, string>> source { // value, num_bits, expected
+    vector<tuple<u_int_t, unsigned, string>> source { // value, num_bits, expected
         make_tuple(3205, 12, "110010000101"),
         make_tuple(55, 6, "110111"),
         make_tuple(55, 12, "000000110111"),
@@ -109,6 +109,43 @@ string test_to_binary() {
     return success;
 }
 
+//---------------------------
+
+string test_to_decimal() {
+    print("\nTest to_decimal(cc_combo_key const& binary)");
+
+    string success = "Pass";
+
+    vector<pair<string, u_int_t>> source {
+        {"1011", 11},
+        {"100011", 35},
+        {"0000000", 0},
+        {"1001001110001", 4721},
+        {"00001011", 11},
+        {"0000100011", 35},
+        {"00001001001110001", 4721}
+    };
+
+    CC<int> my_cc;
+    stringstream ss;
+
+    for(auto& item : source) {
+        auto bin = item.first;
+        auto exp = item.second;
+        auto res = my_cc.to_decimal(bin);
+        ss << "  binary = " << bin << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());    
+
+    return success;
+
+}
+
 //-----------------------------
 
 /*
@@ -132,7 +169,8 @@ int main() {
     vector<pair<string, string>> tests {
         {"has_bit", test_has_bit()},
         {"flip_bit", test_flip_bit()},
-        {"to_binary()", test_to_binary()}
+        {"to_binary()", test_to_binary()},
+        {"to_decimal()", test_to_decimal()}
     };
     //tests["01 to_binary()"] = test_to_binary();
 

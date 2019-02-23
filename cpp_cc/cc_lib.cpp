@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
+#include <cmath>
 
 #include "cc_lib.hpp"
 
@@ -43,11 +44,11 @@ char CC<T>::flip_bit(char bit) {
 //--------------------------------------
 
 template<typename T>
-cc_combo_key CC<T>::to_binary(int value, int num_bits) {
+cc_combo_key CC<T>::to_binary(u_int_t value, unsigned num_bits) {
 
     std::stringstream ss;
     char bin_values[] = "01";
-    int val = value;
+    u_int_t val = value;
 
     while(val > 0) {
         auto idx = val % 2;
@@ -65,4 +66,18 @@ cc_combo_key CC<T>::to_binary(int value, int num_bits) {
     }
 
     return binary;
+}
+
+template<typename T>
+u_int_t CC<T>::to_decimal(cc_combo_key const& binary) {
+    u_int_t val = 0;
+    int exp = -1;
+    for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
+        ++exp;
+        if(*it == '1')
+            val += (u_int_t)std::pow(2, exp);
+
+    }
+
+    return val;
 }

@@ -387,12 +387,12 @@ def test_has_bit():
     source = [{'in': '01001', 'out': True}, {'in': '1010', 'out': True}, {'in': '0000000', 'out': False}]
     success = "Pass"
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     for src in source:
         src_in = src['in']
         src_out = src['out']
-        result = c_c.has_bit(src_in)
+        result = my_cc.has_bit(src_in)
         if result != src_out:
             success = "Fail"
 
@@ -411,12 +411,12 @@ def test_flip_bit():
     source = [{'in': '0', 'out': '1'}, {'in': '1', 'out': '0'}]
     success = "Pass"
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     for src in source:
         src_in = src['in']
         src_out = src['out']
-        result = c_c.flip_bit(src_in)
+        result = my_cc.flip_bit(src_in)
         if result != src_out:
             success = "Fail"
 
@@ -435,12 +435,12 @@ def test_next_binary():
     success = "Pass"
     source = [{'in': '1011', 'out': '1100'}, {'in': '100011', 'out': '100100'}, {'in': '0000000', 'out': '0000001'}]
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     for src in source:
         src_in = src['in']
         src_out = src['out']
-        result = c_c.next_binary(src_in)
+        result = my_cc.next_binary(src_in)
         if result != src_out:
             success = "Fail"
 
@@ -459,12 +459,12 @@ def test_skip_binary():
     success = "Pass"
     source = [{'in': '1100100', 'out': '1101000'}, {'in': '0010001000', 'out': '0010010000'}, {'in': '11111', 'out': '00000'}]
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     for src in source:
         src_in = src['in']
         src_out = src['out']
-        result = c_c.skip_binary(src_in)
+        result = my_cc.skip_binary(src_in)
         if result != src_out:
             success = "Fail"
 
@@ -489,13 +489,13 @@ def test_has_common_bit():
         {'p1': '1001001', 'p2': '0110110', 'out': False}
         ]
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     for src in source:
         param_1 = src['p1']
         param_2 = src['p2']
         src_out = src['out']
-        result = c_c.has_common_bit(param_1, param_2)
+        result = my_cc.has_common_bit(param_1, param_2)
         if result != src_out:
             success = "Fail"
 
@@ -520,13 +520,13 @@ def test_to_binary():
         {'p1': 1, 'p2': 12, 'out': '000000000001'},
     ]
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     for src in source:
         param_1 = src['p1']
         param_2 = src['p2']
         src_out = src['out']
-        result = c_c.to_binary(param_1, param_2)
+        result = my_cc.to_binary(param_1, param_2)
         if result != src_out:
             success = "Fail"
 
@@ -553,12 +553,12 @@ def test_to_integer():
         {'in': '00001001001110001', 'out': 4721}
         ]
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     for src in source:
         src_in = src['in']
         src_out = src['out']
-        result = c_c.to_integer(src_in)
+        result = my_cc.to_integer(src_in)
         if result != src_out:
             success = "Fail"
 
@@ -588,13 +588,13 @@ def test_set_inputs():
         'loss': 0.25
     }
 
-    c_c = cc.CC()
-    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+    my_cc = cc.CC()
+    my_cc.set_inputs(source['pieces'], source['containers'], source['loss'])
 
     result = {
-        'pieces': c_c._pieces,
-        'containers': c_c._containers,
-        'loss': c_c._loss_per_piece
+        'pieces': my_cc._pieces,
+        'containers': my_cc._containers,
+        'loss': my_cc._loss_per_piece
     }
 
     for key in source:
@@ -626,30 +626,30 @@ def test_combo_size():
     combos = ["001", "010", "100", "101", "011", "110", "111"] 
     expected = [30, 40, 60, 90, 70, 100, 130]   
 
-    c_c = cc.CC()
-    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+    my_cc = cc.CC()
+    my_cc.set_inputs(source['pieces'], source['containers'], source['loss'])
 
-    print(f"pieces: {json.dumps(c_c._pieces)}")
-    print(f"loss = {c_c._loss_per_piece}")
+    print(f"pieces: {json.dumps(my_cc._pieces)}")
+    print(f"loss = {my_cc._loss_per_piece}")
 
     for i, combo in enumerate(combos):
         exp = expected[i]
-        res = c_c.combo_size(combo)
+        res = my_cc.combo_size(combo)
         print(f"   input = {combo}")
         print(f"expected = {exp}")
         print(f"  result = {res}")
         if exp != res:
             success = "Fail"
 
-    c_c.set_inputs(source['pieces'], source['containers'], 0.25)
+    my_cc.set_inputs(source['pieces'], source['containers'], 0.25)
     expected = [30.25, 40.25, 60.25, 90.5, 70.5, 100.5, 130.75]
 
-    print(f"pieces: {json.dumps(c_c._pieces)}")
-    print(f"loss = {c_c._loss_per_piece}")
+    print(f"pieces: {json.dumps(my_cc._pieces)}")
+    print(f"loss = {my_cc._loss_per_piece}")
 
     for i, combo in enumerate(combos):
         exp = expected[i]
-        res = c_c.combo_size(combo)
+        res = my_cc.combo_size(combo)
         print(f"   input = {combo}")
         print(f"expected = {exp}")
         print(f"  result = {res}")
@@ -683,10 +683,10 @@ def test_build_piece_combos():
         '111': {'combo_size': 110}
     }
 
-    c_c = cc.CC()
-    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+    my_cc = cc.CC()
+    my_cc.set_inputs(source['pieces'], source['containers'], source['loss'])
 
-    result = c_c._piece_combos
+    result = my_cc._piece_combos
 
     exp = json.dumps(expected)
     res = json.dumps(result)
@@ -714,8 +714,8 @@ def test_filter_pieces():
         'loss': 0
     }
 
-    c_c = cc.CC()
-    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+    my_cc = cc.CC()
+    my_cc.set_inputs(source['pieces'], source['containers'], source['loss'])
 
     # sorted: [{'size': 60}, {'size': 30}, {'size': 20}]
     combos = ["001", "010", "100", "101", "011", "110", "111"]
@@ -729,11 +729,11 @@ def test_filter_pieces():
         [{'size': 60}, {'size': 30}, {'size': 20}]
     ]
 
-    print(f"pieces: {json.dumps(c_c._pieces)}")
+    print(f"pieces: {json.dumps(my_cc._pieces)}")
 
     for i, combo in enumerate(combos):
         exp = json.dumps(expected[i])
-        res = json.dumps(c_c.filter_pieces(combo))
+        res = json.dumps(my_cc.filter_pieces(combo))
         print(f"   input = {combo}")
         print(f"expected = {exp}")
         print(f"  result = {res}")
@@ -766,15 +766,15 @@ def test_best_match():
 
     expected['remaining_containers'] = [{'capacity': 90}, {'capacity': 110}]
 
-    c_c = cc.CC()
-    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+    my_cc = cc.CC()
+    my_cc.set_inputs(source['pieces'], source['containers'], source['loss'])
 
-    print(f"pieces: {json.dumps(c_c._pieces)}")
-    print(f"containers: {json.dumps(c_c._containers)}")
+    print(f"pieces: {json.dumps(my_cc._pieces)}")
+    print(f"containers: {json.dumps(my_cc._containers)}")
 
-    result = c_c.best_match()
+    result = my_cc.best_match()
 
-    result['remaining_containers'] = c_c._containers
+    result['remaining_containers'] = my_cc._containers
 
     for key in expected:
         exp = json.dumps(expected[key])
@@ -798,13 +798,13 @@ def test_remove_combos():
         'loss': 0
     }
 
-    c_c = cc.CC()
-    c_c.set_inputs(source['pieces'], source['containers'], source['loss'])
+    my_cc = cc.CC()
+    my_cc.set_inputs(source['pieces'], source['containers'], source['loss'])
 
     binary = "010"
     print(f"binary = {binary}")
-    print(f"before = {json.dumps(c_c._piece_combos)}")
-    c_c.remove_combos(binary)
+    print(f"before = {json.dumps(my_cc._piece_combos)}")
+    my_cc.remove_combos(binary)
 
     expected = {
         '001': {'combo_size': 20},
@@ -812,7 +812,7 @@ def test_remove_combos():
         '101': {'combo_size': 80},
     }
 
-    result = c_c._piece_combos
+    result = my_cc._piece_combos
 
     exp = json.dumps(expected)
     res = json.dumps(result)
@@ -846,11 +846,11 @@ def test_sort():
         { 'pieces': [{'size': 10}, {'size': 10}, {'size': 48}], 'delta': 32 }
     ]
 
-    c_c = cc.CC()
+    my_cc = cc.CC()
 
     print("No loss per piece")
-    c_c.set_inputs(pieces, containers)
-    result = c_c.sort()
+    my_cc.set_inputs(pieces, containers)
+    result = my_cc.sort()
 
     # massage data to compare with expected
     data = sorted(result['data'], key=lambda i: i['delta'])
@@ -874,8 +874,8 @@ def test_sort():
         { 'pieces': [{'size': 10}, {'size': 30}, {'size': 30}], 'delta': 29.25 }
     ]
 
-    c_c.set_inputs(pieces, containers, 0.25)
-    result = c_c.sort()
+    my_cc.set_inputs(pieces, containers, 0.25)
+    result = my_cc.sort()
 
     # massage data to compare with expected
     data = sorted(result['data'], key=lambda i: i['delta'])
