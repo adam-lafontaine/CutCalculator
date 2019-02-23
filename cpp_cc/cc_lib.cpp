@@ -33,6 +33,13 @@ bool CC<T>::has_bit(cc_combo_key const& binary) {
     return binary.find('1') != std::string::npos;
 }
 
+//--------------------------------
+
+template<typename T>
+char CC<T>::flip_bit(char bit) {
+    return bit == '0' ? '1' : '0';
+}
+
 //--------------------------------------
 
 template<typename T>
