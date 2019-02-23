@@ -93,8 +93,8 @@ private:
 
     cc_combo_key to_binary(int value, int num_bits);
     // to_integer();
-    // bool has_bit();
-    // flip_bit();
+    bool has_bit(cc_combo_key const& binary);
+    char flip_bit(char bit);
     // bool has_common_bit();
     // next_binary()
     // skip_binary()
@@ -106,9 +106,9 @@ private:
 
 //public:
     CC() {}
-    ~CC();
+    ~CC() {}
 
-    void set_inputs(piece_list<T> const& pieces, container_list<T> const& containers, T loss);
+    //void set_inputs(piece_list<T> const& pieces, container_list<T> const& containers, T loss);
     //void sort();
 
 
