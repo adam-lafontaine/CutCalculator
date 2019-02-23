@@ -208,7 +208,6 @@ int main() {
         {"to_decimal()", test_to_decimal()},
         {"has_common_bit()", test_has_common_bit()}
     };
-    //tests["01 to_binary()"] = test_to_binary();
 
     print("\n");
 
