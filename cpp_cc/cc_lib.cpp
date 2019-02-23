@@ -68,6 +68,8 @@ cc_combo_key CC<T>::to_binary(u_int_t value, unsigned num_bits) {
     return binary;
 }
 
+//-------------------------------
+
 template<typename T>
 u_int_t CC<T>::to_decimal(cc_combo_key const& binary) {
     u_int_t val = 0;
@@ -80,4 +82,20 @@ u_int_t CC<T>::to_decimal(cc_combo_key const& binary) {
     }
 
     return val;
+}
+
+//------------------------
+
+template<typename T>
+bool CC<T>::has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
+
+    auto last_1 = bin_1.length() - 1;
+    auto last_2 = bin_2.length() - 1;
+
+    for(size_t i = 0; i <= last_1 && i <= last_2; ++i) {        
+        if(bin_1[last_1 - i] == '1' && bin_2[last_2 - i] == '1')
+            return true;
+    }
+
+    return false;
 }

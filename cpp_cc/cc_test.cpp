@@ -146,6 +146,41 @@ string test_to_decimal() {
 
 }
 
+//----------------------------
+
+string test_has_common_bit() {
+    print("\nTest has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2)");
+
+    string success = "Pass";
+    
+    vector<tuple<string, string, bool>> source {
+        make_tuple("0", "0", false),
+        make_tuple("0", "1", false),
+        make_tuple("100110", "000100", true),
+        make_tuple("0100110011", "0010", true),
+        make_tuple("1001001", "0110110", false)
+    };
+
+    CC<int> my_cc;
+    stringstream ss;
+
+    for(auto& item : source) {
+        auto bin_1 = get<0>(item);
+        auto bin_2 = get<1>(item);
+        auto exp = get<2>(item) ? "true" : "false";
+        auto res = my_cc.has_common_bit(bin_1, bin_2) ? "true" : "false";
+        ss << "bin_1 = " << bin_1 << ", bin_2 = " << bin_2 << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+                success = "Fail";
+    }    
+
+    print(ss.str());
+
+    return success;
+}
+
 //-----------------------------
 
 /*
@@ -170,7 +205,8 @@ int main() {
         {"has_bit", test_has_bit()},
         {"flip_bit", test_flip_bit()},
         {"to_binary()", test_to_binary()},
-        {"to_decimal()", test_to_decimal()}
+        {"to_decimal()", test_to_decimal()},
+        {"has_common_bit()", test_has_common_bit()}
     };
     //tests["01 to_binary()"] = test_to_binary();
 
