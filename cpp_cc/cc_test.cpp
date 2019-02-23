@@ -2,6 +2,8 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <tuple>
+
 #include "cc_lib.hpp"
 
 using namespace std;
@@ -78,7 +80,31 @@ string test_to_binary() {
     print("\nTest to_binary(int value, int num_bits)");
 
     string success = "Pass";
-    
+
+    vector<tuple<int, int, string>> source { // value, num_bits, expected
+        make_tuple(3205, 12, "110010000101"),
+        make_tuple(55, 6, "110111"),
+        make_tuple(55, 12, "000000110111"),
+        make_tuple(3205, 5, "110010000101"),
+        make_tuple(1, 12, "000000000001")      
+    };
+
+    CC<int> my_cc;
+    stringstream ss;
+
+    for(auto& item : source) {
+        auto value = get<0>(item);
+        auto num_bits = get<1>(item);
+        auto exp = get<2>(item);
+        auto res = my_cc.to_binary(value, num_bits);
+        ss << "value = " << value << ", num_bits = " << num_bits << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+                success = "Fail";
+    }    
+
+    print(ss.str());
 
     return success;
 }
