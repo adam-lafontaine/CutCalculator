@@ -433,7 +433,11 @@ def test_next_binary():
     print("\nTest: next_binary(binary)")
 
     success = "Pass"
-    source = [{'in': '1011', 'out': '1100'}, {'in': '100011', 'out': '100100'}, {'in': '0000000', 'out': '0000001'}]
+    source = [
+        {'in': '1011', 'out': '1100'}, 
+        {'in': '100011', 'out': '100100'}, 
+        {'in': '0000000', 'out': '0000001'}
+    ]
 
     my_cc = cc.CC()
 

@@ -99,3 +99,22 @@ bool CC<T>::has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2)
 
     return false;
 }
+
+//--------------------------------
+
+template<typename T>
+cc_combo_key CC<T>::next_binary(cc_combo_key const& binary) {
+
+    size_t num_bits = binary.size();
+    char next_bin[num_bits + 1];
+    next_bin[num_bits] = '\0';
+    std::copy(binary.begin(), binary.end(), next_bin);
+
+    for(size_t i = num_bits - 1; i >= 0; --i) {
+        next_bin[i] = flip_bit(next_bin[i]);
+        if(next_bin[i] == '1')
+            break;
+    }
+
+    return std::string(next_bin);
+}

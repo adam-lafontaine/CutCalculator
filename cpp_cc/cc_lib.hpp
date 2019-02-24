@@ -97,7 +97,7 @@ private:
     cc_combo_key to_binary(u_int_t value, unsigned num_bits);
     u_int_t to_decimal(cc_combo_key const& binary);    
     bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2);
-    // next_binary()
+    cc_combo_key next_binary(cc_combo_key const& binary);
     // skip_binary()
     // combo_size()
     // void build_piece_combos();

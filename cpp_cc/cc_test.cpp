@@ -183,6 +183,46 @@ string test_has_common_bit() {
 
 //-----------------------------
 
+string test_next_binary() {
+    print("\nTest next_binary(cc_combo_key const& binary)");
+
+    string success = "Pass";
+
+    /*
+    source = [
+        {'in': '1011', 'out': '1100'}, 
+        {'in': '100011', 'out': '100100'}, 
+        {'in': '0000000', 'out': '0000001'}
+    ]
+    */
+
+   vector<pair<string, string>> source {
+       {"1011", "1100",},
+       {"100011", "100100",},
+       {"0000000", "0000001",},
+       {"11111", "00000",},
+       {"0010010", "0010011",}
+   };
+
+    CC<int> my_cc;
+    stringstream ss;
+
+    for(auto& item : source) {
+        auto bin = item.first;
+        auto exp = item.second;
+        auto res = my_cc.next_binary(bin);
+        ss << "  binary = " << bin << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());    
+
+    return success;
+}
+
 /*
 
 string test_my_func() {
@@ -206,7 +246,8 @@ int main() {
         {"flip_bit", test_flip_bit()},
         {"to_binary()", test_to_binary()},
         {"to_decimal()", test_to_decimal()},
-        {"has_common_bit()", test_has_common_bit()}
+        {"has_common_bit()", test_has_common_bit()},
+        {"next_binary()", test_next_binary()}
     };
 
     print("\n");
