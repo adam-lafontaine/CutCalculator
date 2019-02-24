@@ -461,7 +461,11 @@ def test_skip_binary():
     print("\nTest: skip_binary(binary)")
 
     success = "Pass"
-    source = [{'in': '1100100', 'out': '1101000'}, {'in': '0010001000', 'out': '0010010000'}, {'in': '11111', 'out': '00000'}]
+    source = [
+        {'in': '1100100', 'out': '1101000'}, 
+        {'in': '0010001000', 'out': '0010010000'}, 
+        {'in': '11111', 'out': '00000'}
+    ]
 
     my_cc = cc.CC()
 

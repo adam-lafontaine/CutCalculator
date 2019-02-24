@@ -118,3 +118,25 @@ cc_combo_key CC<T>::next_binary(cc_combo_key const& binary) {
 
     return std::string(next_bin);
 }
+
+//----------------------------
+
+template<typename T>
+cc_combo_key CC<T>::skip_binary(cc_combo_key const& binary) {
+
+    size_t num_bits = binary.size();
+    char next_bin[num_bits + 1];
+    next_bin[num_bits] = '\0';
+    std::copy(binary.begin(), binary.end(), next_bin);
+
+    next_bin[num_bits - 1] = '1';
+
+    for(size_t i = num_bits - 2; i >= 0; --i) {        
+        if(next_bin[i] == '1')
+            break;
+        else
+            next_bin[i] = '1';       
+    }
+
+    return next_binary(std::string(next_bin));
+}

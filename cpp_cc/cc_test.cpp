@@ -223,6 +223,38 @@ string test_next_binary() {
     return success;
 }
 
+//-------------------------
+
+string test_skip_binary() {
+    print("\nTest skip_binary(cc_combo_key const& binary)");
+
+    string success = "Pass";
+
+    vector<pair<string, string>> source {
+        {"1100100", "1101000"},
+        {"0010001000", "0010010000"},
+        {"11111", "00000"}
+    };
+
+    CC<int> my_cc;
+    stringstream ss;
+
+    for(auto& item : source) {
+        auto bin = item.first;
+        auto exp = item.second;
+        auto res = my_cc.skip_binary(bin);
+        ss << "  binary = " << bin << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());    
+
+    return success;
+}
+
 /*
 
 string test_my_func() {
@@ -247,7 +279,8 @@ int main() {
         {"to_binary()", test_to_binary()},
         {"to_decimal()", test_to_decimal()},
         {"has_common_bit()", test_has_common_bit()},
-        {"next_binary()", test_next_binary()}
+        {"next_binary()", test_next_binary()},
+        {"skip_binary()", test_skip_binary()}
     };
 
     print("\n");

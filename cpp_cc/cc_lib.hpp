@@ -98,7 +98,7 @@ private:
     u_int_t to_decimal(cc_combo_key const& binary);    
     bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2);
     cc_combo_key next_binary(cc_combo_key const& binary);
-    // skip_binary()
+    cc_combo_key skip_binary(cc_combo_key const& binary);
     // combo_size()
     // void build_piece_combos();
     // filter_pieces()
