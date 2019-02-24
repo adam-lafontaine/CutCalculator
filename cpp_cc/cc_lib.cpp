@@ -6,7 +6,7 @@
 #include "cc_lib.hpp"
 
 // must declare used types here or include implementation in header
-template class CC<int>;
+//template class CC<int>;
 
 /*
 template<typename T>
@@ -29,22 +29,22 @@ void CC<T>::set_inputs(piece_list<T> const& pieces, container_list<T> const& con
 
 //-------------------------------------
 
-template<typename T>
-bool CC<T>::has_bit(cc_combo_key const& binary) {
+
+bool has_bit(cc_combo_key const& binary) {
     return binary.find('1') != std::string::npos;
 }
 
 //--------------------------------
 
-template<typename T>
-char CC<T>::flip_bit(char bit) {
+
+char flip_bit(char bit) {
     return bit == '0' ? '1' : '0';
 }
 
 //--------------------------------------
 
-template<typename T>
-cc_combo_key CC<T>::to_binary(u_int_t value, unsigned num_bits) {
+
+cc_combo_key to_binary(u_int_t value, unsigned num_bits) {
 
     std::stringstream ss;
     char bin_values[] = "01";
@@ -70,8 +70,8 @@ cc_combo_key CC<T>::to_binary(u_int_t value, unsigned num_bits) {
 
 //-------------------------------
 
-template<typename T>
-u_int_t CC<T>::to_decimal(cc_combo_key const& binary) {
+
+u_int_t to_decimal(cc_combo_key const& binary) {
     u_int_t val = 0;
     int exp = -1;
     for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
@@ -86,8 +86,8 @@ u_int_t CC<T>::to_decimal(cc_combo_key const& binary) {
 
 //------------------------
 
-template<typename T>
-bool CC<T>::has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
+
+bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
 
     auto last_1 = bin_1.length() - 1;
     auto last_2 = bin_2.length() - 1;
@@ -102,8 +102,8 @@ bool CC<T>::has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2)
 
 //--------------------------------
 
-template<typename T>
-cc_combo_key CC<T>::next_binary(cc_combo_key const& binary) {
+
+cc_combo_key next_binary(cc_combo_key const& binary) {
 
     size_t num_bits = binary.size();
     char next_bin[num_bits + 1];
@@ -121,8 +121,8 @@ cc_combo_key CC<T>::next_binary(cc_combo_key const& binary) {
 
 //----------------------------
 
-template<typename T>
-cc_combo_key CC<T>::skip_binary(cc_combo_key const& binary) {
+
+cc_combo_key skip_binary(cc_combo_key const& binary) {
 
     size_t num_bits = binary.size();
     char next_bin[num_bits + 1];

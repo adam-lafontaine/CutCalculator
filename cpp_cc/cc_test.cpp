@@ -22,15 +22,13 @@ string test_has_bit() {
     size_t num_ele = 5;
     string source[] = {"01110", "000", "1010110", "0000000", "0001000"};
     bool expected[] = {true, false, true, false, true};
-
-    CC<int> my_cc;
-
+    
     stringstream ss;
 
     for (size_t i = 0; i < num_ele; ++i) {
         auto src = source[i];
         auto exp = expected[i] ? "true" : "false";
-        auto res = my_cc.has_bit(src) ? "true" : "false";
+        auto res = has_bit(src) ? "true" : "false";
         ss << "  binary = " << src << endl;
         ss << "expected = " << exp << endl;
         ss << "  result = " << res << endl;
@@ -53,15 +51,13 @@ string test_flip_bit() {
     size_t num_ele = 2;
     char source[] = {'0', '1'};
     char expected[] = {'1', '0'};
-
-    CC<int> my_cc;
-
+    
     stringstream ss;
 
     for (size_t i = 0; i < num_ele; ++i) {
         auto src = source[i];
         auto exp = expected[i];
-        auto res = my_cc.flip_bit(src);
+        auto res = flip_bit(src);
         ss << "     bit = " << src << endl;
         ss << "expected = " << exp << endl;
         ss << "  result = " << res << endl;
@@ -88,15 +84,14 @@ string test_to_binary() {
         make_tuple(3205, 5, "110010000101"),
         make_tuple(1, 12, "000000000001")      
     };
-
-    CC<int> my_cc;
+    
     stringstream ss;
 
     for(auto& item : source) {
         auto value = get<0>(item);
         auto num_bits = get<1>(item);
         auto exp = get<2>(item);
-        auto res = my_cc.to_binary(value, num_bits);
+        auto res = to_binary(value, num_bits);
         ss << "value = " << value << ", num_bits = " << num_bits << endl;
         ss << "expected = " << exp << endl;
         ss << "  result = " << res << endl;
@@ -125,14 +120,13 @@ string test_to_decimal() {
         {"0000100011", 35},
         {"00001001001110001", 4721}
     };
-
-    CC<int> my_cc;
+    
     stringstream ss;
 
     for(auto& item : source) {
         auto bin = item.first;
         auto exp = item.second;
-        auto res = my_cc.to_decimal(bin);
+        auto res = to_decimal(bin);
         ss << "  binary = " << bin << endl;
         ss << "expected = " << exp << endl;
         ss << "  result = " << res << endl;
@@ -160,15 +154,14 @@ string test_has_common_bit() {
         make_tuple("0100110011", "0010", true),
         make_tuple("1001001", "0110110", false)
     };
-
-    CC<int> my_cc;
+    
     stringstream ss;
 
     for(auto& item : source) {
         auto bin_1 = get<0>(item);
         auto bin_2 = get<1>(item);
         auto exp = get<2>(item) ? "true" : "false";
-        auto res = my_cc.has_common_bit(bin_1, bin_2) ? "true" : "false";
+        auto res = has_common_bit(bin_1, bin_2) ? "true" : "false";
         ss << "bin_1 = " << bin_1 << ", bin_2 = " << bin_2 << endl;
         ss << "expected = " << exp << endl;
         ss << "  result = " << res << endl;
@@ -188,29 +181,20 @@ string test_next_binary() {
 
     string success = "Pass";
 
-    /*
-    source = [
-        {'in': '1011', 'out': '1100'}, 
-        {'in': '100011', 'out': '100100'}, 
-        {'in': '0000000', 'out': '0000001'}
-    ]
-    */
-
-   vector<pair<string, string>> source {
-       {"1011", "1100",},
-       {"100011", "100100",},
-       {"0000000", "0000001",},
-       {"11111", "00000",},
-       {"0010010", "0010011",}
-   };
-
-    CC<int> my_cc;
+    vector<pair<string, string>> source {
+        {"1011", "1100",},
+        {"100011", "100100",},
+        {"0000000", "0000001",},
+        {"11111", "00000",},
+        {"0010010", "0010011",}
+    };
+    
     stringstream ss;
 
     for(auto& item : source) {
         auto bin = item.first;
         auto exp = item.second;
-        auto res = my_cc.next_binary(bin);
+        auto res = next_binary(bin);
         ss << "  binary = " << bin << endl;
         ss << "expected = " << exp << endl;
         ss << "  result = " << res << endl;
@@ -235,14 +219,13 @@ string test_skip_binary() {
         {"0010001000", "0010010000"},
         {"11111", "00000"}
     };
-
-    CC<int> my_cc;
+    
     stringstream ss;
 
     for(auto& item : source) {
         auto bin = item.first;
         auto exp = item.second;
-        auto res = my_cc.skip_binary(bin);
+        auto res = skip_binary(bin);
         ss << "  binary = " << bin << endl;
         ss << "expected = " << exp << endl;
         ss << "  result = " << res << endl;
