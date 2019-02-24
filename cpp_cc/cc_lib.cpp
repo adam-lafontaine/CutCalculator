@@ -6,7 +6,7 @@
 #include "cc_lib.hpp"
 
 // must declare used types here or include implementation in header
-//template class CC<int>;
+template class CC<int>;
 
 /*
 template<typename T>

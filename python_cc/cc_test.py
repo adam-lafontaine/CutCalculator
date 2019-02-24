@@ -917,7 +917,8 @@ def main():
         'skip_binary()': test_skip_binary(),
         'to_binary()': test_to_binary(),        
         'to_integer()': test_to_integer(),
-        'set_inputs()': test_set_inputs(),
+        
+        'set_inputs()': test_set_inputs(),        
         'combo_size()': test_combo_size(),
         'build_piece_combos()': test_build_piece_combos(),
         'filter_pieces()': test_filter_pieces(),

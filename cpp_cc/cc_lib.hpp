@@ -81,28 +81,39 @@ template<typename T>
 class CC {
 
 private:    
+    piece_list<T>               _pieces;
+    container_list<T>           _containers;
 
     cc_dict<piece_combo_ptr<T>> _piece_combos;
-    piece_list<T> _pieces;
-    container_list<T> _containers;
-    result_list<T> _results;
+    result_list<T>              _results;
 
     T _loss_per_piece;
     T _tolerance;
-
-    public: // temp for testing    
+       
     // combo_size()
     // void build_piece_combos();
     // filter_pieces()
     // best_match()
     // remove_combos()
 
-//public:
+public:
     CC() {}
     ~CC() {}
 
-    //void set_inputs(piece_list<T> const& pieces, container_list<T> const& containers, T loss);
     //void sort();
+
+    // setters
+    pieces(piece_list<T>& pieces)  { _pieces = pieces; }
+
+
+    // getters
+    piece_list<T> const& pieces();
+
+
+
+    
+
+
 };
 
 // binary functions
