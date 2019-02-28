@@ -17,9 +17,12 @@ template<typename T> using piece_combo_ptr = std::unique_ptr<PieceCombo<T>>;
 template<typename T> using piece_ptr = std::unique_ptr<Piece<T>>;
 template<typename T> using container_ptr = std::unique_ptr<Container<T>>;
 template<typename T> using result_ptr = std::unique_ptr<Result<T>>;
+
 template<typename T> using piece_list = cc_list<piece_ptr<T>>;
 template<typename T> using container_list = cc_list<container_ptr<T>>;
 template<typename T> using result_list = cc_list<result_ptr<T>>;
+
+
 
 
 template<typename T>
@@ -103,11 +106,11 @@ public:
     //void sort();
 
     // setters
-    pieces(piece_list<T>& pieces)  { _pieces = pieces; }
-
+    void pieces(std::vector<Piece<T>>& pieces);
+    
 
     // getters
-    piece_list<T> const& pieces();
+    piece_list<T> const& pieces() { return _pieces; }
 
 
 

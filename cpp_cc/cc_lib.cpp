@@ -7,6 +7,7 @@
 
 // must declare used types here or include implementation in header
 template class CC<int>;
+template class CC<double>;
 
 /*
 template<typename T>
@@ -139,4 +140,16 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
     }
 
     return next_binary(std::string(next_bin));
+}
+
+//-------------------------------------
+
+template<typename T>
+void CC<T>::pieces(std::vector<Piece<T>>& pieces) {
+
+    for(auto it = pieces.begin(); it != pieces.end(); ++it) {
+        std::unique_ptr<Piece<T>> ptr(&(*it));
+        _pieces.push_back(std::move(ptr));
+    }
+
 }

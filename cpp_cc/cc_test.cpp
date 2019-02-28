@@ -238,6 +238,40 @@ string test_skip_binary() {
     return success;
 }
 
+//-------------------------------
+
+vector<Piece<double>> piece_factory() {
+    
+    vector<Piece<double>> list;
+
+    double sizes[] = {30, 60, 20, 40};
+    for(int i = 0; i < 4; ++i) {
+        Piece<double> pc;
+        pc.size = sizes[i];
+        list.push_back(pc);
+    }
+
+    return list;
+}
+
+//-------------------------------
+
+string test_pieces() {
+    print("\nTest pieces()");
+
+    string success = "Pass";
+
+    auto pieces = piece_factory();
+
+    CC<double> my_cc;
+    my_cc.pieces(pieces);
+
+    auto my_cc_pieces = my_cc.pieces();
+    
+
+    return success;
+}
+
 /*
 
 string test_my_func() {
