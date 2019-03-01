@@ -83,6 +83,8 @@ struct CCSortDTO {
 template<typename T>
 class CC {
 
+    friend class CCTest;
+
 private:    
     piece_list<T>               _pieces;
     container_list<T>           _containers;
@@ -93,7 +95,7 @@ private:
     T _loss_per_piece;
     T _tolerance;
        
-    //T combo_size(cc_combo_key const& binary);
+    T combo_size(cc_combo_key const& binary);
     // void build_piece_combos();
     // filter_pieces()
     // best_match()
@@ -108,11 +110,15 @@ public:
     // setters
     void pieces(piece_list<T>& pieces);
     void containers(container_list<T>& containers);
+    void loss_per_piece(T const& loss) { _loss_per_piece = loss; }
+    void tolerance (T const& tolerance) { _tolerance = tolerance; }
     
 
     // getters
     piece_list<T> const& pieces() { return _pieces; }
     container_list<T> const& containers() { return _containers; }
+    T const& loss_per_piece() { return _loss_per_piece; }
+    T const& tolerance() { return _tolerance; }
 
 
 

@@ -164,3 +164,20 @@ void CC<T>::containers(container_list<T>& containers) {
     std::sort(_containers.begin(), _containers.end(), ascending<T>);
 
 }
+
+//--------------------------------------
+
+template<typename T>
+T CC<T>::combo_size(cc_combo_key const& binary) {
+
+    T result;
+
+    for(auto i = 0; i < _pieces.size() && i < binary.size(); ++i) {
+        auto bit = binary[binary.size() - 1 - i];
+        auto size = _pieces[_pieces.size() - 1 - i]->size;
+        if(bit == '1')
+            result += size + _loss_per_piece;
+    }
+
+    return result;
+}

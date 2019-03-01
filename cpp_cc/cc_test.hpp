@@ -14,4 +14,5 @@ class CCTest {
     string test_skip_binary();
     string test_pieces();
     string test_containers();
+    string test_combo_size();
 };

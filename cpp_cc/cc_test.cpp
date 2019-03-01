@@ -360,9 +360,20 @@ string CCTest::test_containers() {
     return success;
 }
 
+//--------------------------------
+
+string CCTest::test_combo_size() {
+    print("\nTest combo_size(cc_combo_key const& binary)");
+
+    string success = "Pass";
+    
+
+    return success;
+}
+
 /*
 
-string test_my_func() {
+string CCTest::test_my_func() {
     print("\nTest my_func(int value, int num_bits)");
 
     string success = "Pass";
