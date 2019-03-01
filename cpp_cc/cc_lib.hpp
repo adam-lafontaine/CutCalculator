@@ -106,7 +106,7 @@ public:
     //void sort();
 
     // setters
-    void pieces(std::vector<Piece<T>>& pieces);
+    void pieces(piece_list<T>& pieces);
     
 
     // getters

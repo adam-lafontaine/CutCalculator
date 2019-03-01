@@ -145,11 +145,12 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
 //-------------------------------------
 
 template<typename T>
-void CC<T>::pieces(std::vector<Piece<T>>& pieces) {
+void CC<T>::pieces(piece_list<T>& pieces) {
 
     for(auto it = pieces.begin(); it != pieces.end(); ++it) {
-        std::unique_ptr<Piece<T>> ptr(&(*it));
-        _pieces.push_back(std::move(ptr));
+        //std::unique_ptr<Piece<T>> ptr(&(*it));
+        _pieces.push_back(std::move(*it));
     }
 
+    std::sort(_pieces.begin(), _pieces.end(), descending<T>);
 }

@@ -3,6 +3,7 @@
 #include <vector>
 #include <iomanip>
 #include <tuple>
+#include <string>
 
 #include "cc_lib.hpp"
 
@@ -240,18 +241,19 @@ string test_skip_binary() {
 
 //-------------------------------
 
-vector<Piece<double>> piece_factory() {
+template<typename T>
+piece_list<T> piece_factory(std::initializer_list<T> sizes) {
     
-    vector<Piece<double>> list;
-
-    double sizes[] = {30, 60, 20, 40};
-    for(int i = 0; i < 4; ++i) {
-        Piece<double> pc;
-        pc.size = sizes[i];
-        list.push_back(pc);
+    piece_list<T> vec;
+    
+    for(auto sz : sizes) {
+        auto pc = std::make_unique<Piece<T>>();
+        pc->size = sz;
+        
+        vec.push_back(std::move(pc));
     }
 
-    return list;
+    return vec;
 }
 
 //-------------------------------
@@ -261,13 +263,38 @@ string test_pieces() {
 
     string success = "Pass";
 
-    auto pieces = piece_factory();
+    auto pieces = piece_factory<double>({30.0, 60.0, 20.0, 40.0});
 
     CC<double> my_cc;
     my_cc.pieces(pieces);
 
-    auto my_cc_pieces = my_cc.pieces();
+    vector<double> expected { 60.0, 40.0, 30.0, 20.0};
+    vector<double> result;
+
+    for(auto const& pc : my_cc.pieces())
+        result.push_back(pc->size);
+
     
+    vector<tuple<string, string, string>> comp;
+    comp.push_back(make_tuple("num elements", to_string(expected.size()), to_string(result.size())));
+
+    for(auto i = 0; i < result.size() && i < expected.size(); ++i)
+        comp.push_back(make_tuple(to_string(i), to_string(expected[i]), to_string(result[i])));
+    
+    stringstream ss;
+
+    for(auto const& item : comp) {
+        auto label = get<0>(item);
+        auto exp = get<1>(item);
+        auto res = get<2>(item);
+        ss << label << ":" << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());
 
     return success;
 }
@@ -297,7 +324,8 @@ int main() {
         {"to_decimal()", test_to_decimal()},
         {"has_common_bit()", test_has_common_bit()},
         {"next_binary()", test_next_binary()},
-        {"skip_binary()", test_skip_binary()}
+        {"skip_binary()", test_skip_binary()},
+        {"pieces()", test_pieces()}
     };
 
     print("\n");
