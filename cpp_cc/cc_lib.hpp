@@ -5,7 +5,7 @@
 using cc_combo_key = std::string;
 using u_int_t = unsigned long long;
 
-template<typename T> using cc_list = std::vector<T>;
+//template<typename T> using cc_list = std::vector<T>;
 template<typename V> using cc_dict = std::map<cc_combo_key, V>;
 
 template<typename T> struct PieceCombo;
@@ -18,9 +18,9 @@ template<typename T> using piece_ptr = std::unique_ptr<Piece<T>>;
 template<typename T> using container_ptr = std::unique_ptr<Container<T>>;
 template<typename T> using result_ptr = std::unique_ptr<Result<T>>;
 
-template<typename T> using piece_list = cc_list<piece_ptr<T>>;
-template<typename T> using container_list = cc_list<container_ptr<T>>;
-template<typename T> using result_list = cc_list<result_ptr<T>>;
+template<typename T> using piece_list = std::vector<piece_ptr<T>>;
+template<typename T> using container_list = std::vector<container_ptr<T>>;
+template<typename T> using result_list = std::vector<result_ptr<T>>;
 
 
 
@@ -63,7 +63,7 @@ struct Result {
 
     cc_combo_key binary;
     piece_combo_ptr<T> combo;
-    cc_list<piece_ptr<T>> pieces;
+    piece_list<T> pieces;
     container_ptr<T> container;
     T delta;
 
@@ -73,7 +73,7 @@ template<typename T>
 struct CCSortDTO {
     public:
 
-    cc_list<result_ptr<T>> data;
+    result_list<T> data;
     bool success;
     std::string message;
 
@@ -93,7 +93,7 @@ private:
     T _loss_per_piece;
     T _tolerance;
        
-    // combo_size()
+    //T combo_size(cc_combo_key const& binary);
     // void build_piece_combos();
     // filter_pieces()
     // best_match()

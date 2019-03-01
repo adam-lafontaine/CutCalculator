@@ -142,7 +142,7 @@ function findBestStockAndCombo(stockArray, comboList, cutLoss)
 		{
 			diff = stockArray[i].pieceLength - len;
 
-			if(diff < 0 && abs(diff) < cutLoss)
+			if(diff < 0 && abs(diff) <= cutLoss)
 				diff = 0;
 
 			if(0 <= diff && diff < bestDiff)

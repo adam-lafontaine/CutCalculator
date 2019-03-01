@@ -173,6 +173,9 @@ class CC:
             for i, container in enumerate(self._containers):
                 diff = container['capacity'] - size
 
+                if diff < 0 and abs(diff) <= self._loss_per_piece:
+                    diff = 0
+
                 if 0 <= diff and diff < best_diff:
                     best_diff = diff
                     result['binary'] = binary

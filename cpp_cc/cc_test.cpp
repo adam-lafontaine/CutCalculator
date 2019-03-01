@@ -6,6 +6,7 @@
 #include <string>
 
 #include "cc_lib.hpp"
+#include "cc_test.hpp"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ void print(string const& msg) {
 
 //--------------------------------
 
-string test_has_bit() {
+string CCTest::test_has_bit() {
     print("\nTest has_bit(cc_combo_key const& binary)");
 
     string success = "Pass";
@@ -44,7 +45,7 @@ string test_has_bit() {
 
 //-----------------------------
 
-string test_flip_bit() {
+string CCTest::test_flip_bit() {
     print("\nTest flip_bit(char bit)");
 
     string success = "Pass";
@@ -73,7 +74,7 @@ string test_flip_bit() {
 
 //-----------------------------
 
-string test_to_binary() {
+string CCTest::test_to_binary() {
     print("\nTest to_binary(int value, int num_bits)");
 
     string success = "Pass";
@@ -107,7 +108,7 @@ string test_to_binary() {
 
 //---------------------------
 
-string test_to_decimal() {
+string CCTest::test_to_decimal() {
     print("\nTest to_decimal(cc_combo_key const& binary)");
 
     string success = "Pass";
@@ -143,7 +144,7 @@ string test_to_decimal() {
 
 //----------------------------
 
-string test_has_common_bit() {
+string CCTest::test_has_common_bit() {
     print("\nTest has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2)");
 
     string success = "Pass";
@@ -177,7 +178,7 @@ string test_has_common_bit() {
 
 //-----------------------------
 
-string test_next_binary() {
+string CCTest::test_next_binary() {
     print("\nTest next_binary(cc_combo_key const& binary)");
 
     string success = "Pass";
@@ -210,7 +211,7 @@ string test_next_binary() {
 
 //-------------------------
 
-string test_skip_binary() {
+string CCTest::test_skip_binary() {
     print("\nTest skip_binary(cc_combo_key const& binary)");
 
     string success = "Pass";
@@ -258,7 +259,7 @@ piece_list<T> piece_factory(std::initializer_list<T> sizes) {
 
 //-------------------------------
 
-string test_pieces() {
+string CCTest::test_pieces() {
     print("\nTest pieces()");
 
     string success = "Pass";
@@ -318,7 +319,7 @@ container_list<T> container_factory(std::initializer_list<T> sizes) {
 
 //-------------------------------
 
-string test_containers() {
+string CCTest::test_containers() {
     print("\nTest containers()");
 
     string success = "Pass";
@@ -377,16 +378,18 @@ string test_my_func() {
 
 int main() {
 
+    CCTest tester;
+
     vector<pair<string, string>> tests {
-        {"has_bit", test_has_bit()},
-        {"flip_bit", test_flip_bit()},
-        {"to_binary()", test_to_binary()},
-        {"to_decimal()", test_to_decimal()},
-        {"has_common_bit()", test_has_common_bit()},
-        {"next_binary()", test_next_binary()},
-        {"skip_binary()", test_skip_binary()},
-        {"pieces()", test_pieces()},
-        {"containers()", test_containers()}
+        {"has_bit", tester.test_has_bit()},
+        {"flip_bit", tester.test_flip_bit()},
+        {"to_binary()", tester.test_to_binary()},
+        {"to_decimal()", tester.test_to_decimal()},
+        {"has_common_bit()", tester.test_has_common_bit()},
+        {"next_binary()", tester.test_next_binary()},
+        {"skip_binary()", tester.test_skip_binary()},
+        {"pieces()", tester.test_pieces()},
+        {"containers()", tester.test_containers()}
     };
 
     print("\n");
