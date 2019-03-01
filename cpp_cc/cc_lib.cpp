@@ -147,10 +147,20 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
 template<typename T>
 void CC<T>::pieces(piece_list<T>& pieces) {
 
-    for(auto it = pieces.begin(); it != pieces.end(); ++it) {
-        //std::unique_ptr<Piece<T>> ptr(&(*it));
+    for(auto it = pieces.begin(); it != pieces.end(); ++it)
         _pieces.push_back(std::move(*it));
-    }
 
     std::sort(_pieces.begin(), _pieces.end(), descending<T>);
+}
+
+//----------------------------------------
+
+template<typename T>
+void CC<T>::containers(container_list<T>& containers) {
+
+    for(auto it = containers.begin(); it != containers.end(); ++it)
+        _containers.push_back(std::move(*it));
+
+    std::sort(_containers.begin(), _containers.end(), ascending<T>);
+
 }

@@ -107,10 +107,12 @@ public:
 
     // setters
     void pieces(piece_list<T>& pieces);
+    void containers(container_list<T>& containers);
     
 
     // getters
     piece_list<T> const& pieces() { return _pieces; }
+    container_list<T> const& containers() { return _containers; }
 
 
 

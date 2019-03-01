@@ -263,16 +263,76 @@ string test_pieces() {
 
     string success = "Pass";
 
-    auto pieces = piece_factory<double>({30.0, 60.0, 20.0, 40.0});
+    auto pieces = piece_factory<double>({ 30.0, 60.0, 20.0, 40.0 });
 
     CC<double> my_cc;
     my_cc.pieces(pieces);
 
-    vector<double> expected { 60.0, 40.0, 30.0, 20.0};
+    vector<double> expected { 60.0, 40.0, 30.0, 20.0 };
     vector<double> result;
 
     for(auto const& pc : my_cc.pieces())
         result.push_back(pc->size);
+
+    
+    vector<tuple<string, string, string>> comp;
+    comp.push_back(make_tuple("num elements", to_string(expected.size()), to_string(result.size())));
+
+    for(auto i = 0; i < result.size() && i < expected.size(); ++i)
+        comp.push_back(make_tuple(to_string(i), to_string(expected[i]), to_string(result[i])));
+    
+    stringstream ss;
+
+    for(auto const& item : comp) {
+        auto label = get<0>(item);
+        auto exp = get<1>(item);
+        auto res = get<2>(item);
+        ss << label << ":" << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());
+
+    return success;
+}
+
+//-------------------------------
+
+template<typename T>
+container_list<T> container_factory(std::initializer_list<T> sizes) {
+    
+    container_list<T> vec;
+    
+    for(auto sz : sizes) {
+        auto pc = std::make_unique<Container<T>>();
+        pc->capacity = sz;
+        
+        vec.push_back(std::move(pc));
+    }
+
+    return vec;
+}
+
+//-------------------------------
+
+string test_containers() {
+    print("\nTest containers()");
+
+    string success = "Pass";
+
+    auto containers = container_factory<double>({ 300.0, 200.0, 150.0 });
+
+    CC<double> my_cc;
+    my_cc.containers(containers);
+
+    vector<double> expected { 150.0, 200.0, 300.0 };
+    vector<double> result;
+
+    for(auto const& pc : my_cc.containers())
+        result.push_back(pc->capacity);
 
     
     vector<tuple<string, string, string>> comp;
@@ -325,7 +385,8 @@ int main() {
         {"has_common_bit()", test_has_common_bit()},
         {"next_binary()", test_next_binary()},
         {"skip_binary()", test_skip_binary()},
-        {"pieces()", test_pieces()}
+        {"pieces()", test_pieces()},
+        {"containers()", test_containers()}
     };
 
     print("\n");
