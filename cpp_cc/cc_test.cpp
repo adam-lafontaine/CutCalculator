@@ -14,6 +14,23 @@ void print(string const& msg) {
     cout << msg << endl;
 }
 
+template<typename T>
+void print(string const& label, std::initializer_list<T> const& list) {
+    cout << label << ": [ ";
+    auto last = list.size() - 1;    
+    for(auto i = 0; i <= last; ++i) {
+        cout << *(list.begin() + i);
+        if(i != last)
+        cout <<", ";
+    }
+    cout << " ]" << endl;
+}
+
+template<typename T>
+void print(string const& label, T value) {
+    cout << label << ": " << value << endl;
+}
+
 //--------------------------------
 
 string CCTest::test_has_bit() {
@@ -366,7 +383,53 @@ string CCTest::test_combo_size() {
     print("\nTest combo_size(cc_combo_key const& binary)");
 
     string success = "Pass";
-    
+
+    auto pieces = piece_factory<double>({ 30.0, 60.0, 40.0 });
+    vector<string> combos { "001", "010", "100", "101", "011", "110", "111" };
+    vector<double> expected { 30.0, 40.0, 60.0, 90.0, 70.0, 100.0, 130.0 };
+
+    CC<double> my_cc;
+    my_cc.pieces(pieces);
+
+    stringstream ss;
+
+    print("pieces", { 30.0, 60.0, 40.0 });
+    print("loss", my_cc.loss_per_piece());
+
+    for(auto i = 0; i < combos.size(); ++i) {
+        auto combo = combos[i];
+        auto res = my_cc.combo_size(combo);
+        auto exp = expected[i];
+        ss << combo << ":" << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());
+
+    ss.str("");
+
+    my_cc.loss_per_piece(0.25);
+
+    vector<double> expected_2 { 30.25, 40.25, 60.25, 90.5, 70.5, 100.5, 130.75 };
+
+    print("pieces", { 30.0, 60.0, 40.0 });
+    print("loss", my_cc.loss_per_piece());
+
+    for(auto i = 0; i < combos.size(); ++i) {
+        auto combo = combos[i];
+        auto res = my_cc.combo_size(combo);
+        auto exp = expected_2[i];
+        ss << combo << ":" << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());
 
     return success;
 }
@@ -400,7 +463,8 @@ int main() {
         {"next_binary()", tester.test_next_binary()},
         {"skip_binary()", tester.test_skip_binary()},
         {"pieces()", tester.test_pieces()},
-        {"containers()", tester.test_containers()}
+        {"containers()", tester.test_containers()},
+        {"combo_size()", tester.test_combo_size()}
     };
 
     print("\n");

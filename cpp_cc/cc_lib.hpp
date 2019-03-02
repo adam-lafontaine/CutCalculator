@@ -92,8 +92,8 @@ private:
     cc_dict<piece_combo_ptr<T>> _piece_combos;
     result_list<T>              _results;
 
-    T _loss_per_piece;
-    T _tolerance;
+    T _loss_per_piece = 0.0;
+    T _tolerance = 0.0;
        
     T combo_size(cc_combo_key const& binary);
     // void build_piece_combos();

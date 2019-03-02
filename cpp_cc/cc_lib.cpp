@@ -147,6 +147,8 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
 template<typename T>
 void CC<T>::pieces(piece_list<T>& pieces) {
 
+    _pieces.clear();
+
     for(auto it = pieces.begin(); it != pieces.end(); ++it)
         _pieces.push_back(std::move(*it));
 
@@ -157,6 +159,8 @@ void CC<T>::pieces(piece_list<T>& pieces) {
 
 template<typename T>
 void CC<T>::containers(container_list<T>& containers) {
+
+    _containers.clear();
 
     for(auto it = containers.begin(); it != containers.end(); ++it)
         _containers.push_back(std::move(*it));
