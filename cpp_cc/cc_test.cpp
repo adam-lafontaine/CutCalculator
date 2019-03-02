@@ -265,7 +265,7 @@ piece_list<T> piece_factory(std::initializer_list<T> sizes) {
     piece_list<T> vec;
     
     for(auto sz : sizes) {
-        auto pc = std::make_unique<Piece<T>>();
+        auto pc = std::make_shared<Piece<T>>();
         pc->size = sz;
         
         vec.push_back(std::move(pc));

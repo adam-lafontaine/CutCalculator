@@ -14,7 +14,7 @@ template<typename T> struct Container;
 template<typename T> struct Result;
 
 template<typename T> using piece_combo_ptr = std::unique_ptr<PieceCombo<T>>;
-template<typename T> using piece_ptr = std::unique_ptr<Piece<T>>;
+template<typename T> using piece_ptr = std::shared_ptr<Piece<T>>;
 template<typename T> using container_ptr = std::unique_ptr<Container<T>>;
 template<typename T> using result_ptr = std::unique_ptr<Result<T>>;
 
