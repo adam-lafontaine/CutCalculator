@@ -185,3 +185,20 @@ T CC<T>::combo_size(cc_combo_key const& binary) {
 
     return result;
 }
+
+//------------------------------------
+
+template<typename T>
+piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) {
+
+    piece_list<T> result;
+    for(auto i = 0; i < binary.size() && i < _pieces.size(); ++i) {
+        auto bit = binary[binary.size() - 1 - i];        
+        if(bit == '1')
+            result.push_back(_pieces[_pieces.size() - 1 - i]);
+    }
+
+    std::sort(result.begin(), result.end(), descending<T>); // not necessary
+
+    return result;
+}

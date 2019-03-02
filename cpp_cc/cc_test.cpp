@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <tuple>
 #include <string>
+#include <algorithm>
 
 #include "cc_lib.hpp"
 #include "cc_test.hpp"
@@ -21,7 +22,7 @@ void print(string const& label, std::initializer_list<T> const& list) {
     for(auto i = 0; i <= last; ++i) {
         cout << *(list.begin() + i);
         if(i != last)
-        cout <<", ";
+            cout <<", ";
     }
     cout << " ]" << endl;
 }
@@ -29,6 +30,21 @@ void print(string const& label, std::initializer_list<T> const& list) {
 template<typename T>
 void print(string const& label, T value) {
     cout << label << ": " << value << endl;
+}
+
+template<typename T>
+string vector_to_string(vector<T> const& list) {
+    stringstream ss;
+    ss << "[ ";
+    auto last = list.size() - 1;    
+    for(auto i = 0; i <= last; ++i) {
+        ss << *(list.begin() + i);
+        if(i != last)
+            ss <<", ";
+    }
+    ss << " ]";
+
+    return ss.str();
 }
 
 //--------------------------------
@@ -434,6 +450,56 @@ string CCTest::test_combo_size() {
     return success;
 }
 
+//------------------------------
+
+string CCTest::test_filter_pieces() {
+    print("\nTest filter_pieces(cc_combo_key const& binary)");
+
+    string success = "Pass";
+
+    auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0 });
+    vector<string> combos { "001", "010", "100", "101", "011", "110", "111" };
+
+    vector<vector<double>> expected_sizes {
+        {20.0},
+        {30.0},
+        {60.0},
+        {60.0, 20.0},
+        {30.0, 20.0},
+        {60.0, 30.0},
+        {60.0, 30.0, 20.0}
+    };
+
+    CC<double> my_cc;
+    my_cc.pieces(pieces);
+
+    print("pieces", { 30.0, 20.0, 60.0 });
+
+    stringstream ss;
+
+    for(auto i = 0; i < combos.size(); ++i) {
+        auto combo = combos[i];
+        auto combo_pieces = my_cc.filter_pieces(combo);
+
+        vector<double> sizes(combo_pieces.size());        
+        std::transform(combo_pieces.begin(), combo_pieces.end(), sizes.begin(), 
+            [](piece_ptr<double> p) -> double { return p->size; });
+
+        auto expected = expected_sizes[i];
+        auto res = vector_to_string(sizes);
+        auto exp = vector_to_string(expected);
+        ss << combo << ":" << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+
+    print(ss.str());
+
+    return success;
+}
+
 /*
 
 string CCTest::test_my_func() {
@@ -464,7 +530,8 @@ int main() {
         {"skip_binary()", tester.test_skip_binary()},
         {"pieces()", tester.test_pieces()},
         {"containers()", tester.test_containers()},
-        {"combo_size()", tester.test_combo_size()}
+        {"combo_size()", tester.test_combo_size()},
+        {"filter_pieces()", tester.test_filter_pieces()}
     };
 
     print("\n");

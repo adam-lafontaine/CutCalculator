@@ -96,8 +96,10 @@ private:
     T _tolerance = 0.0;
        
     T combo_size(cc_combo_key const& binary);
+    piece_list<T> filter_pieces(cc_combo_key const& binary);
+
     // void build_piece_combos();
-    // filter_pieces()
+    
     // best_match()
     // remove_combos()
 
