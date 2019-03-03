@@ -29,7 +29,13 @@ template<typename T>
 struct PieceCombo {
     public:
 
+    PieceCombo(cc_combo_key const& bin, T const& sz) {
+        binary = bin;
+        combo_size = sz;
+    }
+
     T combo_size;
+    cc_combo_key binary;
     // other properties
 
 };

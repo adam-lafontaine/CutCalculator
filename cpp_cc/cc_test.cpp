@@ -567,6 +567,17 @@ string CCTest::test_max_capacity() {
     return success;
 }
 
+//------------------------
+
+string CCTest::test_build_piece_combos() {
+    print("\nTest build_piece_combos()");
+
+    string success = "PassNo";
+    
+
+    return success;
+}
+
 /*
 
 string CCTest::test_my_func() {
@@ -599,7 +610,8 @@ int main() {
         {"containers()", tester.test_containers()},
         {"combo_size()", tester.test_combo_size()},
         {"filter_pieces()", tester.test_filter_pieces()},
-        {"max_capacity()", tester.test_max_capacity()}
+        {"max_capacity()", tester.test_max_capacity()},
+        {"build_piece_combos()", tester.test_build_piece_combos()}
     };
 
     print("\n");

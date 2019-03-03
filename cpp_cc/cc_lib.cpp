@@ -224,23 +224,16 @@ void CC<T>::build_piece_combos() {
         return;
 
     auto binary = to_binary(1, _pieces.size());
-    //auto max_capacity = 
+    auto max_cap = max_capacity();
 
-
-
-    /*
-    int_val = 1
-        binary = self.to_binary(int_val, len(self._pieces))
-        max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
-        
-        while self.has_bit(binary):
-            size = self.combo_size(binary)
-            if size <= max_capacity:
-                self._piece_combos[binary] = {'combo_size': size}
-                binary = self.next_binary(binary)
-            else:
-                binary = self.skip_binary(binary)
-
-    */
+    while(has_bit(binary)) {
+        auto size = combo_size(binary);
+        if(size <= max_cap) {
+            _piece_combos[binary] = std::make_unique<PieceCombo<T>>(binary, size);
+            binary = next_binary(binary);
+        }
+        else
+            binary = skip_binary(binary);
+    }
 
 }
