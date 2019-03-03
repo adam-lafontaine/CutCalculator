@@ -47,6 +47,21 @@ string vector_to_string(vector<T> const& list) {
     return ss.str();
 }
 
+template<typename T>
+string list_to_string(initializer_list<T> const& list) {
+    stringstream ss;
+    ss << "[ ";
+    auto last = list.size() - 1;    
+    for(auto i = 0; i <= last; ++i) {
+        ss << *(list.begin() + i);
+        if(i != last)
+            ss <<", ";
+    }
+    ss << " ]";
+
+    return ss.str();
+}
+
 //--------------------------------
 
 string CCTest::test_has_bit() {
@@ -481,9 +496,12 @@ string CCTest::test_filter_pieces() {
         auto combo = combos[i];
         auto combo_pieces = my_cc.filter_pieces(combo);
 
+        // for comparison
+        std::sort(combo_pieces.begin(), combo_pieces.end(), descending<double>);
+
         vector<double> sizes(combo_pieces.size());        
         std::transform(combo_pieces.begin(), combo_pieces.end(), sizes.begin(), 
-            [](piece_ptr<double> p) -> double { return p->size; });
+            [](piece_ptr<double> p) -> double { return p->size; });        
 
         auto expected = expected_sizes[i];
         auto res = vector_to_string(sizes);
@@ -496,6 +514,55 @@ string CCTest::test_filter_pieces() {
     }
 
     print(ss.str());
+
+    return success;
+}
+
+//---------------------------
+
+string CCTest::test_max_capacity() {
+    print("\nTest max_capacity()");
+
+    string success = "Pass";    
+
+    vector<initializer_list<double>> capacities {
+        { 300.0, 200.0, 150.0 },
+        { 60.0, 40.0, 20.0, 80.0 },
+        { 10.5, 90.2, 62.4, 58.6, 25.6 }
+    };
+
+    double loss = 0.5;
+    vector<double> expected;
+
+    CC<double> my_cc;
+
+    stringstream ss;    
+
+    for(auto const& list : capacities) {
+        auto containers = container_factory<double>(list);
+        my_cc.containers(containers);
+        my_cc.loss_per_piece(0.0);
+        auto exp = max(list);
+        auto res = my_cc.max_capacity();
+        ss << "capacities: " << list_to_string(list) << endl;
+        ss << " expected = " << exp << endl;
+        ss << "   result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+        
+        my_cc.loss_per_piece(loss);
+        exp += loss;
+        res = my_cc.max_capacity();
+
+        ss << "     loss: " << loss << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+
+    }
+
+    print(ss.str());    
 
     return success;
 }
@@ -531,7 +598,8 @@ int main() {
         {"pieces()", tester.test_pieces()},
         {"containers()", tester.test_containers()},
         {"combo_size()", tester.test_combo_size()},
-        {"filter_pieces()", tester.test_filter_pieces()}
+        {"filter_pieces()", tester.test_filter_pieces()},
+        {"max_capacity()", tester.test_max_capacity()}
     };
 
     print("\n");

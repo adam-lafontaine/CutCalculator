@@ -97,8 +97,9 @@ private:
        
     T combo_size(cc_combo_key const& binary);
     piece_list<T> filter_pieces(cc_combo_key const& binary);
+    T max_capacity();
 
-    // void build_piece_combos();
+    void build_piece_combos();
     
     // best_match()
     // remove_combos()

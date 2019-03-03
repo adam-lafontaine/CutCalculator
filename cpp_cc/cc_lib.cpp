@@ -198,7 +198,49 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) {
             result.push_back(_pieces[_pieces.size() - 1 - i]);
     }
 
-    std::sort(result.begin(), result.end(), descending<T>); // not necessary
+    //std::sort(result.begin(), result.end(), descending<T>); // not necessary
 
     return result;
+}
+
+//-----------------------------
+
+template<typename T>
+T CC<T>::max_capacity() {
+
+    //if(_containers.empty())
+    //    return ?? T.zero ??;
+
+    // last item as list is sorted
+    return _containers[_containers.size() - 1]->capacity + _loss_per_piece;
+}
+
+//------------------------------
+
+template<typename T>
+void CC<T>::build_piece_combos() {
+
+    if(_containers.empty())
+        return;
+
+    auto binary = to_binary(1, _pieces.size());
+    //auto max_capacity = 
+
+
+
+    /*
+    int_val = 1
+        binary = self.to_binary(int_val, len(self._pieces))
+        max_capacity = self._containers[-1]['capacity'] + self._loss_per_piece  # last element
+        
+        while self.has_bit(binary):
+            size = self.combo_size(binary)
+            if size <= max_capacity:
+                self._piece_combos[binary] = {'combo_size': size}
+                binary = self.next_binary(binary)
+            else:
+                binary = self.skip_binary(binary)
+
+    */
+
 }

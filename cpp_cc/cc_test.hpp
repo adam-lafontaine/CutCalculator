@@ -16,4 +16,5 @@ class CCTest {
     string test_containers();
     string test_combo_size();
     string test_filter_pieces();
+    string test_max_capacity();
 };
