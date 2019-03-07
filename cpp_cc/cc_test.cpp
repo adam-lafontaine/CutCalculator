@@ -536,7 +536,7 @@ string CCTest::test_max_capacity() {
 
     CC<double> my_cc;
 
-    stringstream ss;    
+    stringstream ss;
 
     for(auto const& list : capacities) {
         auto containers = container_factory<double>(list);
@@ -572,8 +572,57 @@ string CCTest::test_max_capacity() {
 string CCTest::test_build_piece_combos() {
     print("\nTest build_piece_combos()");
 
-    string success = "PassNo";
+    string success = "Pass";
+
+    auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0 });
+    auto containers = container_factory<double>({ 300.0, 200.0, 150.0 });
+
+    CC<double> my_cc;
+
+    my_cc.pieces(pieces);
+    my_cc.containers(containers);
+
+    my_cc.build_piece_combos();
+
+    vector<pair<string, double>> expected {
+        { "001", 20.0 },
+        { "010", 30.0 },
+        { "011", 50.0 },
+        { "100", 60.0 },
+        { "101", 80.0 },
+        { "110", 90.0 },
+        { "111", 110.0 }
+    };
+
+    stringstream ss;
+
+    auto result = &(my_cc._piece_combos);
+
+    auto not_found = result->end();
+
+    for(auto const& item : expected) {
+        auto key = item.first;
+
+        ss << "key: " << key;
+
+        if(result->find(key) == not_found) {
+            ss << " not found" << endl;
+            success = "Fail";
+            continue;
+        }
+        ss << endl;
+
+        auto exp = item.second;
+        auto res = (*result)[key]->combo_size;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
     
+    print(ss.str());
+
+    result = nullptr;
 
     return success;
 }
