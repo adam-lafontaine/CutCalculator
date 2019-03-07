@@ -501,7 +501,7 @@ string CCTest::test_filter_pieces() {
 
         vector<double> sizes(combo_pieces.size());        
         std::transform(combo_pieces.begin(), combo_pieces.end(), sizes.begin(), 
-            [](piece_ptr<double> p) -> double { return p->size; });        
+            [](auto const& p) -> double { return p->size; });        
 
         auto expected = expected_sizes[i];
         auto res = vector_to_string(sizes);
@@ -619,6 +619,24 @@ string CCTest::test_build_piece_combos() {
         if(exp != res)
             success = "Fail";
     }
+
+    //auto combo_list = my_cc._combo_list;
+
+    vector<string> expected_rev(expected.size());
+    std::transform(expected.rbegin(), expected.rend(), expected_rev.begin(),
+    [](auto const& p) -> string { return p.first; });
+
+    vector<string> combo_list(my_cc._combo_list.size());
+    std::transform(my_cc._combo_list.begin(), my_cc._combo_list.end(), combo_list.begin(),
+    [](auto const& p) -> string { return *p.get(); });
+
+    ss << "ordered combos:" << endl;
+    auto exp = vector_to_string(expected_rev);
+    auto res = vector_to_string(combo_list);
+    ss << "expected = " << exp << endl;
+    ss << "  result = " << res << endl;
+    if(exp != res)
+        success = "Fail";
     
     print(ss.str());
 

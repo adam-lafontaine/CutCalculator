@@ -3,6 +3,7 @@
 #include <memory>
 
 using cc_combo_key = std::string;
+using combo_list = std::vector<std::unique_ptr<cc_combo_key>>;
 using u_int_t = unsigned long long;
 
 //template<typename T> using cc_list = std::vector<T>;
@@ -21,6 +22,7 @@ template<typename T> using result_ptr = std::unique_ptr<Result<T>>;
 template<typename T> using piece_list = std::vector<piece_ptr<T>>;
 template<typename T> using container_list = std::vector<container_ptr<T>>;
 template<typename T> using result_list = std::vector<result_ptr<T>>;
+
 
 
 
@@ -96,6 +98,8 @@ private:
     container_list<T>           _containers;
 
     cc_dict<piece_combo_ptr<T>> _piece_combos;
+    combo_list                  _combo_list;
+
     result_list<T>              _results;
 
     T _loss_per_piece = 0.0;

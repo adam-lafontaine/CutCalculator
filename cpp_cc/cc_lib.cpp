@@ -236,6 +236,13 @@ void CC<T>::build_piece_combos() {
             binary = skip_binary(binary);
     }
 
+    for(auto& ptr : _combo_list)
+        ptr.reset();
+
+    _combo_list.clear();
+    for(auto it = _piece_combos.rbegin(); it != _piece_combos.rend(); ++it)
+        _combo_list.push_back(std::make_unique<cc_combo_key>(it->first));
+
 }
 
 //----------------------------------------
@@ -255,10 +262,11 @@ result_ptr<T> CC<T>::best_match() {
 
     //using combo_it = cc_dict<piece_combo_ptr<T>;
 
-    std::vector<cc_combo_key> combos;
-    //std::transform(_piece_combos.begin(), _piece_combos.end(), combos.begin(),
-    //[](std::pair<cc_combo_key, piece_combo_ptr<T>>&  item) -> cc_combo_key { return item.first; });
+    //std::vector<cc_combo_key> combos;
+    //for(auto const& item : _piece_combos)
+    //    combos.push_back(item.first);
 
+    //std::sort(combos.begin(), combos.end)/
 
     return result;
 }
