@@ -107,7 +107,7 @@ private:
 
     void build_piece_combos();
     
-    // best_match()
+    result_ptr<T> best_match();
     // remove_combos()
 
 public:

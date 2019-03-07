@@ -237,3 +237,28 @@ void CC<T>::build_piece_combos() {
     }
 
 }
+
+//----------------------------------------
+
+template<typename T>
+result_ptr<T> CC<T>::best_match() {
+
+    auto result = std::make_unique<Result<T>>();
+
+    if(_containers.empty())
+        return result;
+
+    auto max_cap = max_capacity();
+    auto diff = max_cap;
+    auto best_diff = diff;
+    size_t container_index = 0;
+
+    //using combo_it = cc_dict<piece_combo_ptr<T>;
+
+    std::vector<cc_combo_key> combos;
+    //std::transform(_piece_combos.begin(), _piece_combos.end(), combos.begin(),
+    //[](std::pair<cc_combo_key, piece_combo_ptr<T>>&  item) -> cc_combo_key { return item.first; });
+
+
+    return result;
+}
