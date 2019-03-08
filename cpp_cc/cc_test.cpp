@@ -634,18 +634,52 @@ string CCTest::test_best_match() {
 
     string success = "Pass";
 
-    auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0 });
-    auto containers = container_factory<double>({ 300.0, 200.0, 150.0 });
+    auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0, 40.0, 50.0 });
+    auto containers = container_factory<double>({ 85.0, 90.0, 110.0 });
 
     CC<double> my_cc;
 
     my_cc.pieces(pieces);
     my_cc.containers(containers);
+    my_cc.loss_per_piece(0.25);
+
+    vector<pair<string, string>> expected {
+        {"binary", "10001"},
+        {"combo_size", list_to_string<double>({80.5})},
+        {"pieces", list_to_string<double>({20.0, 60.0})},
+        {"container", list_to_string({85.0})},
+        {"delta", list_to_string<double>({4.5})}
+    };
 
     my_cc.build_piece_combos();
 
     auto match = my_cc.best_match();
     
+    vector<double> res_pieces(match.pieces.size());
+    transform(match.pieces.begin(), match.pieces.end(), res_pieces.begin(),
+    [](auto const& p) -> double { return p->size; });
+
+    map<string, string> result {
+        {"binary", match.binary},
+        {"combo_size", list_to_string<double>({match.combo->combo_size})},
+        {"pieces", vector_to_string(res_pieces)},
+        {"container", list_to_string({match.container->capacity})},
+        {"delta", list_to_string<double>({match.delta})}
+    };
+
+    stringstream ss;
+
+    for(auto const& item : expected) {
+        auto exp = item.second;
+        auto res = result[item.first];
+        ss << item.first << ":" << endl;
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+    }
+    
+    print(ss.str());
 
     return success;
 }
