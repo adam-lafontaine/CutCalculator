@@ -619,28 +619,33 @@ string CCTest::test_build_piece_combos() {
         if(exp != res)
             success = "Fail";
     }
-
-    //auto combo_list = my_cc._combo_list;
-
-    vector<string> expected_rev(expected.size());
-    std::transform(expected.rbegin(), expected.rend(), expected_rev.begin(),
-    [](auto const& p) -> string { return p.first; });
-
-    vector<string> combo_list(my_cc._combo_list.size());
-    std::transform(my_cc._combo_list.begin(), my_cc._combo_list.end(), combo_list.begin(),
-    [](auto const& p) -> string { return *p.get(); });
-
-    ss << "ordered combos:" << endl;
-    auto exp = vector_to_string(expected_rev);
-    auto res = vector_to_string(combo_list);
-    ss << "expected = " << exp << endl;
-    ss << "  result = " << res << endl;
-    if(exp != res)
-        success = "Fail";
     
     print(ss.str());
 
     result = nullptr;
+
+    return success;
+}
+
+//------------------------------
+
+string CCTest::test_best_match() {
+    print("\nTest best_match()");
+
+    string success = "Pass";
+
+    auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0 });
+    auto containers = container_factory<double>({ 300.0, 200.0, 150.0 });
+
+    CC<double> my_cc;
+
+    my_cc.pieces(pieces);
+    my_cc.containers(containers);
+
+    my_cc.build_piece_combos();
+
+    auto match = my_cc.best_match();
+    
 
     return success;
 }
@@ -678,7 +683,8 @@ int main() {
         {"combo_size()", tester.test_combo_size()},
         {"filter_pieces()", tester.test_filter_pieces()},
         {"max_capacity()", tester.test_max_capacity()},
-        {"build_piece_combos()", tester.test_build_piece_combos()}
+        {"build_piece_combos()", tester.test_build_piece_combos()},
+        {"best_match()", tester.test_best_match()}
     };
 
     print("\n");

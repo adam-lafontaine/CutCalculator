@@ -14,7 +14,7 @@ template<typename T> struct Piece;
 template<typename T> struct Container;
 template<typename T> struct Result;
 
-template<typename T> using piece_combo_ptr = std::unique_ptr<PieceCombo<T>>;
+template<typename T> using piece_combo_ptr = std::shared_ptr<PieceCombo<T>>;
 template<typename T> using piece_ptr = std::shared_ptr<Piece<T>>;
 template<typename T> using container_ptr = std::unique_ptr<Container<T>>;
 template<typename T> using result_ptr = std::unique_ptr<Result<T>>;
@@ -98,7 +98,6 @@ private:
     container_list<T>           _containers;
 
     cc_dict<piece_combo_ptr<T>> _piece_combos;
-    combo_list                  _combo_list;
 
     result_list<T>              _results;
 
@@ -111,7 +110,7 @@ private:
 
     void build_piece_combos();
     
-    result_ptr<T> best_match();
+    Result<T> best_match();
     // remove_combos()
 
 public:

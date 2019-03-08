@@ -229,44 +229,57 @@ void CC<T>::build_piece_combos() {
     while(has_bit(binary)) {
         auto size = combo_size(binary);
         if(size <= max_cap) {
-            _piece_combos[binary] = std::make_unique<PieceCombo<T>>(binary, size);
+            _piece_combos[binary] = std::make_shared<PieceCombo<T>>(binary, size);
             binary = next_binary(binary);
         }
         else
             binary = skip_binary(binary);
     }
-
-    for(auto& ptr : _combo_list)
-        ptr.reset();
-
-    _combo_list.clear();
-    for(auto it = _piece_combos.rbegin(); it != _piece_combos.rend(); ++it)
-        _combo_list.push_back(std::make_unique<cc_combo_key>(it->first));
-
 }
 
 //----------------------------------------
 
 template<typename T>
-result_ptr<T> CC<T>::best_match() {
+Result<T> CC<T>::best_match() {
 
-    auto result = std::make_unique<Result<T>>();
+    Result<T> result;
 
     if(_containers.empty())
         return result;
 
     auto max_cap = max_capacity();
-    auto diff = max_cap;
-    auto best_diff = diff;
-    size_t container_index = 0;
+    auto best_diff = max_cap;
+    auto container_index = _containers.begin();
 
-    //using combo_it = cc_dict<piece_combo_ptr<T>;
+    for(auto it = _piece_combos.rbegin(); it != _piece_combos.rend(); ++it) {
+        auto binary = it->first;
+        auto size = _piece_combos[binary]->combo_size;
 
-    //std::vector<cc_combo_key> combos;
-    //for(auto const& item : _piece_combos)
-    //    combos.push_back(item.first);
+        for(auto c_it = _containers.begin(); c_it != _containers.end(); ++c_it) {          
+            auto diff = (*c_it)->capacity - size;
 
-    //std::sort(combos.begin(), combos.end)/
+            if(0 <= diff && diff < best_diff) {
+                best_diff = diff;
+                result.binary = binary;
+                container_index = c_it;
+
+                if(diff <= _tolerance) {
+                    result.combo = _piece_combos[binary];
+                    result.pieces = filter_pieces(binary);
+                    result.container = std::move(*container_index);
+                    _containers.erase(container_index);
+                    result.delta = diff;
+                    return result;
+                }
+            }
+        }
+    }
+
+    result.combo = _piece_combos[result.binary];
+    result.pieces = filter_pieces(result.binary);
+    result.container = std::move(*container_index);
+    _containers.erase(container_index);
+    result.delta = best_diff;
 
     return result;
 }
