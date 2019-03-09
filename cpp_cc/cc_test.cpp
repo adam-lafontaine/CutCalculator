@@ -684,6 +684,73 @@ string CCTest::test_best_match() {
     return success;
 }
 
+//-----------------------------
+
+string CCTest::test_remove_combos() {
+    print("\nTest remove_combos()");
+
+    string success = "Pass";
+
+    auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0 });
+    auto containers = container_factory<double>({ 300.0, 200.0, 150.0 });
+
+    CC<double> my_cc;
+
+    my_cc.pieces(pieces);
+    my_cc.containers(containers);
+    my_cc.loss_per_piece(0.0);
+    my_cc.build_piece_combos();
+
+    auto func_1 = [](auto const& item) -> string { 
+        stringstream ss;
+        ss << "{" << item.first << " : " << item.second->combo_size << "}";
+        return ss.str();
+        };
+
+    auto func_2 = [](auto const& item) -> string { 
+        stringstream ss;
+        ss << "{" << item.first << " : " << item.second << "}";
+        return ss.str();
+        };
+
+    vector<cc_combo_key> combos(my_cc._piece_combos.size());
+    std::transform(my_cc._piece_combos.begin(), my_cc._piece_combos.end(), combos.begin(), func_1);
+
+    auto binary = "010";
+
+    vector<pair<string, double>> expected {
+        {"001", 20.0},
+        {"100", 60.0},
+        {"101", 80.0}
+    };
+
+    vector<string> exp_str(expected.size());
+    std::transform(expected.begin(), expected.end(), exp_str.begin(), func_2);
+
+    stringstream ss;
+    
+    ss << "combos: " << vector_to_string<string>(combos) << endl;
+    ss << "binary: " << binary << endl;
+
+    my_cc.remove_combos(binary);
+
+    vector<string> result(my_cc._piece_combos.size());
+    std::transform(my_cc._piece_combos.begin(), my_cc._piece_combos.end(), result.begin(), func_1);
+
+    auto exp = vector_to_string(exp_str);
+    auto res = vector_to_string(result);
+
+    ss << "expected: " << exp << endl;
+    ss << "  result: " << res << endl;
+
+    if(exp != res)
+        success = "Fail";    
+
+    print(ss.str());
+
+    return success;
+}
+
 /*
 
 string CCTest::test_my_func() {
@@ -718,7 +785,8 @@ int main() {
         {"filter_pieces()", tester.test_filter_pieces()},
         {"max_capacity()", tester.test_max_capacity()},
         {"build_piece_combos()", tester.test_build_piece_combos()},
-        {"best_match()", tester.test_best_match()}
+        {"best_match()", tester.test_best_match()},
+        {"remove_combos()", tester.test_remove_combos()}
     };
 
     print("\n");

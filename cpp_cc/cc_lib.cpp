@@ -283,3 +283,25 @@ Result<T> CC<T>::best_match() {
 
     return result;
 }
+
+//---------------------------
+
+template<typename T>
+void CC<T>::remove_combos(cc_combo_key const& binary) {
+
+    bool has_max = !_containers.empty();
+    T max_cap;
+
+    if(has_max)
+        max_cap = max_capacity();
+
+    std::vector<cc_combo_key> combos(_piece_combos.size());
+    std::transform(_piece_combos.begin(), _piece_combos.end(), combos.begin(),
+    [](auto const& item) -> cc_combo_key { return item.first; });
+
+    for(auto const& combo : combos) {
+        if(has_common_bit(combo, binary) || (has_max && _piece_combos[combo]->combo_size > max_cap)) 
+            _piece_combos.erase(combo);
+    }
+
+}

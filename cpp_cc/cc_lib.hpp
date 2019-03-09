@@ -111,7 +111,7 @@ private:
     void build_piece_combos();
     
     Result<T> best_match();
-    // remove_combos()
+    void remove_combos(cc_combo_key const& binary);
 
 public:
     CC() {}
