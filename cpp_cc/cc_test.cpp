@@ -751,6 +751,71 @@ string CCTest::test_remove_combos() {
     return success;
 }
 
+//-----------------------------------
+
+string CCTest::test_sort() {
+    print("\nTest sort()");
+
+    string success = "Pass";
+
+    auto pieces = piece_factory<double>({ 
+        10.0, 10.0, 10.0, 
+        48.0, 48.0, 48.0, 
+        30.0, 30.0, 30.0
+        });
+
+    auto containers = container_factory<double>({ 
+        100.0, 100.0, 100.0 , 100.0, 100.0,
+        100.0, 100.0, 100.0 , 100.0, 100.0
+        });
+
+    vector<pair<initializer_list<double>, double>> expected { // pieces, delta
+        { { 10.0, 30.0, 30.0, 30.0 }, 0.0 },
+        { { 48.0, 48.0 }, 4.0 },
+        { { 10.0, 10.0, 48.0 }, 32.0}
+    };
+
+    CC<double> my_cc;
+
+    print("No loss per piece:");
+    my_cc.pieces(pieces);
+    my_cc.containers(containers);
+    my_cc.loss_per_piece(0.0);
+    auto result = my_cc.sort();
+
+    // compare
+
+    pieces.clear();
+    containers.clear();
+
+    pieces = piece_factory<double>({ 
+        10.0, 10.0, 10.0, 
+        48.0, 48.0, 48.0, 
+        30.0, 30.0, 30.0
+        });
+
+    containers = container_factory<double>({ 
+        100.0, 100.0, 100.0 , 100.0, 100.0,
+        100.0, 100.0, 100.0 , 100.0, 100.0
+        });
+
+    expected.clear();
+    expected.push_back({ { 10.0, 10.0, 30.0, 40.0 }, 1.0 });
+    expected.push_back({ { 48.0, 48.0 }, 3.5 });
+    expected.push_back({ { 10.0, 30.0, 30.0 }, 29.5 });
+
+    print("With loss per piece:");
+    my_cc.pieces(pieces);
+    my_cc.containers(containers);
+    my_cc.loss_per_piece(0.25);
+    result = my_cc.sort();
+    
+    // compare
+
+    return success;
+}
+
+
 /*
 
 string CCTest::test_my_func() {
@@ -786,7 +851,8 @@ int main() {
         {"max_capacity()", tester.test_max_capacity()},
         {"build_piece_combos()", tester.test_build_piece_combos()},
         {"best_match()", tester.test_best_match()},
-        {"remove_combos()", tester.test_remove_combos()}
+        {"remove_combos()", tester.test_remove_combos()},
+        {"sort()", tester.test_sort()}
     };
 
     print("\n");

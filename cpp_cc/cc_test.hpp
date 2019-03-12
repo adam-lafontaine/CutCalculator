@@ -20,4 +20,5 @@ class CCTest {
     string test_build_piece_combos();
     string test_best_match();
     string test_remove_combos();
+    string test_sort();
 };

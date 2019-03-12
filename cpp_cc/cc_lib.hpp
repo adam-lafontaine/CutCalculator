@@ -117,7 +117,7 @@ public:
     CC() {}
     ~CC() {}
 
-    void sort();
+    CCSortDTO<T> sort();
 
     // setters
     void pieces(piece_list<T>& pieces);
@@ -131,11 +131,6 @@ public:
     container_list<T> const& containers() { return _containers; }
     T const& loss_per_piece() { return _loss_per_piece; }
     T const& tolerance() { return _tolerance; }
-
-
-
-    
-
 
 };
 

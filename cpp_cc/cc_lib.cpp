@@ -220,6 +220,8 @@ T CC<T>::max_capacity() {
 template<typename T>
 void CC<T>::build_piece_combos() {
 
+    _piece_combos.clear();
+
     if(_containers.empty())
         return;
 
@@ -307,10 +309,30 @@ void CC<T>::remove_combos(cc_combo_key const& binary) {
 }
 
 template<typename T>
-void CC<T>::sort() {
+CCSortDTO<T> CC<T>::sort() {
+
+    build_piece_combos();
+
+    _results.clear();
 
     while(!_containers.empty() && !_piece_combos.empty()) {
         auto match = best_match();
         remove_combos(match->binary);
+        _results.push_back(match);
     }
+
+    CCSortDTO<T> dto;
+
+    dto.data = _results;
+
+    if(_piece_combos.empty()) {
+        dto.success = true;
+        dto.message = "solution found";
+    }
+    else {
+        dto.success = false;
+        dto.message = "not enough containers";
+    }
+
+    return dto;
 }
