@@ -655,16 +655,16 @@ string CCTest::test_best_match() {
 
     auto match = my_cc.best_match();
     
-    vector<double> res_pieces(match.pieces.size());
-    transform(match.pieces.begin(), match.pieces.end(), res_pieces.begin(),
+    vector<double> res_pieces(match->pieces.size());
+    transform(match->pieces.begin(), match->pieces.end(), res_pieces.begin(),
     [](auto const& p) -> double { return p->size; });
 
     map<string, string> result {
-        {"binary", match.binary},
-        {"combo_size", list_to_string<double>({match.combo->combo_size})},
+        {"binary", match->binary},
+        {"combo_size", list_to_string<double>({match->combo->combo_size})},
         {"pieces", vector_to_string(res_pieces)},
-        {"container", list_to_string({match.container->capacity})},
-        {"delta", list_to_string<double>({match.delta})}
+        {"container", list_to_string({match->container->capacity})},
+        {"delta", list_to_string<double>({match->delta})}
     };
 
     stringstream ss;

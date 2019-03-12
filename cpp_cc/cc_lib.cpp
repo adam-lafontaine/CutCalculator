@@ -240,9 +240,9 @@ void CC<T>::build_piece_combos() {
 //----------------------------------------
 
 template<typename T>
-Result<T> CC<T>::best_match() {
+result_ptr<T> CC<T>::best_match() {
 
-    Result<T> result;
+    result_ptr<T> result = std::make_shared<Result<T>>();
 
     if(_containers.empty())
         return result;
@@ -260,26 +260,26 @@ Result<T> CC<T>::best_match() {
 
             if(0 <= diff && diff < best_diff) {
                 best_diff = diff;
-                result.binary = binary;
+                result->binary = binary;
                 container_index = c_it;
 
                 if(diff <= _tolerance) {
-                    result.combo = _piece_combos[binary];
-                    result.pieces = filter_pieces(binary);
-                    result.container = std::move(*container_index);
+                    result->combo = _piece_combos[binary];
+                    result->pieces = filter_pieces(binary);
+                    result->container = std::move(*container_index);
                     _containers.erase(container_index);
-                    result.delta = diff;
+                    result->delta = diff;
                     return result;
                 }
             }
         }
     }
 
-    result.combo = _piece_combos[result.binary];
-    result.pieces = filter_pieces(result.binary);
-    result.container = std::move(*container_index);
+    result->combo = _piece_combos[result->binary];
+    result->pieces = filter_pieces(result->binary);
+    result->container = std::move(*container_index);
     _containers.erase(container_index);
-    result.delta = best_diff;
+    result->delta = best_diff;
 
     return result;
 }
@@ -304,4 +304,13 @@ void CC<T>::remove_combos(cc_combo_key const& binary) {
             _piece_combos.erase(combo);
     }
 
+}
+
+template<typename T>
+void CC<T>::sort() {
+
+    while(!_containers.empty() && !_piece_combos.empty()) {
+        auto match = best_match();
+        remove_combos(match->binary);
+    }
 }

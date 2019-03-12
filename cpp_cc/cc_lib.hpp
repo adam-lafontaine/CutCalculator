@@ -17,7 +17,7 @@ template<typename T> struct Result;
 template<typename T> using piece_combo_ptr = std::shared_ptr<PieceCombo<T>>;
 template<typename T> using piece_ptr = std::shared_ptr<Piece<T>>;
 template<typename T> using container_ptr = std::unique_ptr<Container<T>>;
-template<typename T> using result_ptr = std::unique_ptr<Result<T>>;
+template<typename T> using result_ptr = std::shared_ptr<Result<T>>;
 
 template<typename T> using piece_list = std::vector<piece_ptr<T>>;
 template<typename T> using container_list = std::vector<container_ptr<T>>;
@@ -110,14 +110,14 @@ private:
 
     void build_piece_combos();
     
-    Result<T> best_match();
+    result_ptr<T> best_match();
     void remove_combos(cc_combo_key const& binary);
 
 public:
     CC() {}
     ~CC() {}
 
-    //void sort();
+    void sort();
 
     // setters
     void pieces(piece_list<T>& pieces);
