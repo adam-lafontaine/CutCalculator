@@ -1,139 +1,9 @@
-# TESTED
-class Piece:
-    name = ""
-    length = 0
-
-    def __init__(self, name, length):
-        self.name = name
-        self.length = length
-
-    def to_dictionary(self):
-        return { 'name': self.name, 'length': self.length } # json.dumps()
-
-    def __str__(self):
-        return f"name: {self.name}, length: {self.length}"
-
-#------------------------------------------------
-
-# TESTED
-class PieceGroup:
-    name = ""
-    length = 0
-    quantity = 0
-
-    def __init__(self, name, length, quantity):
-        self.name = name
-        self.length = length
-        self.quantity = quantity
-
-    def to_dictionary(self):
-        return { 'name': self.name, 'length': self.length, 'quantity': self.quantity }
-
-    def __str__(self):
-        return f"name: {self.name}, length: {self.length}, quantity: {self.quantity}"
-
-#------------------------------------------------
-
-
-class ResultSet:
-    name = ""
-    stock = {}
-    pieces = []
-    leftover = 0
-
-    def __init__(self, name, stock, pieces, leftover):
-        self.name = name
-        self.stock = stock
-        self.piece_groups = group_pieces(pieces)
-        self.leftover = leftover
-
-    def to_dictionary(self):
-        return {
-            'name': self.name,
-            'stock': self.stock.to_dictionary(),
-            'pieces': [item.to_dictionary() for item in self.piece_groups],
-            'leftover': self.leftover
-        }
-
-
-    def __str__(self):
-        return f"name: {self.name}\nstock: {str(self.stock)}\npieces: {[str(item) for item in self.piece_groups]}\nleftover: {self.leftover}"
-
-#--------------------------------------------------
-
-# TESTED
-# params: a list of Piece objects
-# returns a list of PieceGroup objects from the Piece objects grouped by name and length
-def group_pieces(pieces):
-    result = {}
-
-    for piece in pieces:
-        key = f"[{piece.name}][{piece.length}]"
-        if key not in result:
-            result[key] = PieceGroup(piece.name, piece.length, 0)
-
-        result[key].quantity += 1
-
-    return list(result.values())
-
-#-------------------------------------------------
-
-# TESTED
-# params: a PieceGroup object
-# returns a list of identical Piece objects
-def ungroup(group):
-    result = []
-    for i in range(group.quantity):
-        result.append(Piece(group.name, group.length))
-
-    return result
-
-#-------------------------------------------------
-
-# TESTED
-# params: a list of PieceGroup objects
-# returns a list of Piece objects
-def ungroup_list(group_list):
-    result = []
-    for grp in group_list:
-        result.extend(ungroup(grp))
-
-    return result
-
-
-#-------------------------------------------------
-
-
-# TESTED
-# binary: '01101...'
-# all_pieces: list of pieces
-# returns list of pieces in the binary combination
-# assert: 
-def get_combo_pieces(binary, all_pieces):
-    result = []    
-
-    rev_binary = binary[::-1] # makes a copy
-    all_pieces.reverse()
-
-    for i, bit in enumerate(rev_binary):
-        if bit == '1':
-            result.insert(0, all_pieces[i])
-
-    all_pieces.reverse() # by reference
-    
-    return result
-
-#-------------------------------------------------
-
-#=================================================
-
-
 
 class CC:
     _piece_combos = {} # { "001": { 'combo_size': 30, 'meta': {} }, '010': { 'combo_size': 25, 'meta': {} } }
     _pieces = []       # [ { 'size': 60, 'meta': {} }, {'size': 60, 'meta': {} } ]
     _containers = []   # [ { 'capacity': 200, 'meta': {} }, { 'capacity': 150, 'meta': {} } ]
-    _results = []      # [ { 'binary': "001" 'combo': {}, 'pieces': [], 'container': {}, 'difference': 10 }, ]
+    _results = []      # [ { 'binary': "001" 'combo': {}, 'pieces': [], 'container': {}, 'delta': 10 }, ]
 
     _loss_per_piece = 0
     _tolerance = 0
@@ -303,6 +173,10 @@ class CC:
             for i, container in enumerate(self._containers):
                 diff = container['capacity'] - size
 
+                # not needed as _loss_per_piece is included in max_capacity
+                #if diff < 0 and abs(diff) <= self._loss_per_piece:
+                #    diff = 0
+
                 if 0 <= diff and diff < best_diff:
                     best_diff = diff
                     result['binary'] = binary
@@ -312,13 +186,13 @@ class CC:
                         result['combo'] = self._piece_combos[binary]
                         result['pieces'] = self.filter_pieces(binary)
                         result['container'] = self._containers.pop(i)
-                        result['difference'] = diff
+                        result['delta'] = diff
                         return result
 
         result['combo'] = self._piece_combos[result['binary']]
         result['pieces'] = self.filter_pieces(result['binary'])
         result['container'] = self._containers.pop(container_index) # remove container
-        result['difference'] = best_diff
+        result['delta'] = best_diff
 
         return result
 
@@ -347,8 +221,8 @@ class CC:
     def sort(self):
 
         result = {
-            'data': {},
-            'success': False,
+            'data': [],
+            'success': True,
             'message': ""
         }
 
@@ -362,8 +236,141 @@ class CC:
         if len(self._piece_combos) > 0:
             result['message'] = "Not enough containers"
             result['success'] = False
+        else:
+            result['message'] = "Sort successful"
+            result['success'] = True
 
         return result
+
+#=================================================
+
+
+# TESTED
+class Piece:
+    name = ""
+    length = 0
+
+    def __init__(self, name, length):
+        self.name = name
+        self.length = length
+
+    def to_dictionary(self):
+        return { 'name': self.name, 'length': self.length } # json.dumps()
+
+    def __str__(self):
+        return f"name: {self.name}, length: {self.length}"
+
+#------------------------------------------------
+
+# TESTED
+class PieceGroup:
+    name = ""
+    length = 0
+    quantity = 0
+
+    def __init__(self, name, length, quantity):
+        self.name = name
+        self.length = length
+        self.quantity = quantity
+
+    def to_dictionary(self):
+        return { 'name': self.name, 'length': self.length, 'quantity': self.quantity }
+
+    def __str__(self):
+        return f"name: {self.name}, length: {self.length}, quantity: {self.quantity}"
+
+#------------------------------------------------
+
+
+class ResultSet:
+    name = ""
+    stock = {}
+    pieces = []
+    leftover = 0
+
+    def __init__(self, name, stock, pieces, leftover):
+        self.name = name
+        self.stock = stock
+        self.piece_groups = group_pieces(pieces)
+        self.leftover = leftover
+
+    def to_dictionary(self):
+        return {
+            'name': self.name,
+            'stock': self.stock.to_dictionary(),
+            'pieces': [item.to_dictionary() for item in self.piece_groups],
+            'leftover': self.leftover
+        }
+
+
+    def __str__(self):
+        return f"name: {self.name}\nstock: {str(self.stock)}\npieces: {[str(item) for item in self.piece_groups]}\nleftover: {self.leftover}"
+
+#--------------------------------------------------
+
+# TESTED
+# params: a list of Piece objects
+# returns a list of PieceGroup objects from the Piece objects grouped by name and length
+def group_pieces(pieces):
+    result = {}
+
+    for piece in pieces:
+        key = f"[{piece.name}][{piece.length}]"
+        if key not in result:
+            result[key] = PieceGroup(piece.name, piece.length, 0)
+
+        result[key].quantity += 1
+
+    return list(result.values())
+
+#-------------------------------------------------
+
+# TESTED
+# params: a PieceGroup object
+# returns a list of identical Piece objects
+def ungroup(group):
+    result = []
+    for i in range(group.quantity):
+        result.append(Piece(group.name, group.length))
+
+    return result
+
+#-------------------------------------------------
+
+# TESTED
+# params: a list of PieceGroup objects
+# returns a list of Piece objects
+def ungroup_list(group_list):
+    result = []
+    for grp in group_list:
+        result.extend(ungroup(grp))
+
+    return result
+
+
+#-------------------------------------------------
+
+
+# TESTED
+# binary: '01101...'
+# all_pieces: list of pieces
+# returns list of pieces in the binary combination
+# assert: 
+def get_combo_pieces(binary, all_pieces):
+    result = []    
+
+    rev_binary = binary[::-1] # makes a copy
+    all_pieces.reverse()
+
+    for i, bit in enumerate(rev_binary):
+        if bit == '1':
+            result.insert(0, all_pieces[i])
+
+    all_pieces.reverse() # by reference
+    
+    return result
+
+#-------------------------------------------------
 
 
 
