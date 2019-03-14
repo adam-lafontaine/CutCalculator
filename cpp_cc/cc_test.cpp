@@ -775,15 +775,55 @@ string CCTest::test_sort() {
         { { 10.0, 10.0, 48.0 }, 32.0}
     };
 
+    stringstream ss;
+
     CC<double> my_cc;
 
-    print("No loss per piece:");
+    ss <<"No loss per piece:" << endl;
     my_cc.pieces(pieces);
     my_cc.containers(containers);
     my_cc.loss_per_piece(0.0);
-    auto result = my_cc.sort();
+
+    auto result_dto = my_cc.sort();
+    ss << result_dto.message << endl;
+    if(!result_dto.success)
+        success = "Fail";    
 
     // compare
+    auto res_data = result_dto.data;
+    auto exp_count = expected.size();
+    auto res_count = res_data.size();
+    ss << "expected count = " << exp_count << endl;
+    ss << "  sorted count = " << res_count << endl;
+    if(exp_count != res_count)
+        success = "Fail";
+
+    vector<double> piece_sizes;
+    for(size_t i = 0; i < exp_count && i < res_count; ++i) {
+        auto result = res_data[i];
+        auto beg = result->pieces.begin();
+        auto end = result->pieces.end();
+        piece_sizes.clear();
+        piece_sizes.resize(result->pieces.size());
+        auto lambda = [](auto const& pc) -> double { return pc->size; };
+        transform(beg, end, piece_sizes.begin(), lambda);
+        
+        ss << "pieces:" << endl;
+        auto exp = list_to_string(expected[i].first);
+        auto res = vector_to_string(piece_sizes);
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+
+        ss << "delta:" <<endl;
+        auto exp_delta = expected[i].second;
+        auto res_delta = result->delta;
+        ss << "expected = " << exp_delta << endl;
+        ss << "  result = " << res_delta << endl;
+        if(exp_delta != res_delta)
+            success = "Fail";
+    }
 
     pieces.clear();
     containers.clear();
@@ -800,17 +840,57 @@ string CCTest::test_sort() {
         });
 
     expected.clear();
-    expected.push_back({ { 10.0, 10.0, 30.0, 40.0 }, 1.0 });
+    expected.push_back({ { 10.0, 10.0, 30.0, 48.0 }, 1.0 });
     expected.push_back({ { 48.0, 48.0 }, 3.5 });
-    expected.push_back({ { 10.0, 30.0, 30.0 }, 29.5 });
+    expected.push_back({ { 10.0, 30.0, 30.0 }, 29.25 });
 
-    print("With loss per piece:");
+    ss << "With loss per piece:" << endl;
     my_cc.pieces(pieces);
     my_cc.containers(containers);
     my_cc.loss_per_piece(0.25);
-    result = my_cc.sort();
+
+    result_dto = my_cc.sort();
+    ss << result_dto.message << endl;
+    if(!result_dto.success)
+        success = "Fail";
     
     // compare
+    res_data = result_dto.data;
+    exp_count = expected.size();
+    res_count = res_data.size();
+    ss << "expected count = " << exp_count << endl;
+    ss << "  sorted count = " << res_count << endl;
+    if(exp_count != res_count)
+        success = "Fail";
+    
+    for(size_t i = 0; i < exp_count && i < res_count; ++i) {
+        auto result = res_data[i];
+        auto beg = result->pieces.begin();
+        auto end = result->pieces.end();
+        piece_sizes.clear();
+        piece_sizes.resize(result->pieces.size());
+        auto lambda = [](auto const& pc) -> double { return pc->size; };
+        transform(beg, end, piece_sizes.begin(), lambda);
+        
+        ss << "pieces:" << endl;
+        auto exp = list_to_string(expected[i].first);
+        auto res = vector_to_string(piece_sizes);
+        ss << "expected = " << exp << endl;
+        ss << "  result = " << res << endl;
+        if(exp != res)
+            success = "Fail";
+
+        ss << "delta:" <<endl;
+        auto exp_delta = expected[i].second;
+        auto res_delta = result->delta;
+        ss << "expected = " << exp_delta << endl;
+        ss << "  result = " << res_delta << endl;
+        if(exp_delta != res_delta)
+            success = "Fail";
+    }
+
+
+    print(ss.str());
 
     return success;
 }
