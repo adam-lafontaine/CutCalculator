@@ -106,6 +106,10 @@ const char *str_builder_peek(const str_builder_t *sb);
  */
 char *str_builder_dump(const str_builder_t *sb, size_t *len);
 
+//========================================================
+
+
+
 /*! @}
  */
 

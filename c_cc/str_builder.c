@@ -207,5 +207,5 @@ void test_str_builder(){
     free(str);
 
     str_builder_destroy(sb);
-    return 0;
+    //return 0;
 }
