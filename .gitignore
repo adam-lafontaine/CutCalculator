@@ -3,7 +3,7 @@ node_modules
 public
 reference
 __pycache__
-
+.vscode
 
 # Windows image file caches
 Thumbs.db
@@ -53,4 +53,3 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-.vscode
