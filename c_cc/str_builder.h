@@ -108,7 +108,37 @@ char *str_builder_dump(const str_builder_t *sb, size_t *len);
 
 //========================================================
 
+/*! Add a string to the builder.
+ *
+ * param[in,out] sb  Builder.
+ * param[in]     str String to add.
+ * param[in]     len Length of string to add. If 0, strlen will be called
+ *                internally to determine length.
+ */
+void str_builder_append_str(str_builder_t *sb, const char *str, size_t len);
 
+/*! Add a character to the builder.
+ *
+ * param[in,out] sb Builder.
+ * param[in]     c  Character.
+ */
+void str_builder_append_char(str_builder_t *sb, char c);
+
+/*! Add an integer as to the builder.
+ *
+ * param[in,out] sb  Builder.
+ * param[in]     val Int to add.
+ */
+void str_builder_append_int(str_builder_t *sb, int val);
+
+/*! Add a double as to the builder.
+ *
+ * param[in,out] sb  Builder.
+ * param[in]     val double to add.
+ */
+void str_builder_append_double(str_builder_t *sb, double val);
+
+//=======================================================
 
 /*! @}
  */

@@ -172,6 +172,56 @@ char *str_builder_dump(const str_builder_t *sb, size_t *len)
     return out;
 }
 
+//=====================================================
+
+void str_builder_append_str(str_builder_t *sb, const char *str, size_t len)
+{
+    if (sb == NULL || str == NULL || *str == '\0')
+        return;
+
+    if (len == 0)
+        len = strlen(str);
+
+    str_builder_ensure_space(sb, len);
+    memmove(sb->str+sb->len, str, len);
+    sb->len += len;
+    sb->str[sb->len] = '\0';
+}
+
+void str_builder_append_char(str_builder_t *sb, char c)
+{
+    if (sb == NULL)
+        return;
+    str_builder_ensure_space(sb, 1);
+    sb->str[sb->len] = c;
+    sb->len++;
+    sb->str[sb->len] = '\0';
+}
+
+void str_builder_append_int(str_builder_t *sb, int val)
+{
+    char str[12];
+
+    if (sb == NULL)
+        return;
+
+    snprintf(str, sizeof(str), "%d", val);
+    str_builder_add_str(sb, str, 0);
+}
+
+void str_builder_append_double(str_builder_t *sb, double val)
+{
+    char str[12];
+
+    if (sb == NULL)
+        return;
+
+    snprintf(str, sizeof(str), "%f", val);
+    str_builder_add_str(sb, str, 0);
+}
+
+//=====================================================
+
 void test_str_builder(){
     str_builder_t *sb;
     char           *str;
