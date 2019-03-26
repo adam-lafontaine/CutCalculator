@@ -3,7 +3,9 @@ node_modules
 public
 reference
 __pycache__
-.vscode
+.vscode/
+
+*.ipch
 
 # Windows image file caches
 Thumbs.db
