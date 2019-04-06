@@ -4,6 +4,15 @@ public
 reference
 __pycache__
 
+# Visual Studio Code files
+.vscode/
+*.ipch
+
+#Kotlin
+META-INF
+*.class
+*.jar
+
 
 # Windows image file caches
 Thumbs.db
