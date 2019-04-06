@@ -3,6 +3,17 @@
 
 // java -jar cc_test_Kt.jar
 
+/*
+
+Compilation intermittently fails with java.io.IOException: Invalid argument.
+When it succeeds it is extreamly slow (several minutes).
+
+Compiler does not parse string interpolation properly (warning noted below).
+
+Perhaps it works in Android studio but Kotlin is simply not suitable for practical use elsewhere.
+
+ */
+
 fun main(args: Array<String>) {
     println("====== Cut Calculator Kotlin Tests ======")
 
@@ -30,6 +41,6 @@ fun main(args: Array<String>) {
         
 
     println("\nSummary")
-    for((key, value) in tests)
-        println("${key.padStart(spaces)}: $value")
+    for((key, value) in tests) // gives warning that value is never used
+        println("${key.padStart(spaces)}: ${value}")
 }
