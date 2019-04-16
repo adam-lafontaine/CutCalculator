@@ -93,7 +93,7 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
     auto last_1 = bin_1.length() - 1;
     auto last_2 = bin_2.length() - 1;
 
-    for(size_t i = 0; i <= last_1 && i <= last_2; ++i) {        
+    for(int i = 0; i <= last_1 && i <= last_2; ++i) {        
         if(bin_1[last_1 - i] == '1' && bin_2[last_2 - i] == '1')
             return true;
     }
@@ -107,17 +107,15 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
 cc_combo_key next_binary(cc_combo_key const& binary) {
 
     size_t num_bits = binary.size();
-    char next_bin[num_bits + 1];
-    next_bin[num_bits] = '\0';
-    std::copy(binary.begin(), binary.end(), next_bin);
+	cc_combo_key next_bin = binary;
 
-    for(size_t i = num_bits - 1; i >= 0; --i) {
+    for(int i = num_bits - 1; i >= 0; --i) {
         next_bin[i] = flip_bit(next_bin[i]);
         if(next_bin[i] == '1')
             break;
     }
 
-    return std::string(next_bin);
+    return next_bin;
 }
 
 //----------------------------
@@ -126,20 +124,18 @@ cc_combo_key next_binary(cc_combo_key const& binary) {
 cc_combo_key skip_binary(cc_combo_key const& binary) {
 
     size_t num_bits = binary.size();
-    char next_bin[num_bits + 1];
-    next_bin[num_bits] = '\0';
-    std::copy(binary.begin(), binary.end(), next_bin);
+	cc_combo_key next_bin = binary;
 
     next_bin[num_bits - 1] = '1';
 
-    for(size_t i = num_bits - 2; i >= 0; --i) {        
+    for(int i = num_bits - 2; i >= 0; --i) {
         if(next_bin[i] == '1')
             break;
         else
-            next_bin[i] = '1';       
+            next_bin[i] = '1';
     }
 
-    return next_binary(std::string(next_bin));
+    return next_binary(next_bin);
 }
 
 //-------------------------------------
