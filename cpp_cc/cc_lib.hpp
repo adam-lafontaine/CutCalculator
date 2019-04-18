@@ -2,7 +2,8 @@
 #include <vector>
 #include <memory>
 
-using cc_combo_key = std::string;
+using cc_bit_type = char;
+using cc_combo_key = std::basic_string<cc_bit_type>;
 using combo_list = std::vector<std::unique_ptr<cc_combo_key>>;
 using u_int_t = unsigned long long;
 
@@ -136,7 +137,7 @@ public:
 
 // binary functions
 bool has_bit(cc_combo_key const& binary);
-char flip_bit(char bit);
+cc_bit_type flip_bit(cc_bit_type bit);
 cc_combo_key to_binary(u_int_t value, unsigned num_bits);
 u_int_t to_decimal(cc_combo_key const& binary);    
 bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2);

@@ -32,13 +32,13 @@ void CC<T>::set_inputs(piece_list<T> const& pieces, container_list<T> const& con
 
 
 bool has_bit(cc_combo_key const& binary) {
-    return binary.find('1') != std::string::npos;
+    return binary.find('1') != std::string::npos; // TODO
 }
 
 //--------------------------------
 
 
-char flip_bit(char bit) {
+cc_bit_type flip_bit(cc_bit_type bit) { // TODO
     return bit == '0' ? '1' : '0';
 }
 
@@ -48,7 +48,7 @@ char flip_bit(char bit) {
 cc_combo_key to_binary(u_int_t value, unsigned num_bits) {
 
     std::stringstream ss;
-    char bin_values[] = "01";
+    cc_bit_type bin_values[] = "01"; // TODO
     u_int_t val = value;
 
     while(val > 0) {
@@ -58,11 +58,11 @@ cc_combo_key to_binary(u_int_t value, unsigned num_bits) {
         val /= 2;
     }
 
-    auto binary = ss.str();
+    auto binary = ss.str(); // TODO
     std::reverse(binary.begin(), binary.end());
     if(binary.length() < num_bits) {
         ss.str(""); // clear contents
-        ss << std::setfill('0') << std::setw(num_bits) << binary;
+        ss << std::setfill('0') << std::setw(num_bits) << binary; // TODO
         binary = ss.str();
     }
 
@@ -77,7 +77,7 @@ u_int_t to_decimal(cc_combo_key const& binary) {
     int exp = -1;
     for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
         ++exp;
-        if(*it == '1')
+        if(*it == '1') // TODO
             val += (u_int_t)std::pow(2, exp);
 
     }
@@ -94,7 +94,7 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
     auto last_2 = bin_2.length() - 1;
 
     for(int i = 0; i <= last_1 && i <= last_2; ++i) {        
-        if(bin_1[last_1 - i] == '1' && bin_2[last_2 - i] == '1')
+        if(bin_1[last_1 - i] == '1' && bin_2[last_2 - i] == '1') // TODO
             return true;
     }
 
@@ -111,7 +111,7 @@ cc_combo_key next_binary(cc_combo_key const& binary) {
 
     for(int i = num_bits - 1; i >= 0; --i) {
         next_bin[i] = flip_bit(next_bin[i]);
-        if(next_bin[i] == '1')
+        if(next_bin[i] == '1') // TODO
             break;
     }
 
@@ -126,13 +126,13 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
     size_t num_bits = binary.size();
 	cc_combo_key next_bin = binary;
 
-    next_bin[num_bits - 1] = '1';
+    next_bin[num_bits - 1] = '1'; // TODO
 
     for(int i = num_bits - 2; i >= 0; --i) {
-        if(next_bin[i] == '1')
+        if(next_bin[i] == '1') // TODO
             break;
         else
-            next_bin[i] = '1';
+            next_bin[i] = '1'; // TODO
     }
 
     return next_binary(next_bin);
@@ -175,7 +175,7 @@ T CC<T>::combo_size(cc_combo_key const& binary) {
     for(auto i = 0; i < _pieces.size() && i < binary.size(); ++i) {
         auto bit = binary[binary.size() - 1 - i];
         auto size = _pieces[_pieces.size() - 1 - i]->size;
-        if(bit == '1')
+        if(bit == '1') // TODO
             result += size + _loss_per_piece;
     }
 
@@ -190,7 +190,7 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) {
     piece_list<T> result;
     for(auto i = 0; i < binary.size() && i < _pieces.size(); ++i) {
         auto bit = binary[binary.size() - 1 - i];        
-        if(bit == '1')
+        if(bit == '1') // TODO
             result.push_back(_pieces[_pieces.size() - 1 - i]);
     }
 
