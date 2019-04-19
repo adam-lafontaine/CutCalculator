@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <sstream>
 #include <iomanip>
 #include <cmath>
 
@@ -32,38 +31,36 @@ void CC<T>::set_inputs(piece_list<T> const& pieces, container_list<T> const& con
 
 
 bool has_bit(cc_combo_key const& binary) {
-    return binary.find('1') != std::string::npos;
+    return binary.find(cc_true) != std::string::npos;
 }
 
 //--------------------------------
 
 
-char flip_bit(char bit) {
-    return bit == '0' ? '1' : '0';
+cc_bit_type flip_bit(cc_bit_type bit) {
+    return bit == cc_false ? cc_true : cc_false;
 }
 
 //--------------------------------------
 
 
 cc_combo_key to_binary(u_int_t value, unsigned num_bits) {
-
-    std::stringstream ss;
-    char bin_values[] = "01";
+    
+    cc_bit_type bin_values[] = {cc_false, cc_true};
     u_int_t val = value;
+
+    int min_bits = (int)log2(value)+1;
+
+    cc_combo_key binary(std::max((int)num_bits, min_bits), cc_false);
+
+    int bin_idx = binary.size();
 
     while(val > 0) {
         auto idx = val % 2;
-        ss << bin_values[idx];
+        --bin_idx;
+        binary[bin_idx] = bin_values[idx];
         val -= idx;
         val /= 2;
-    }
-
-    auto binary = ss.str();
-    std::reverse(binary.begin(), binary.end());
-    if(binary.length() < num_bits) {
-        ss.str(""); // clear contents
-        ss << std::setfill('0') << std::setw(num_bits) << binary;
-        binary = ss.str();
     }
 
     return binary;
@@ -77,9 +74,8 @@ u_int_t to_decimal(cc_combo_key const& binary) {
     int exp = -1;
     for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
         ++exp;
-        if(*it == '1')
+        if(*it == cc_true)
             val += (u_int_t)std::pow(2, exp);
-
     }
 
     return val;
@@ -90,11 +86,11 @@ u_int_t to_decimal(cc_combo_key const& binary) {
 
 bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
 
-    auto last_1 = bin_1.length() - 1;
-    auto last_2 = bin_2.length() - 1;
+    auto last_1 = bin_1.size() - 1;
+    auto last_2 = bin_2.size() - 1;
 
     for(int i = 0; i <= last_1 && i <= last_2; ++i) {        
-        if(bin_1[last_1 - i] == '1' && bin_2[last_2 - i] == '1')
+        if(bin_1[last_1 - i] == cc_true && bin_2[last_2 - i] == cc_true)
             return true;
     }
 
@@ -111,7 +107,7 @@ cc_combo_key next_binary(cc_combo_key const& binary) {
 
     for(int i = num_bits - 1; i >= 0; --i) {
         next_bin[i] = flip_bit(next_bin[i]);
-        if(next_bin[i] == '1')
+        if(next_bin[i] == cc_true)
             break;
     }
 
@@ -126,13 +122,13 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
     size_t num_bits = binary.size();
 	cc_combo_key next_bin = binary;
 
-    next_bin[num_bits - 1] = '1';
+    next_bin[num_bits - 1] = cc_true;
 
     for(int i = num_bits - 2; i >= 0; --i) {
-        if(next_bin[i] == '1')
+        if(next_bin[i] == cc_true)
             break;
         else
-            next_bin[i] = '1';
+            next_bin[i] = cc_true;
     }
 
     return next_binary(next_bin);
@@ -175,7 +171,7 @@ T CC<T>::combo_size(cc_combo_key const& binary) {
     for(auto i = 0; i < _pieces.size() && i < binary.size(); ++i) {
         auto bit = binary[binary.size() - 1 - i];
         auto size = _pieces[_pieces.size() - 1 - i]->size;
-        if(bit == '1')
+        if(bit == cc_true)
             result += size + _loss_per_piece;
     }
 
@@ -190,7 +186,7 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) {
     piece_list<T> result;
     for(auto i = 0; i < binary.size() && i < _pieces.size(); ++i) {
         auto bit = binary[binary.size() - 1 - i];        
-        if(bit == '1')
+        if(bit == cc_true)
             result.push_back(_pieces[_pieces.size() - 1 - i]);
     }
 
@@ -204,10 +200,7 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) {
 template<typename T>
 T CC<T>::max_capacity() {
 
-    //if(_containers.empty())
-    //    return ?? T.zero ??;
-
-    // last item as list is sorted
+    // last item because list is sorted
     return _containers[_containers.size() - 1]->capacity + _loss_per_piece;
 }
 
@@ -247,7 +240,7 @@ result_ptr<T> CC<T>::best_match() {
 
     auto max_cap = max_capacity();
     auto best_diff = max_cap;
-    auto container_index = _containers.begin();
+    auto container_it = _containers.begin();
 
     for(auto it = _piece_combos.rbegin(); it != _piece_combos.rend(); ++it) {
         auto binary = it->first;
@@ -259,13 +252,13 @@ result_ptr<T> CC<T>::best_match() {
             if(0 <= diff && diff < best_diff) {
                 best_diff = diff;
                 result->binary = binary;
-                container_index = c_it;
+                container_it = c_it;
 
                 if(diff <= _tolerance) {
                     result->combo = _piece_combos[binary];
                     result->pieces = filter_pieces(binary);
-                    result->container = std::move(*container_index);
-                    _containers.erase(container_index);
+                    result->container = std::move(*container_it);
+                    _containers.erase(container_it);
                     result->delta = diff;
                     return result;
                 }
@@ -275,8 +268,8 @@ result_ptr<T> CC<T>::best_match() {
 
     result->combo = _piece_combos[result->binary];
     result->pieces = filter_pieces(result->binary);
-    result->container = std::move(*container_index);
-    _containers.erase(container_index);
+    result->container = std::move(*container_it);
+    _containers.erase(container_it);
     result->delta = best_diff;
 
     return result;
@@ -295,7 +288,7 @@ void CC<T>::remove_combos(cc_combo_key const& binary) {
 
     std::vector<cc_combo_key> combos(_piece_combos.size());
     std::transform(_piece_combos.begin(), _piece_combos.end(), combos.begin(),
-    [](auto const& item) -> cc_combo_key { return item.first; });
+        [](auto const& item) -> cc_combo_key { return item.first; });
 
     for(auto const& combo : combos) {
         if(has_common_bit(combo, binary) || (has_max && _piece_combos[combo]->combo_size > max_cap)) 

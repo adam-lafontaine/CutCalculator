@@ -144,9 +144,9 @@ string CCTest::test_to_binary() {
         auto res = to_binary(value, num_bits);
         ss << "value = " << value << ", num_bits = " << num_bits << endl;
         ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "  result = " << res << endl;        
         if(exp != res)
-                success = "Fail";
+            success = "Fail";
     }    
 
     print(ss.str());
