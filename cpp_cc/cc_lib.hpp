@@ -6,6 +6,7 @@ using cc_bit_type = char;
 constexpr cc_bit_type cc_false = '0';
 constexpr cc_bit_type cc_true = '1';
 
+//using cc_combo_key = std::string;
 using cc_combo_key = std::basic_string<cc_bit_type>;
 using combo_list = std::vector<std::unique_ptr<cc_combo_key>>;
 using u_int_t = unsigned long long;
@@ -26,9 +27,6 @@ template<typename T> using result_ptr = std::shared_ptr<Result<T>>;
 template<typename T> using piece_list = std::vector<piece_ptr<T>>;
 template<typename T> using container_list = std::vector<container_ptr<T>>;
 template<typename T> using result_list = std::vector<result_ptr<T>>;
-
-
-
 
 
 template<typename T>
