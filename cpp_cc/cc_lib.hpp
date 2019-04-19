@@ -3,6 +3,9 @@
 #include <memory>
 
 using cc_bit_type = char;
+constexpr cc_bit_type cc_false = '0';
+constexpr cc_bit_type cc_true = '1';
+
 using cc_combo_key = std::basic_string<cc_bit_type>;
 using combo_list = std::vector<std::unique_ptr<cc_combo_key>>;
 using u_int_t = unsigned long long;

@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <cmath>
 
+#include <iostream>
+
 #include "cc_lib.hpp"
 
 // must declare used types here or include implementation in header
@@ -32,38 +34,34 @@ void CC<T>::set_inputs(piece_list<T> const& pieces, container_list<T> const& con
 
 
 bool has_bit(cc_combo_key const& binary) {
-    return binary.find('1') != std::string::npos; // TODO
+    return binary.find(cc_true) != std::string::npos;
 }
 
 //--------------------------------
 
 
-cc_bit_type flip_bit(cc_bit_type bit) { // TODO
-    return bit == '0' ? '1' : '0';
+cc_bit_type flip_bit(cc_bit_type bit) {
+    return bit == cc_false ? cc_true : cc_false;
 }
 
 //--------------------------------------
 
 
 cc_combo_key to_binary(u_int_t value, unsigned num_bits) {
+    
+    cc_bit_type bin_values[] = {cc_false, cc_true};
+    u_int_t val = value;    
 
-    std::stringstream ss;
-    cc_bit_type bin_values[] = "01"; // TODO
-    u_int_t val = value;
+    cc_combo_key binary(std::max((int)num_bits, (int)log2(value)+1), cc_false);
+
+    int bin_idx = binary.size();
 
     while(val > 0) {
         auto idx = val % 2;
-        ss << bin_values[idx];
+        --bin_idx;
+        binary[bin_idx] = bin_values[idx];
         val -= idx;
         val /= 2;
-    }
-
-    auto binary = ss.str(); // TODO
-    std::reverse(binary.begin(), binary.end());
-    if(binary.length() < num_bits) {
-        ss.str(""); // clear contents
-        ss << std::setfill('0') << std::setw(num_bits) << binary; // TODO
-        binary = ss.str();
     }
 
     return binary;
