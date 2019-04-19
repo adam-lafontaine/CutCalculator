@@ -75,9 +75,8 @@ u_int_t to_decimal(cc_combo_key const& binary) {
     int exp = -1;
     for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
         ++exp;
-        if(*it == '1') // TODO
+        if(*it == cc_true)
             val += (u_int_t)std::pow(2, exp);
-
     }
 
     return val;
@@ -92,7 +91,7 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
     auto last_2 = bin_2.length() - 1;
 
     for(int i = 0; i <= last_1 && i <= last_2; ++i) {        
-        if(bin_1[last_1 - i] == '1' && bin_2[last_2 - i] == '1') // TODO
+        if(bin_1[last_1 - i] == cc_true && bin_2[last_2 - i] == cc_true)
             return true;
     }
 
@@ -109,7 +108,7 @@ cc_combo_key next_binary(cc_combo_key const& binary) {
 
     for(int i = num_bits - 1; i >= 0; --i) {
         next_bin[i] = flip_bit(next_bin[i]);
-        if(next_bin[i] == '1') // TODO
+        if(next_bin[i] == cc_true)
             break;
     }
 
@@ -124,13 +123,13 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
     size_t num_bits = binary.size();
 	cc_combo_key next_bin = binary;
 
-    next_bin[num_bits - 1] = '1'; // TODO
+    next_bin[num_bits - 1] = cc_true;
 
     for(int i = num_bits - 2; i >= 0; --i) {
-        if(next_bin[i] == '1') // TODO
+        if(next_bin[i] == cc_true)
             break;
         else
-            next_bin[i] = '1'; // TODO
+            next_bin[i] = cc_true;
     }
 
     return next_binary(next_bin);
@@ -173,7 +172,7 @@ T CC<T>::combo_size(cc_combo_key const& binary) {
     for(auto i = 0; i < _pieces.size() && i < binary.size(); ++i) {
         auto bit = binary[binary.size() - 1 - i];
         auto size = _pieces[_pieces.size() - 1 - i]->size;
-        if(bit == '1') // TODO
+        if(bit == cc_true)
             result += size + _loss_per_piece;
     }
 
@@ -188,7 +187,7 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) {
     piece_list<T> result;
     for(auto i = 0; i < binary.size() && i < _pieces.size(); ++i) {
         auto bit = binary[binary.size() - 1 - i];        
-        if(bit == '1') // TODO
+        if(bit == cc_true)
             result.push_back(_pieces[_pieces.size() - 1 - i]);
     }
 
