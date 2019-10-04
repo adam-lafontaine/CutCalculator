@@ -106,9 +106,9 @@ private:
     T _loss_per_piece = 0.0;
     T _tolerance = 0.0;
        
-    T combo_size(cc_combo_key const& binary);
-    piece_list<T> filter_pieces(cc_combo_key const& binary);
-    T max_capacity();
+    T combo_size(cc_combo_key const& binary) const;
+    piece_list<T> filter_pieces(cc_combo_key const& binary) const;
+    T max_capacity() const;
 
     void build_piece_combos();
     
