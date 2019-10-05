@@ -55,6 +55,9 @@ struct Piece {
 template<typename T> inline
 bool descending(piece_ptr<T> const& lhs, piece_ptr<T> const& rhs) { return lhs->size > rhs->size; }
 
+template<typename T> inline
+bool ascending(container_ptr<T> const& lhs, container_ptr<T> const& rhs) { return lhs->capacity < rhs->capacity; }
+
 template<typename T>
 struct Container {
     public:
@@ -63,9 +66,6 @@ struct Container {
 
     // other properties
 };
-
-template<typename T> inline
-bool ascending(container_ptr<T> const& lhs, container_ptr<T> const& rhs) { return lhs->capacity < rhs->capacity; }
 
 template<typename T>
 struct Result {
@@ -129,10 +129,10 @@ public:
     
 
     // getters
-    piece_list<T> const& pieces() { return _pieces; }
-    container_list<T> const& containers() { return _containers; }
-    T const& loss_per_piece() { return _loss_per_piece; }
-    T const& tolerance() { return _tolerance; }
+    piece_list<T> const& pieces() const { return _pieces; }
+    container_list<T> const& containers() const { return _containers; }
+    T const& loss_per_piece() const { return _loss_per_piece; }
+    T const& tolerance() const { return _tolerance; }
 
 };
 
