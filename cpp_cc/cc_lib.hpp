@@ -53,7 +53,7 @@ struct Piece {
 };
 
 template<typename T> inline
-bool descending(piece_ptr<T> const& lhs, piece_ptr<T> const& rhs) { return lhs->size > rhs->size; }
+bool descending(piece_ptr<T> const lhs, piece_ptr<T> const rhs) { return lhs->size > rhs->size; }
 
 template<typename T> inline
 bool ascending(container_ptr<T> const& lhs, container_ptr<T> const& rhs) { return lhs->capacity < rhs->capacity; }

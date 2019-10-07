@@ -58,17 +58,23 @@ u_int_t to_decimal(cc_combo_key const& binary) {
     /*
     auto const cond_f = [&](auto const& bit){
         if(bit == cc_true)
-            val += static_cast<u_int_t>(std::pow(2, exp++));
+            val += static_cast<u_int_t>(std::pow(2, exp));
+
+        ++exp;
     };
 
     std::for_each(binary.rbegin(), binary.rend(), cond_f);
     */
+    
 
-    // this is shorter
+    // this is shorter    
     for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
         if(*it == cc_true)
-            val += static_cast<u_int_t>(std::pow(2, exp++));
-    }    
+            val += static_cast<u_int_t>(std::pow(2, exp));
+
+        ++exp;
+    }
+    
 
     return val;
 }
@@ -93,16 +99,23 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
 
 
 cc_combo_key next_binary(cc_combo_key const& binary) {
-
+/*
     auto const num_bits = binary.size();
 	cc_combo_key next_bin = binary;
 
+    // expresses intent
     for(int i = num_bits - 1; i >= 0; --i) { // auto breaks
         next_bin[i] = flip_bit(next_bin[i]);
         if(next_bin[i] == cc_true)
             break;
     }
+*/
 
+    cc_combo_key next_bin = binary; 
+    
+    // C style
+    for(int i = binary.size() - 1; i >= 0 && (next_bin[i] = flip_bit(next_bin[i])) != cc_true; --i);
+    
     return next_bin;
 }
 
@@ -115,12 +128,19 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
 	cc_combo_key next_bin = binary;
 
     next_bin[num_bits - 1] = cc_true;
-
+/*
     for(int i = num_bits - 2; i >= 0; --i) {
         if(next_bin[i] == cc_true)
             break;
         else
             next_bin[i] = cc_true;
+    }
+    */
+
+    // set bits to true until a true bit is found
+    for(int i = num_bits - 2; i >= 0 && next_bin[i] != cc_true; --i) {
+        next_bin[i] = cc_true;
+            
     }
 
     return next_binary(next_bin);
@@ -185,8 +205,7 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) const {
     auto const num_pieces = _pieces.size();
 
     for(auto i = 0; i < num_bits && i < num_pieces; ++i) {
-        auto const bit = binary[num_bits - 1 - i];        
-        if(bit == cc_true)
+        if(binary[num_bits - 1 - i] == cc_true)
             list.push_back(_pieces[num_pieces - 1 - i]);
     }
 
@@ -279,7 +298,6 @@ result_ptr<T> CC<T>::best_match() {
 
 template<typename T>
 void CC<T>::remove_combos(cc_combo_key const& binary) {
-
 
     bool has_max = !_containers.empty();
     T max_cap;
