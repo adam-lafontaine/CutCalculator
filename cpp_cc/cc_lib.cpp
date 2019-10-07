@@ -58,17 +58,23 @@ u_int_t to_decimal(cc_combo_key const& binary) {
     /*
     auto const cond_f = [&](auto const& bit){
         if(bit == cc_true)
-            val += static_cast<u_int_t>(std::pow(2, exp++));
+            val += (u_int_t)(std::pow(2, exp));
+
+        ++exp;
     };
 
     std::for_each(binary.rbegin(), binary.rend(), cond_f);
     */
+    
 
-    // this is shorter
+    // this is shorter    
     for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
         if(*it == cc_true)
-            val += static_cast<u_int_t>(std::pow(2, exp++));
-    }    
+            val += static_cast<u_int_t>(std::pow(2, exp));
+
+        ++exp;
+    }
+    
 
     return val;
 }
