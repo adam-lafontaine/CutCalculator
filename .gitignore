@@ -3,9 +3,15 @@ node_modules
 public
 reference
 __pycache__
-.vscode/
 
+# Visual Studio Code files
+.vscode/
 *.ipch
+
+#Kotlin
+META-INF
+*.class
+*.jar
 
 # Windows image file caches
 Thumbs.db
