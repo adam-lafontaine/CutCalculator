@@ -53,7 +53,7 @@ static void str_builder_ensure_space(str_builder_t *sb, size_t add_len)
     if (sb == NULL || add_len == 0)
         return;
 
-    if (sb->alloced >= sb->len+add_len+1)
+    if (sb->alloced >= (sb->len + add_len + 1))
         return;
 
     while (sb->alloced < sb->len+add_len+1) {
