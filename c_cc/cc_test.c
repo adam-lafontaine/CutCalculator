@@ -39,14 +39,23 @@ void test_stringbuilder_create_destroy(char* buffer, size_t max_size) {
     unsigned count_after = sb_ref_count;    
         
 
-    if(count_before != 0)
+    if(count_before != 0) {
         sprintf(buffer, "Fail - ref count before create != 0 (%u)", sb_ref_count);
+        return;
+    }
+        
 
-    if(count_created != 1)
+    if(count_created != 1) {
         sprintf(buffer, "Fail - ref count after create != 1 (%u)", sb_ref_count);
+        return;
+    }
+        
 
-    if(count_after != 0)
+    if(count_after != 0) {
         sprintf(buffer, "Fail - ref count after destroy != 0 (%u)", sb_ref_count);
+        return;
+    }
+        
 
     sprintf(buffer, "Pass");
 }
