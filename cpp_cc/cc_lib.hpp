@@ -117,7 +117,6 @@ private:
 
 public:
     CC() {}
-    ~CC() {}
 
     CCSortDTO<T> sort();
 
