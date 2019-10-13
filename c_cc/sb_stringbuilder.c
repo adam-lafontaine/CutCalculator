@@ -15,7 +15,6 @@ string_t *sb_create_empty(const size_t size) {
     if(str != NULL) {        
         str->capacity = size;
         str->size = 0;
-        ++sb_ref_count;
         str->value = (char *)calloc(size + 1, sizeof(char));
         if(str->value != NULL) {
             str->value[0] = '\0';
@@ -31,5 +30,4 @@ void sb_destroy(string_t *str) {
 
     free(str->value);
     free(str);
-    --sb_ref_count;
 }

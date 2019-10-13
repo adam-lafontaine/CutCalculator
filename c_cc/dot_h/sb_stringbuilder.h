@@ -6,8 +6,6 @@
 struct sb_string_tag;
 typedef struct sb_string_tag string_t;
 
-static unsigned sb_ref_count = 0;
-
 
 string_t* sb_create_empty(const size_t size);
 
