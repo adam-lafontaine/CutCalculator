@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sstream>
-#include <vector>
 #include <iomanip>
 #include <tuple>
 #include <string>
@@ -12,19 +11,17 @@
 using namespace std;
 
 void print(string const& msg) {
-    cout << msg << endl;
+    cout << msg << '\n';
 }
 
 template<typename T>
-void print(string const& label, std::initializer_list<T> const& list) {
-    cout << label << ": [ ";
-    auto last = list.size() - 1;    
-    for(auto i = 0; i <= last; ++i) {
-        cout << *(list.begin() + i);
-        if(i != last)
-            cout <<", ";
-    }
-    cout << " ]" << endl;
+void print(string const& label, std::initializer_list<T> const& list) {    
+
+	auto const show_val = [&](auto const& val) { cout << val << ", "; };
+
+	cout << label << ": [ ";
+	for_each(list.begin(), list.end(), show_val);
+    cout << "\b\b ]\n";
 }
 
 template<typename T>
@@ -35,14 +32,12 @@ void print(string const& label, T value) {
 template<typename T>
 string vector_to_string(vector<T> const& list) {
     stringstream ss;
+
+	auto const add_val = [&](auto const& val) { ss << val << ", "; };
+
     ss << "[ ";
-    auto last = list.size() - 1;    
-    for(auto i = 0; i <= last; ++i) {
-        ss << *(list.begin() + i);
-        if(i != last)
-            ss <<", ";
-    }
-    ss << " ]";
+	for_each(list.begin(), list.end(), add_val);
+    ss << "\b\b ]";
 
     return ss.str();
 }
@@ -50,14 +45,11 @@ string vector_to_string(vector<T> const& list) {
 template<typename T>
 string list_to_string(initializer_list<T> const& list) {
     stringstream ss;
-    ss << "[ ";
-    auto last = list.size() - 1;    
-    for(auto i = 0; i <= last; ++i) {
-        ss << *(list.begin() + i);
-        if(i != last)
-            ss <<", ";
-    }
-    ss << " ]";
+	auto const add_val = [&](auto const& val) { ss << val << ", "; };
+
+	ss << "[ ";
+	for_each(list.begin(), list.end(), add_val);
+	ss << "\b\b ]";
 
     return ss.str();
 }
@@ -327,7 +319,7 @@ string CCTest::test_pieces() {
     vector<tuple<string, string, string>> comp;
     comp.push_back(make_tuple("num elements", to_string(expected.size()), to_string(result.size())));
 
-    for(auto i = 0; i < result.size() && i < expected.size(); ++i)
+     for(size_t i = 0; i < result.size() && i < expected.size(); ++i)
         comp.push_back(make_tuple(to_string(i), to_string(expected[i]), to_string(result[i])));
     
     stringstream ss;
@@ -387,7 +379,7 @@ string CCTest::test_containers() {
     vector<tuple<string, string, string>> comp;
     comp.push_back(make_tuple("num elements", to_string(expected.size()), to_string(result.size())));
 
-    for(auto i = 0; i < result.size() && i < expected.size(); ++i)
+     for(size_t i = 0; i < result.size() && i < expected.size(); ++i)
         comp.push_back(make_tuple(to_string(i), to_string(expected[i]), to_string(result[i])));
     
     stringstream ss;
@@ -427,7 +419,7 @@ string CCTest::test_combo_size() {
     print("pieces", { 30.0, 60.0, 40.0 });
     print("loss", my_cc.loss_per_piece());
 
-    for(auto i = 0; i < combos.size(); ++i) {
+     for(size_t i = 0; i < combos.size(); ++i) {
         auto combo = combos[i];
         auto res = my_cc.combo_size(combo);
         auto exp = expected[i];
@@ -449,7 +441,7 @@ string CCTest::test_combo_size() {
     print("pieces", { 30.0, 60.0, 40.0 });
     print("loss", my_cc.loss_per_piece());
 
-    for(auto i = 0; i < combos.size(); ++i) {
+     for(size_t i = 0; i < combos.size(); ++i) {
         auto combo = combos[i];
         auto res = my_cc.combo_size(combo);
         auto exp = expected_2[i];
@@ -492,7 +484,7 @@ string CCTest::test_filter_pieces() {
 
     stringstream ss;
 
-    for(auto i = 0; i < combos.size(); ++i) {
+     for(size_t i = 0; i < combos.size(); ++i) {
         auto combo = combos[i];
         auto combo_pieces = my_cc.filter_pieces(combo);
 
@@ -895,56 +887,7 @@ string CCTest::test_sort() {
     return success;
 }
 
-
-/*
-
-string CCTest::test_my_func() {
-    print("\nTest my_func(int value, int num_bits)");
-
-    string success = "Pass";
-    
-
-    return success;
-}
-
- */
-
+// linux
 // g++ -o run_tests cc_test.cpp cc_lib.cpp
 // ./run_tests
 
-int main() {
-
-    CCTest tester;
-
-    vector<pair<string, string>> tests {
-        {"has_bit", tester.test_has_bit()},
-        {"flip_bit", tester.test_flip_bit()},
-        {"to_binary()", tester.test_to_binary()},
-        {"to_decimal()", tester.test_to_decimal()},
-        {"has_common_bit()", tester.test_has_common_bit()},
-        {"next_binary()", tester.test_next_binary()},
-        {"skip_binary()", tester.test_skip_binary()},
-        {"pieces()", tester.test_pieces()},
-        {"containers()", tester.test_containers()},
-        {"combo_size()", tester.test_combo_size()},
-        {"filter_pieces()", tester.test_filter_pieces()},
-        {"max_capacity()", tester.test_max_capacity()},
-        {"build_piece_combos()", tester.test_build_piece_combos()},
-        {"best_match()", tester.test_best_match()},
-        {"remove_combos()", tester.test_remove_combos()},
-        {"sort()", tester.test_sort()}
-    };
-
-    print("\n");
-
-    int width = 0;
-    for(auto& test : tests){
-        width = test.first.length() > width ? test.first.length() : width;
-    }
-
-    for(auto& test : tests) {
-        cout << setfill(' ') << setw(width) << test.first << ": " << test.second << endl;
-    }
-
-    print("\n");
-}

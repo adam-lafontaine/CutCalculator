@@ -87,7 +87,7 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
     auto const last_1 = bin_1.size() - 1;
     auto const last_2 = bin_2.size() - 1;
 
-    for(auto i = 0; i <= last_1 && i <= last_2; ++i) {        
+    for(size_t i = 0; i <= last_1 && i <= last_2; ++i) {        
         if(bin_1[last_1 - i] == cc_true && bin_2[last_2 - i] == cc_true)
             return true;
     }
@@ -181,11 +181,11 @@ void CC<T>::containers(container_list<T>& containers) {
 template<typename T>
 T CC<T>::combo_size(cc_combo_key const& binary) const {
 
-    T result;
+    T result = 0; // T is numeric
     auto const num_bits = binary.size();
     auto const num_pieces = _pieces.size();
 
-    for(auto i = 0; i < num_bits && i < num_pieces; ++i) {
+    for(size_t i = 0; i < num_bits && i < num_pieces; ++i) {
         auto const bit = binary[num_bits - 1 - i];
         auto const size = _pieces[num_pieces - 1 - i]->size;
         if(bit == cc_true)
@@ -204,7 +204,7 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) const {
     auto const num_bits = binary.size();
     auto const num_pieces = _pieces.size();
 
-    for(auto i = 0; i < num_bits && i < num_pieces; ++i) {
+    for(size_t i = 0; i < num_bits && i < num_pieces; ++i) {
         if(binary[num_bits - 1 - i] == cc_true)
             list.push_back(_pieces[num_pieces - 1 - i]);
     }
