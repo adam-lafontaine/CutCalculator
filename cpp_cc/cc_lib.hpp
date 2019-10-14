@@ -103,8 +103,8 @@ private:
 
     result_list<T>              _results;
 
-    T _loss_per_piece = 0.0;
-    T _tolerance = 0.0;
+    T _loss_per_piece = 0;
+    T _tolerance = 0;
        
     T combo_size(cc_combo_key const& binary) const;
     piece_list<T> filter_pieces(cc_combo_key const& binary) const;
@@ -117,7 +117,6 @@ private:
 
 public:
     CC() {}
-    ~CC() {}
 
     CCSortDTO<T> sort();
 
