@@ -15,15 +15,13 @@ void print(string const& msg) {
 }
 
 template<typename T>
-void print(string const& label, std::initializer_list<T> const& list) {
-    cout << label << ": [ ";
-    auto last = list.size() - 1;    
-     for(size_t i = 0; i <= last; ++i) {
-        cout << *(list.begin() + i);
-        if(i != last)
-            cout <<", ";
-    }
-    cout << " ]" << endl;
+void print(string const& label, std::initializer_list<T> const& list) {    
+
+	auto const show_val = [&](auto const& val) { cout << val << ", "; };
+
+	cout << label << ": [ ";
+	for_each(list.begin(), list.end(), show_val);
+    cout << "\b\b ]\n";
 }
 
 template<typename T>
@@ -34,14 +32,12 @@ void print(string const& label, T value) {
 template<typename T>
 string vector_to_string(vector<T> const& list) {
     stringstream ss;
+
+	auto const add_val = [&](auto const& val) { ss << val << ", "; };
+
     ss << "[ ";
-    auto last = list.size() - 1;    
-     for(size_t i = 0; i <= last; ++i) {
-        ss << *(list.begin() + i);
-        if(i != last)
-            ss <<", ";
-    }
-    ss << " ]";
+	for_each(list.begin(), list.end(), add_val);
+    ss << "\b\b ]";
 
     return ss.str();
 }
@@ -49,14 +45,11 @@ string vector_to_string(vector<T> const& list) {
 template<typename T>
 string list_to_string(initializer_list<T> const& list) {
     stringstream ss;
-    ss << "[ ";
-    auto last = list.size() - 1;    
-     for(size_t i = 0; i <= last; ++i) {
-        ss << *(list.begin() + i);
-        if(i != last)
-            ss <<", ";
-    }
-    ss << " ]";
+	auto const add_val = [&](auto const& val) { ss << val << ", "; };
+
+	ss << "[ ";
+	for_each(list.begin(), list.end(), add_val);
+	ss << "\b\b ]";
 
     return ss.str();
 }
