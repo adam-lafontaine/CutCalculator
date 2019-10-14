@@ -6,6 +6,8 @@
 #include "win32_leak_check.h"
 #endif
 
+//#define TEST_FOR_LEAKS
+
 #include "cc_test.hpp"
 
 using namespace std;
@@ -14,7 +16,7 @@ void print(string const& msg);
 
 
 int main() {
-#if defined(_WIN32) && defined(_DEBUG)
+#if defined(_WIN32) && defined(_DEBUG) && defined(TEST_FOR_LEAKS)
 	int dbgFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 	dbgFlags |= _CRTDBG_CHECK_ALWAYS_DF;   // check block integrity
 	dbgFlags |= _CRTDBG_DELAY_FREE_MEM_DF; // don't recycle memory
