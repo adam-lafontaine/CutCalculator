@@ -1,18 +1,14 @@
 #ifndef __CMAP_CONFIG_H__
 #define __CMAP_CONFIG_H__
 
-#include <stdlib.h> 
+// include desired character options for string keys
+static const char KEY_CHARS[] = "abcdefghijklmnopqrstuvwxyz";
 
-// define value type where implemented e.g.
-// typedef int cmap_value_t;
+// define value type at implementation
+// e.g. typedef int cmap_value_t
 
 // define if value type is a pointer to enable proper memory cleanup
 //#define CMAP_VALUE_IS_PTR
-
-// include desired character options for string keys
-static const char KEY_CHARS[] = "01";
-
-
 
 // do not touch
 #define CMAP_KEY_LENGTH sizeof KEY_CHARS - 1
