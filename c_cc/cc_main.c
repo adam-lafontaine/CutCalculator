@@ -6,7 +6,7 @@
 #include "win32_leak_check.h"
 #endif
 
-//#define TEST_FOR_LEAKS
+#define TEST_FOR_LEAKS
 
 #include "cc_test.h"
 
