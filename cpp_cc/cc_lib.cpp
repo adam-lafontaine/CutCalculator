@@ -114,7 +114,9 @@ cc_combo_key next_binary(cc_combo_key const& binary) {
     cc_combo_key next_bin = binary; 
     
     // C style
-    for(int i = binary.size() - 1; i >= 0 && (next_bin[i] = flip_bit(next_bin[i])) != cc_true; --i);
+	// set bits to true until a true bit is found
+    for(int i = binary.size() - 1; i >= 0 && (next_bin[i] = flip_bit(next_bin[i])) != cc_true; --i)
+		;
     
     return next_bin;
 }
@@ -128,20 +130,10 @@ cc_combo_key skip_binary(cc_combo_key const& binary) {
 	cc_combo_key next_bin = binary;
 
     next_bin[num_bits - 1] = cc_true;
-/*
-    for(int i = num_bits - 2; i >= 0; --i) {
-        if(next_bin[i] == cc_true)
-            break;
-        else
-            next_bin[i] = cc_true;
-    }
-    */
 
-    // set bits to true until a true bit is found
-    for(int i = num_bits - 2; i >= 0 && next_bin[i] != cc_true; --i) {
-        next_bin[i] = cc_true;
-            
-    }
+	int i = num_bits - 2;
+	while(i >= 0 && next_bin[i] != cc_true)
+		next_bin[i--] = cc_true;
 
     return next_binary(next_bin);
 }
