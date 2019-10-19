@@ -24,9 +24,7 @@ typedef struct PieceCombo piece_combo;
 typedef struct CCSortDTO cc_sort_dto;
 
 
-
-
-typedef piece_combo* cmap_value_t;
+typedef cc_value_type cmap_value_t;
 
 
 #endif // __TYPES_H__

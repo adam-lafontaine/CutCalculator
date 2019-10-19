@@ -7,10 +7,7 @@
 struct cmap_t;
 typedef struct cmap_t cmap;
 
-typedef struct cmap_pair_t {
-	char* key;
-	cmap_value_t value;
-} cmap_pair;
+typedef piece_combo cmap_pair;
 
 
 cmap* cmap_create();
@@ -18,8 +15,6 @@ cmap* cmap_create();
 void cmap_destroy(cmap* map);
 
 void cmap_add(cmap* map, const char* key, const cmap_value_t value);
-
-cmap_value_t cmap_lookup(const cmap* map, const char* key);
 
 void cmap_remove(cmap* map, const char* key);
 

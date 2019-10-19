@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "cmap.h"
+#include "../struct/piece_combo.h"
 
 //======= NODE ==============================
 
@@ -15,7 +16,7 @@ cmap_pair* create_pair(cmap* map, const char* key) {
 	if (pair == NULL)
 		return NULL;
 
-	pair->key = (char*)key;
+	pair->binary = (char*)key;
 
 	return pair;
 }
@@ -30,13 +31,6 @@ typedef struct cmap_node_t {
 
 
 void clear_value(ct_node* node) {
-#ifdef CMAP_VALUE_IS_PTR
-
-	if (node->value != NULL) {
-		free(node->pair->value);
-	}
-
-#endif // !CMAP_VALUE_IS_PTR
 
 	free(node->pair);
 	node->pair = NULL;
@@ -45,14 +39,6 @@ void clear_value(ct_node* node) {
 void destroy_pair(cmap_pair* pair) {
 	if (pair == NULL)
 		return;
-
-#ifdef CMAP_VALUE_IS_PTR
-
-	if (value != NULL) {
-		free(pair->value);
-	}
-
-#endif // !CMAP_VALUE_IS_PTR
 
 	free(pair);
 }
@@ -212,7 +198,10 @@ void cmap_add(cmap* map, const char* key, const cmap_value_t value) {
 			return;
 	}
 
-	ct_node* node = (ct_node*)map->root;
+	ct_node* node = map->root;
+	if (node == NULL || node->child == NULL)
+		return;
+
 	c = (char*)key;
 
 	while (*c != '\0') {
@@ -232,8 +221,8 @@ void cmap_add(cmap* map, const char* key, const cmap_value_t value) {
 	}	
 
 	node->pair = pair;
-	node->pair->key = (char*)key;
-	node->pair->value = value;	
+	node->pair->binary = (char*)key;
+	node->pair->combo_size = value;	
 }
 
 void cmap_remove(cmap* map, const char* key) {
@@ -253,14 +242,6 @@ void cmap_remove(cmap* map, const char* key) {
 			node->child[child_id] = NULL;
 		}			
 	}
-}
-
-cmap_value_t cmap_lookup(const cmap* map, const char* key) {
-	ct_node* node = lookup_node(map->root, key);
-	if (node == NULL)
-		return NULL;
-
-	return node->pair->value;
 }
 
 cmap_pair* cmap_get(cmap* map, const char* key) {
