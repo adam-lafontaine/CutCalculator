@@ -2,10 +2,7 @@
 #define __CMAP_H__
 
 #include "cmap_config.h"
-
-// declare value type
-// define where implemented
-typedef cmap_value_t;
+#include "../cc_types.h"
 
 struct cmap_t;
 typedef struct cmap_t cmap;

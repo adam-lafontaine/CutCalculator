@@ -3,9 +3,14 @@
 
 #include <stdbool.h>
 
-typedef char* cc_combo_key;
-typedef char cc_bit_type;
-typedef unsigned long long u_int_t;
+#include "cmap/cmap.h"
+#include "struct/piece.h"
+#include "struct/container.h"
+#include "struct/piece_combo.h"
+#include "struct/result.h"
+#include "struct/cc_sort_dto.h"
+
+
 
 static const cc_bit_type cc_false = '0';
 static const cc_bit_type cc_true = '1';
@@ -19,5 +24,15 @@ u_int_t to_decimal(cc_combo_key binary);
 bool has_common_bit(cc_combo_key const bin_1, cc_combo_key const bin_2);
 cc_combo_key next_binary(cc_combo_key const binary);
 cc_combo_key skip_binary(cc_combo_key const binary);
+
+
+
+
+
+
+
+
+
+
 
 #endif

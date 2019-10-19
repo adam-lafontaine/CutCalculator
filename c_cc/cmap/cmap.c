@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "cmap.h"
 
@@ -14,7 +15,7 @@ cmap_pair* create_pair(cmap* map, const char* key) {
 	if (pair == NULL)
 		return NULL;
 
-	pair->key = key;
+	pair->key = (char*)key;
 
 	return pair;
 }
@@ -25,7 +26,7 @@ typedef struct cmap_node_t {
 	ct_node* parent;
 
 	cmap_pair* pair;
-};
+} ct_node;
 
 
 void clear_value(ct_node* node) {
@@ -122,11 +123,13 @@ void add_child_node(ct_node* node, size_t index) {
 	node->child[index] = child;
 }
 
-ct_node* lookup_node(const ct_node* node, char* s) {
-	ct_node* found = node;
+ct_node* lookup_node(const ct_node* node, const char* key) {
+	ct_node* found = (ct_node*)node;
 
-	while (*s != '\0') {
-		size_t idx = c_idx(s++);
+	char* c = (char*)key;
+
+	while (*c != '\0') {
+		size_t idx = c_idx(c++);
 		if (found->child[idx] == NULL)
 			return NULL;
 
@@ -202,15 +205,15 @@ void cmap_destroy(cmap* map) {
 
 
 void cmap_add(cmap* map, const char* key, const cmap_value_t value) {
-	char* c = key;
+	char* c = (char*)key;
 
 	while (*c != '\0') {
 		if (!is_valid_char(*c++))
 			return;
 	}
 
-	ct_node* node = map->root;
-	c = key;
+	ct_node* node = (ct_node*)map->root;
+	c = (char*)key;
 
 	while (*c != '\0') {
 		size_t idx = c_idx(c++);
@@ -229,7 +232,7 @@ void cmap_add(cmap* map, const char* key, const cmap_value_t value) {
 	}	
 
 	node->pair = pair;
-	node->pair->key = key;
+	node->pair->key = (char*)key;
 	node->pair->value = value;	
 }
 

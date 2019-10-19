@@ -6,9 +6,6 @@
 #include "cmap/cmap.h"
 #include "cc_lib.h"
 
-// set map value type
-typedef int cmap_value_t;
-
 //======= HELPERS ==============================
 
 void print_sub(const char* msg, unsigned level) {
