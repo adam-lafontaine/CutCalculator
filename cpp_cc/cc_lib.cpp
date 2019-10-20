@@ -13,21 +13,21 @@ template class CC<double>;
 //-------------------------------------
 
 
-bool has_bit(cc_combo_key const& binary) {
+bool has_bit(cc_combo_key const& binary) noexcept {
     return binary.find(cc_true) != std::string::npos;
 }
 
 //--------------------------------
 
 
-cc_bit_type flip_bit(cc_bit_type const bit) {
+cc_bit_type flip_bit(cc_bit_type const bit) noexcept {
     return bit == cc_false ? cc_true : cc_false;
 }
 
 //--------------------------------------
 
 
-cc_combo_key to_binary(u_int_t value, unsigned const num_bits) {
+cc_combo_key to_binary(u_int_t value, unsigned const num_bits) noexcept {
     
     cc_bit_type const bin_values[] = {cc_false, cc_true};
 
@@ -50,7 +50,7 @@ cc_combo_key to_binary(u_int_t value, unsigned const num_bits) {
 //-------------------------------
 
 
-u_int_t to_decimal(cc_combo_key const& binary) {
+u_int_t to_decimal(cc_combo_key const& binary) noexcept {
     u_int_t val = 0;
     int exp = 0;
 
@@ -82,7 +82,7 @@ u_int_t to_decimal(cc_combo_key const& binary) {
 //------------------------
 
 // AND operation
-bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
+bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) noexcept {
 
     auto const last_1 = bin_1.size() - 1;
     auto const last_2 = bin_2.size() - 1;
@@ -98,7 +98,7 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) {
 //--------------------------------
 
 
-cc_combo_key next_binary(cc_combo_key const& binary) {
+cc_combo_key next_binary(cc_combo_key const& binary) noexcept {
 /*
     auto const num_bits = binary.size();
 	cc_combo_key next_bin = binary;
@@ -124,7 +124,7 @@ cc_combo_key next_binary(cc_combo_key const& binary) {
 //----------------------------
 
 
-cc_combo_key skip_binary(cc_combo_key const& binary) {
+cc_combo_key skip_binary(cc_combo_key const& binary) noexcept {
 
     auto const num_bits = binary.size();
 	cc_combo_key next_bin = binary;
@@ -161,17 +161,37 @@ void CC<T>::containers(container_list<T>& containers) {
     _containers.resize(containers.size());
     _containers.clear();
 
-    for(auto& container: containers) {
+    for(auto& container : containers) {
         _containers.push_back(std::move(container));
     }
 
     std::sort(_containers.begin(), _containers.end(), ascending<T>);
 }
 
+//-------------------------------------
+
+template<typename T>
+void CC<T>::pieces(piece_list<T>&& pieces) {
+
+	_pieces = std::move(pieces);
+
+	std::sort(_pieces.begin(), _pieces.end(), descending<T>);
+}
+
+//----------------------------------------
+
+template<typename T>
+void CC<T>::containers(container_list<T>&& containers) {
+
+	_containers = std::move(containers);
+
+	std::sort(_containers.begin(), _containers.end(), ascending<T>);
+}
+
 //--------------------------------------
 
 template<typename T>
-T CC<T>::combo_size(cc_combo_key const& binary) const {
+T CC<T>::combo_size(cc_combo_key const& binary) const noexcept {
 
     T result = 0; // T is numeric
     auto const num_bits = binary.size();
@@ -190,7 +210,7 @@ T CC<T>::combo_size(cc_combo_key const& binary) const {
 //------------------------------------
 
 template<typename T>
-piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) const {
+piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) const noexcept {
 
     piece_list<T> list;
     auto const num_bits = binary.size();
@@ -207,7 +227,10 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) const {
 //-----------------------------
 
 template<typename T>
-T CC<T>::max_capacity() const {
+T CC<T>::max_capacity() const noexcept {
+
+	if (_containers.empty())
+		return 0;
 
     // last item because list is sorted
     return _containers[_containers.size() - 1]->capacity + _loss_per_piece;
@@ -216,7 +239,7 @@ T CC<T>::max_capacity() const {
 //------------------------------
 
 template<typename T>
-void CC<T>::build_piece_combos() {
+void CC<T>::build_piece_combos() noexcept {
 
     _piece_combos.clear();
 
@@ -240,7 +263,7 @@ void CC<T>::build_piece_combos() {
 //----------------------------------------
 
 template<typename T>
-result_ptr<T> CC<T>::best_match() {
+result_ptr<T> CC<T>::best_match() noexcept {
 
     result_ptr<T> result = std::make_shared<Result<T>>();
 
@@ -249,7 +272,7 @@ result_ptr<T> CC<T>::best_match() {
 
     auto const max_cap = max_capacity();
     auto best_diff = max_cap;
-    auto container_it = _containers.begin();
+    auto best_container_it = _containers.begin();
 
     for(auto it = _piece_combos.rbegin(); it != _piece_combos.rend(); ++it) {
         auto const binary = it->first;
@@ -262,14 +285,14 @@ result_ptr<T> CC<T>::best_match() {
             if(0 <= diff && diff < best_diff) {
                 best_diff = diff;
                 result->binary = binary;
-                container_it = c_it;
+				best_container_it = c_it;
 
                 if(diff <= _tolerance) {
                     result->combo = combo;
                     result->pieces = filter_pieces(binary);
-                    result->container = std::move(*container_it);
+                    result->container = std::move(*best_container_it);
                     result->delta = diff;
-                    _containers.erase(container_it);
+                    _containers.erase(best_container_it);
                     
                     return result;
                 }
@@ -279,9 +302,9 @@ result_ptr<T> CC<T>::best_match() {
 
     result->combo = _piece_combos[result->binary];
     result->pieces = filter_pieces(result->binary);
-    result->container = std::move(*container_it);
+    result->container = std::move(*best_container_it);
     result->delta = best_diff;
-    _containers.erase(container_it);    
+    _containers.erase(best_container_it);
 
     return result;
 }
@@ -289,26 +312,13 @@ result_ptr<T> CC<T>::best_match() {
 //---------------------------
 
 template<typename T>
-void CC<T>::remove_combos(cc_combo_key const& binary) {
+void CC<T>::remove_combos(cc_combo_key const& binary) noexcept {
 
     bool has_max = !_containers.empty();
-    T max_cap;
+	T max_cap{};
 
     if(has_max)
         max_cap = max_capacity();
-
-    //bad code but works
-    /*     
-    std::vector<cc_combo_key> combos(_piece_combos.size());
-    std::transform(_piece_combos.begin(), _piece_combos.end(), combos.begin(),
-        [](auto const& item) -> cc_combo_key { return item.first; });
-
-    // for_each
-    for(auto const& combo : combos) {
-        if(has_common_bit(combo, binary) || (has_max && _piece_combos[combo]->combo_size > max_cap)) 
-            _piece_combos.erase(combo);
-    }
-    */
 
     auto const cond_f = [&](auto const& combo) -> bool {
        return has_common_bit(combo.first, binary) || 
@@ -320,7 +330,7 @@ void CC<T>::remove_combos(cc_combo_key const& binary) {
     _piece_combos.erase(std::remove_if(_piece_combos.begin(), _piece_combos.end(), cond_f), _piece_combos.end());
     */
 
-    // no extra vector is created
+    
     auto it = _piece_combos.begin();
     auto const end = _piece_combos.end();
     while(it != end) {
@@ -334,7 +344,7 @@ void CC<T>::remove_combos(cc_combo_key const& binary) {
 }
 
 template<typename T>
-CCSortDTO<T> CC<T>::sort() {
+CCSortDTO<T> CC<T>::sort() noexcept {
 
     build_piece_combos();
 
