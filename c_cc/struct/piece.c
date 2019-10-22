@@ -31,6 +31,9 @@ piece_list* piece_list_create(size_t capacity) {
 	if (block == NULL)
 		return NULL;
 
+	for (size_t i = 0; i < capacity; ++i)
+		block[i] = NULL;
+
 	list->data = block;
 
 	return list;

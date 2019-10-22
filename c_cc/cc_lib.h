@@ -10,8 +10,6 @@
 #include "struct/result.h"
 #include "struct/cc_sort_dto.h"
 
-
-
 static const cc_bit_type cc_false = '0';
 static const cc_bit_type cc_true = '1';
 

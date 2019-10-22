@@ -169,7 +169,79 @@ bool test_skip_binary() {
 	return result;
 }
 
-bool test_pieces() { puts("\ntest_pieces():"); print_sub("Not Implemented\n", 1); return false; }
+bool test_pieces() { 
+	puts("\ntest_pieces():");
+
+	cc_value_type val = 100;
+
+	piece* pc = piece_create(val);
+	bool c_result = pc->size == val;
+	if (c_result)
+		print_sub("create ok\n", 1);
+	else
+		print_sub("create fail", 1);
+
+	piece_destroy(pc);
+	print_sub("destroy ok\n", 1);
+
+	size_t cap = 20;
+	piece_list* list = piece_list_create(cap);
+	bool lc_result = list->capacity == cap && list->size == 0;
+	if (lc_result)
+		print_sub("list create ok\n", 1);
+	else
+		print_sub("list create fail", 1);
+
+	size_t num_ele = 7;
+	cc_value_type values[] = {5, 2, 3, 88, 6, 52, 3};
+	bool pb_result = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		piece* pc = piece_create(values[i]);
+		piece_list_push_back(list, pc);
+		pb_result |= list->size == i + 1;
+	}
+		
+	if (pb_result)
+		print_sub("push back ok\n", 1);
+	else
+		print_sub("push back fail", 1);	
+	
+	size_t new_size = cap + 1;
+	for (size_t i = list->size; i <= new_size; ++i) {
+		piece* pc = piece_create(10);
+		piece_list_push_back(list, pc);
+		pb_result |= list->size == i + 1;
+	}
+	bool cap_result = list->capacity > cap;
+	if (cap_result)
+		print_sub("realloc ok\n", 1);
+	else
+		print_sub("realloc fail", 1);	
+
+	piece_list_destroy(list);
+
+	list = piece_list_create(cap);
+	for (size_t i = 0; i < num_ele; ++i) {
+		piece* pc = piece_create(values[i]);
+		piece_list_push_back(list, pc);
+	}
+
+	cc_value_type sorted[] = {88, 52, 6, 5, 3, 3, 2};
+	piece_list_sort_desc(list);
+	bool sort_result = true;
+	for (size_t i = 0; i < num_ele; ++i)
+		sort_result |= list->data[i] == sorted[i];
+
+	if (sort_result)
+		print_sub("sort ok\n", 1);
+	else
+		print_sub("sort fail", 1);
+
+
+	piece_list_destroy(list);
+	 
+	return c_result && lc_result && pb_result && cap_result && sort_result;
+}
 
 bool test_containers() { puts("\ntest_containers():"); print_sub("Not Implemented\n", 1); return false; }
 

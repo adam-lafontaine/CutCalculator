@@ -3,12 +3,11 @@
 
 
 
-typedef double cc_value_type;
+typedef int cc_value_type;
 
 typedef char* cc_combo_key;
 typedef char cc_bit_type;
 typedef unsigned long long u_int_t;
-typedef double cc_value_type;
 
 typedef struct Piece piece;
 typedef struct PieceList piece_list;
