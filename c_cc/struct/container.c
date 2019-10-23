@@ -32,6 +32,9 @@ container_list* container_list_create(size_t list_capacity) {
 	if (block == NULL)
 		return NULL;
 
+	for (size_t i = 0; i < list_capacity; ++i)
+		block[i] = NULL;
+
 	list->data = block;
 
 	return list;

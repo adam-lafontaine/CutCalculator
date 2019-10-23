@@ -12,6 +12,7 @@ bool test_next_binary();
 bool test_skip_binary();
 bool test_pieces();
 bool test_containers();
+bool test_piece_combos();
 bool test_combo_size();
 bool test_filter_pieces();
 bool test_max_capacity();

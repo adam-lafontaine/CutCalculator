@@ -7,7 +7,7 @@
 #include "../cc_types.h"
 
 typedef struct Result {
-	cc_combo_key binary; // needed?
+	char* binary; // needed?
 	piece_combo* combo;
 	piece_list* pieces;
 	container* container;

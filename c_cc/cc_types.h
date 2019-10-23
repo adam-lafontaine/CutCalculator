@@ -5,7 +5,6 @@
 
 typedef int cc_value_type;
 
-typedef char* cc_combo_key;
 typedef char cc_bit_type;
 typedef unsigned long long u_int_t;
 

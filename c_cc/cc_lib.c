@@ -6,8 +6,8 @@
 
 //======= HELPERS ==================
 
-cc_combo_key copy_binary(cc_combo_key const binary) {
-	cc_combo_key copy = (cc_combo_key)calloc(strlen(binary) + 1, sizeof(cc_bit_type));
+char* copy_binary(char* const binary) {
+	char* copy = (char*)calloc(strlen(binary) + 1, sizeof(cc_bit_type));
 	if (copy == NULL)
 		return NULL;
 
@@ -18,10 +18,12 @@ cc_combo_key copy_binary(cc_combo_key const binary) {
 
 //---------------------------
 
-cc_combo_key new_zero_binary(size_t num_bits) {
-	cc_combo_key binary = (cc_combo_key)calloc(num_bits + 1, sizeof(cc_bit_type));
+char* new_zero_binary(size_t num_bits) {
+	char* binary = (char*)calloc(num_bits + 1, sizeof(cc_bit_type));
 	if (binary == NULL)
 		return NULL;
+
+	binary[num_bits] = '\0';
 
 	memset(binary, cc_false, num_bits);
 
@@ -30,7 +32,7 @@ cc_combo_key new_zero_binary(size_t num_bits) {
 
 //==================================
 
-bool has_bit(cc_combo_key c) {
+bool has_bit(char* c) {
 	while (*c != '\0') {
 		if (*c++ == cc_true)
 			return true;
@@ -48,14 +50,14 @@ cc_bit_type flip_bit(cc_bit_type const bit) {
 
 //-------------------------------
 
-cc_combo_key to_binary(u_int_t value, unsigned num_bits) {
+char* to_binary(u_int_t value, unsigned num_bits) {
 	cc_bit_type const bin_values[] = { cc_false, cc_true };
 
 	unsigned const min_bits = (unsigned)(log2((double)value) + 1);
 	if (min_bits > num_bits)
 		num_bits = min_bits;
 
-	cc_combo_key binary = new_zero_binary(num_bits);
+	char* binary = new_zero_binary(num_bits);
 
 	size_t bin_idx = num_bits;
 
@@ -71,7 +73,7 @@ cc_combo_key to_binary(u_int_t value, unsigned num_bits) {
 
 //-----------------------------
 
-u_int_t to_decimal(cc_combo_key binary) {
+u_int_t to_decimal(char* binary) {
 	u_int_t val = 0;
 	int exp = 0;
 
@@ -89,7 +91,7 @@ u_int_t to_decimal(cc_combo_key binary) {
 
 //--------------------------
 
-bool has_common_bit(cc_combo_key const bin_1, cc_combo_key const bin_2) {
+bool has_common_bit(char* const bin_1, char* const bin_2) {
 	size_t last_1 = strlen(bin_1) - 1;
 	size_t last_2 = strlen(bin_2) - 1;
 
@@ -103,8 +105,8 @@ bool has_common_bit(cc_combo_key const bin_1, cc_combo_key const bin_2) {
 
 //--------------------------
 
-cc_combo_key next_binary(cc_combo_key const binary) {
-	cc_combo_key next_bin = copy_binary(binary);
+char* next_binary(char* const binary) {
+	char* next_bin = copy_binary(binary);
 	
 	for (int i = strlen(binary) - 1; i >= 0 && (next_bin[i] = flip_bit(next_bin[i])) != cc_true; --i)
 		;
@@ -116,9 +118,9 @@ cc_combo_key next_binary(cc_combo_key const binary) {
 
 //------------------------
 
-cc_combo_key skip_binary(cc_combo_key const binary) {
+char* skip_binary(char* const binary) {
 	size_t num_bits = strlen(binary);
-	cc_combo_key copy = copy_binary(binary);
+	char* copy = copy_binary(binary);
 
 	copy[num_bits - 1] = cc_true;
 
@@ -126,7 +128,7 @@ cc_combo_key skip_binary(cc_combo_key const binary) {
 	while (i >= 0 && copy[i] != cc_true)
 		copy[i--] = cc_true;
 
-	cc_combo_key next_bin = next_binary(copy);
+	char* next_bin = next_binary(copy);
 	free(copy);
 
 	return next_bin;

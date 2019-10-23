@@ -5,13 +5,13 @@
 
 typedef struct PieceCombo {
 
-	cc_combo_key binary;
+	char* binary;
 	cc_value_type combo_size;
 	
 } piece_combo;
 
 
-piece_combo* piece_combo_create(cc_combo_key binary, cc_value_type combo_size);
+piece_combo* piece_combo_create(const char* binary, cc_value_type combo_size);
 
 void piece_combo_destroy(piece_combo* pc_combo);
 

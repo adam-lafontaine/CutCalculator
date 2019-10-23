@@ -60,12 +60,12 @@ bool test_to_binary() {
 	size_t num_ele = 5;
 	unsigned values[] = { 3205, 55, 55, 3205, 1 };
 	unsigned lengths[] = { 12, 6, 12, 5, 12 };
-	cc_combo_key expected[] = { "110010000101", "110111", "000000110111", "110010000101", "000000000001" };
+	char* expected[] = { "110010000101", "110111", "000000110111", "110010000101", "000000000001" };
 
 	bool result = true;
 	for (size_t i = 0; i < num_ele; ++i) {
-		cc_combo_key binary = to_binary(values[i], lengths[i]);
-		cc_combo_key exp = expected[i];
+		char* binary = to_binary(values[i], lengths[i]);
+		char* exp = expected[i];
 		result &= binary != NULL && strcmp(binary, exp) == 0;
 
 		free(binary);
@@ -84,7 +84,7 @@ bool test_to_decimal() {
 	puts("\ntest_to_decimal():");
 
 	size_t num_ele = 7;
-	cc_combo_key binarys[] = 
+	char* binarys[] = 
 	{ "1011", "100011", "0000000", "1001001110001", "00001011", "0000100011", "00001001001110001" };
 
 	unsigned expected[] = { 11, 35, 0, 4721, 11, 35, 4721 };
@@ -105,8 +105,8 @@ bool test_has_common_bit() {
 	puts("\ntest_has_common_bit():");
 	
 	size_t num_ele = 5;
-	cc_combo_key bin_1[] = { "0", "0", "100110", "0100110011", "1001001" };
-	cc_combo_key bin_2[] = { "0", "1", "000100", "0010", "0110110" };
+	char* bin_1[] = { "0", "0", "100110", "0100110011", "1001001" };
+	char* bin_2[] = { "0", "1", "000100", "0010", "0110110" };
 	bool expected[] = { false, false, true, true, false };
 
 	bool result = true;
@@ -125,12 +125,12 @@ bool test_next_binary() {
 	puts("\ntest_next_binary():"); 
 
 	size_t num_ele = 5;
-	cc_combo_key bin[] = { "1011", "100011", "0000000", "11111", "0010010" };
-	cc_combo_key expected[] = { "1100", "100100", "0000001", "00000", "0010011" };
+	char* bin[] = { "1011", "100011", "0000000", "11111", "0010010" };
+	char* expected[] = { "1100", "100100", "0000001", "00000", "0010011" };
 
 	bool result = true;
 	for (size_t i = 0; i < num_ele; ++i) {
-		cc_combo_key next_bin = next_binary(bin[i]);
+		char* next_bin = next_binary(bin[i]);
 		result &= strcmp(next_bin, expected[i]) == 0;
 
 		free(next_bin);
@@ -149,12 +149,12 @@ bool test_skip_binary() {
 	puts("\ntest_skip_binary():"); 
 	
 	size_t num_ele = 3;
-	cc_combo_key bin[] = { "1100100", "0010001000", "11111" };
-	cc_combo_key expected[] = { "1101000", "0010010000", "00000" };
+	char* bin[] = { "1100100", "0010001000", "11111" };
+	char* expected[] = { "1101000", "0010010000", "00000" };
 
 	bool result = true;
 	for (size_t i = 0; i < num_ele; ++i) {
-		cc_combo_key next_bin = skip_binary(bin[i]);
+		char* next_bin = skip_binary(bin[i]);
 		result &= strcmp(next_bin, expected[i]) == 0;
 
 		free(next_bin);
@@ -179,7 +179,7 @@ bool test_pieces() {
 	if (c_result)
 		print_sub("create ok\n", 1);
 	else
-		print_sub("create fail", 1);
+		print_sub("create fail\n", 1);
 
 	piece_destroy(pc);
 	print_sub("destroy ok\n", 1);
@@ -190,7 +190,7 @@ bool test_pieces() {
 	if (lc_result)
 		print_sub("list create ok\n", 1);
 	else
-		print_sub("list create fail", 1);
+		print_sub("list create fail\n", 1);
 
 	size_t num_ele = 7;
 	cc_value_type values[] = {5, 2, 3, 88, 6, 52, 3};
@@ -204,7 +204,7 @@ bool test_pieces() {
 	if (pb_result)
 		print_sub("push back ok\n", 1);
 	else
-		print_sub("push back fail", 1);	
+		print_sub("push back fail\n", 1);	
 	
 	size_t new_size = cap + 1;
 	for (size_t i = list->size; i <= new_size; ++i) {
@@ -216,7 +216,7 @@ bool test_pieces() {
 	if (cap_result)
 		print_sub("realloc ok\n", 1);
 	else
-		print_sub("realloc fail", 1);	
+		print_sub("realloc fail\n", 1);	
 
 	piece_list_destroy(list);
 
@@ -235,7 +235,7 @@ bool test_pieces() {
 	if (sort_result)
 		print_sub("sort ok\n", 1);
 	else
-		print_sub("sort fail", 1);
+		print_sub("sort fail\n", 1);
 
 
 	piece_list_destroy(list);
@@ -243,7 +243,110 @@ bool test_pieces() {
 	return c_result && lc_result && pb_result && cap_result && sort_result;
 }
 
-bool test_containers() { puts("\ntest_containers():"); print_sub("Not Implemented\n", 1); return false; }
+bool test_containers() { 
+	puts("\ntest_containers():");
+
+	cc_value_type val = 100;
+
+	container* ct = container_create(val);
+	bool c_result = ct->capacity == val;
+	if (c_result)
+		print_sub("create ok\n", 1);
+	else
+		print_sub("create fail\n", 1);
+
+	container_destroy(ct);
+	print_sub("destroy ok\n", 1);
+
+	size_t cap = 20;
+	container_list* list = container_list_create(cap);
+	bool lc_result = list->capacity == cap && list->size == 0;
+	if (lc_result)
+		print_sub("list create ok\n", 1);
+	else
+		print_sub("list create fail\n", 1);
+
+	size_t num_ele = 7;
+	cc_value_type values[] = { 5, 2, 3, 88, 6, 52, 3 };
+	bool pb_result = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		container* ct = container_create(values[i]);
+		container_list_push_back(list, ct);
+		pb_result |= list->size == i + 1;
+	}
+
+	if (pb_result)
+		print_sub("push back ok\n", 1);
+	else
+		print_sub("push back fail\n", 1);
+
+	size_t new_size = cap + 1;
+	for (size_t i = list->size; i <= new_size; ++i) {
+		container* ct = container_create(10);
+		container_list_push_back(list, ct);
+		pb_result |= list->size == i + 1;
+	}
+	bool cap_result = list->capacity > cap;
+	if (cap_result)
+		print_sub("realloc ok\n", 1);
+	else
+		print_sub("realloc fail\n", 1);
+
+	container_list_destroy(list);
+
+	list = container_list_create(cap);
+	for (size_t i = 0; i < num_ele; ++i) {
+		container* ct = container_create(values[i]);
+		container_list_push_back(list, ct);
+	}
+
+	cc_value_type sorted[] = { 2, 3, 3, 5, 6, 52, 88 };
+	container_list_sort_asc(list);
+	bool sort_result = true;
+	for (size_t i = 0; i < num_ele; ++i)
+		sort_result |= list->data[i] == sorted[i];
+
+	if (sort_result)
+		print_sub("sort ok\n", 1);
+	else
+		print_sub("sort fail\n", 1);
+
+
+	container_list_destroy(list);
+
+	return c_result && lc_result && pb_result && cap_result && sort_result;
+}
+
+bool test_piece_combos() {
+	puts("\ntest_piece_combos():");
+
+	unsigned key_num = 25;
+	char* key = to_binary(key_num, 8);
+	cc_value_type value = 512;
+
+	piece_combo* combo = piece_combo_create(key, value);
+	piece_combo_destroy(combo);
+	print_sub("destroy ok\n", 1);
+
+	size_t num_ele = 5;
+	unsigned key_nums[] = {15, 2, 25, 100, 99};
+	cc_value_type values[] = {888, 999, -663, 42, -12};
+
+	bool result = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		char* key = to_binary(key_nums[i], 8);
+		piece_combo* combo = piece_combo_create(key, values[i]);
+		result |= strcmp(combo->binary, key) == 0 && combo->combo_size == values[i];
+		piece_combo_destroy(combo);
+	}
+
+	if (result)
+		print_sub("create ok\n", 1);
+	else
+		print_sub("create fail\n", 1);
+
+	return result;
+}
 
 bool test_combo_size() { puts("\ntest_combo_size():"); print_sub("Not Implemented\n", 1); return false; }
 

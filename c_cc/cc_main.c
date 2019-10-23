@@ -39,13 +39,14 @@ int main(int argc, char** argv) {
 	str_result(results_buffer[6], "test_skip_binary()", test_skip_binary());
 	str_result(results_buffer[7], "test_pieces()", test_pieces());
 	str_result(results_buffer[8], "test_containers()", test_containers());
-	str_result(results_buffer[9], "test_combo_size()", test_combo_size());
-	str_result(results_buffer[10], "test_filter_pieces()", test_filter_pieces());
-	str_result(results_buffer[11], "test_max_capacity()", test_max_capacity());
-	str_result(results_buffer[12], "test_build_piece_combos()", test_build_piece_combos());
-	str_result(results_buffer[13], "test_best_match()", test_best_match());
-	str_result(results_buffer[14], "test_remove_combos()", test_remove_combos());
-	str_result(results_buffer[15], "test_sort()", test_sort());
+	str_result(results_buffer[9], "test_piece_combos()", test_piece_combos());
+	str_result(results_buffer[10], "test_combo_size()", test_combo_size());
+	str_result(results_buffer[11], "test_filter_pieces()", test_filter_pieces());
+	str_result(results_buffer[12], "test_max_capacity()", test_max_capacity());
+	str_result(results_buffer[13], "test_build_piece_combos()", test_build_piece_combos());
+	str_result(results_buffer[14], "test_best_match()", test_best_match());
+	str_result(results_buffer[15], "test_remove_combos()", test_remove_combos());
+	str_result(results_buffer[16], "test_sort()", test_sort());
 	
 
 	unsigned width = 0;

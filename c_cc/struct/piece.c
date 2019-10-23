@@ -44,8 +44,7 @@ void piece_ptr_array_destroy(piece_ptr_array data, size_t size) {
 		return;
 
 	for (size_t i = 0; i < size; ++i) {
-		if (data[i] != NULL)
-			free(data[i]);
+		piece_destroy(data[i]);
 	}
 
 	free(data);

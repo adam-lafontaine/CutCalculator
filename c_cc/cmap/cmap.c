@@ -10,13 +10,11 @@
 struct cmap_node_t;
 typedef struct cmap_node_t ct_node;
 
-cmap_pair* create_pair(cmap* map, const char* key) {	
+cmap_pair* create_pair(const char* key, cc_value_type value) {
 
-	cmap_pair* pair = (cmap_pair*)malloc(sizeof(cmap_pair));
+	cmap_pair* pair = piece_combo_create(key, value);
 	if (pair == NULL)
 		return NULL;
-
-	pair->binary = (char*)key;
 
 	return pair;
 }
@@ -32,7 +30,7 @@ typedef struct cmap_node_t {
 
 void clear_value(ct_node* node) {
 
-	free(node->pair);
+	piece_combo_destroy(node->pair);
 	node->pair = NULL;
 }
 
@@ -40,7 +38,7 @@ void destroy_pair(cmap_pair* pair) {
 	if (pair == NULL)
 		return;
 
-	free(pair);
+	piece_combo_destroy(pair);
 }
 
 
@@ -215,14 +213,12 @@ void cmap_add(cmap* map, const char* key, const cmap_value_t value) {
 	if (node == NULL)
 		return;
 
-	cmap_pair* pair = (cmap_pair*)malloc(sizeof(cmap_pair));
+	cmap_pair* pair = create_pair(key, value);
 	if (pair == NULL) {
 		return;
 	}	
 
 	node->pair = pair;
-	node->pair->binary = (char*)key;
-	node->pair->combo_size = value;	
 }
 
 void cmap_remove(cmap* map, const char* key) {

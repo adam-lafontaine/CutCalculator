@@ -15,13 +15,13 @@ static const cc_bit_type cc_true = '1';
 
 
 // binary functions
-bool has_bit(cc_combo_key binary);
+bool has_bit(char* binary);
 cc_bit_type flip_bit(cc_bit_type const bit);
-cc_combo_key to_binary(u_int_t value, unsigned num_bits);
-u_int_t to_decimal(cc_combo_key binary);
-bool has_common_bit(cc_combo_key const bin_1, cc_combo_key const bin_2);
-cc_combo_key next_binary(cc_combo_key const binary);
-cc_combo_key skip_binary(cc_combo_key const binary);
+char* to_binary(u_int_t value, unsigned num_bits);
+u_int_t to_decimal(char* binary);
+bool has_common_bit(char* const bin_1, char* const bin_2);
+char* next_binary(char* const binary);
+char* skip_binary(char* const binary);
 
 
 
