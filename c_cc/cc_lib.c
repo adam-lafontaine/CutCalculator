@@ -133,3 +133,33 @@ char* skip_binary(char* const binary) {
 
 	return next_bin;
 }
+
+cc_value_type cc_combo_size(char* const binary, piece_list* pieces, cc_value_type loss_per_piece) {
+	cc_value_type result = 0;
+	size_t num_bits = strlen(binary);
+	size_t num_pieces = pieces->size;
+
+	for (size_t i = 0; i < num_bits && i < num_pieces; ++i) {
+		char bit = binary[num_bits - 1 - i];
+		cc_value_type size = pieces->data[num_pieces - 1 - i]->size;
+		if (bit == cc_true)
+			result += size + loss_per_piece;
+	}
+
+	return result;
+}
+
+piece_list* cc_filter_pieces(char* const binary, piece_list* pieces) {
+	size_t num_bits = strlen(binary);
+	size_t num_pieces = pieces->size;
+
+	piece_list* list = piece_list_create(num_pieces);
+
+	for (size_t i = 0; i < num_bits && i < num_pieces; ++i) {
+		char bit = binary[num_bits - 1 - i];
+		if (bit == cc_true)
+			piece_list_push_back(list, pieces->data[num_pieces - 1 - i]);
+	}
+
+	return list;
+}

@@ -28,6 +28,8 @@ piece_list* piece_list_create(size_t capacity);
 
 void piece_list_destroy(piece_list* list);
 
+void piece_list_destroy_copy(piece_list* list);
+
 bool piece_list_push_back(piece_list* list, piece* value);
 
 void piece_list_sort_desc(piece_list* list);

@@ -60,6 +60,14 @@ void piece_list_destroy(piece_list* list) {
 	free(list);
 }
 
+void piece_list_destroy_copy(piece_list* list) {
+	if (list == NULL || list->data == NULL)
+		return;
+
+	free(list->data);
+	free(list);
+}
+
 bool piece_list_push_back(piece_list* list, piece* value) {	
 
 	if (list->size == list->capacity) {

@@ -3,7 +3,7 @@
 
 
 
-typedef int cc_value_type;
+typedef double cc_value_type;
 
 typedef char cc_bit_type;
 typedef unsigned long long u_int_t;

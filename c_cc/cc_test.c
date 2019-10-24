@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "cc_test.h"
 #include "cmap/cmap.h"
@@ -11,6 +12,51 @@
 void print_sub(const char* msg, unsigned level) {
 	printf("%*s%s",
 		level, "  ", msg);
+}
+
+piece_list* piece_factory(size_t num, ...) {
+
+	va_list ap;
+	cc_value_type val;
+
+	piece_list* list = piece_list_create(num);
+	if (list == NULL)
+		return NULL;
+
+	va_start(ap, num);
+
+	for (size_t i = 0; i < num; i++) {
+		val = va_arg(ap, cc_value_type);
+		piece* pc = piece_create(val);
+		piece_list_push_back(list, pc);
+	}
+
+	va_end(ap);
+
+	return list;
+}
+
+
+container_list* container_factory(size_t num, ...) {
+
+	va_list ap;
+	cc_value_type val;
+
+	container_list* list = container_list_create(num);
+	if (list == NULL)
+		return NULL;
+
+	va_start(ap, num);
+
+	for (size_t i = 0; i < num; i++) {
+		val = va_arg(ap, cc_value_type);
+		container* pc = container_create(val);
+		container_list_push_back(list, pc);
+	}
+
+	va_end(ap);
+
+	return list;
 }
 
 
@@ -230,7 +276,7 @@ bool test_pieces() {
 	piece_list_sort_desc(list);
 	bool sort_result = true;
 	for (size_t i = 0; i < num_ele; ++i)
-		sort_result |= list->data[i] == sorted[i];
+		sort_result |= list->data[i]->size == sorted[i];
 
 	if (sort_result)
 		print_sub("sort ok\n", 1);
@@ -304,7 +350,7 @@ bool test_containers() {
 	container_list_sort_asc(list);
 	bool sort_result = true;
 	for (size_t i = 0; i < num_ele; ++i)
-		sort_result |= list->data[i] == sorted[i];
+		sort_result |= list->data[i]->capacity == sorted[i];
 
 	if (sort_result)
 		print_sub("sort ok\n", 1);
@@ -348,9 +394,104 @@ bool test_piece_combos() {
 	return result;
 }
 
-bool test_combo_size() { puts("\ntest_combo_size():"); print_sub("Not Implemented\n", 1); return false; }
+bool test_combo_size() { 
+	puts("\ntest_combo_size():"); 
 
-bool test_filter_pieces() { puts("\ntest_filter_pieces():"); print_sub("Not Implemented\n", 1); return false; }
+	piece_list* pieces = piece_factory(3, 30, 60, 40);
+	if(pieces != NULL)
+		print_sub("piece_factory ok\n", 1);
+	else {
+		print_sub("piece_factory fail\n", 1);
+		return false;
+	}
+
+	piece_list_sort_desc(pieces);
+
+	size_t num_ele = 7;
+	char* combos[] = { "001", "010", "100", "101", "011", "110", "111" };
+	cc_value_type loss = 0.0;
+	cc_value_type expected[] = { 30.0, 40.0, 60.0, 90.0, 70.0, 100.0, 130.0 };	
+
+	bool no_loss = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		no_loss |= cc_combo_size(combos[i], pieces, loss) == expected[i];
+	}
+
+	if (no_loss)
+		print_sub("no loss ok\n", 1);
+	else
+		print_sub("no loss fail\n", 1);
+
+	loss = 0.25;	
+	cc_value_type expected_2[] = { 30.25, 40.25, 60.25, 90.5, 70.5, 100.5, 130.75 };
+	bool with_loss = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		with_loss |= cc_combo_size(combos[i], pieces, loss) == expected[i];
+	}
+	if (no_loss)
+		print_sub("with loss ok\n", 1);
+	else
+		print_sub("with loss fail\n", 1);
+
+	piece_list_destroy(pieces);
+	return no_loss && with_loss; 
+}
+
+bool test_filter_pieces() { 
+	puts("\ntest_filter_pieces():"); 
+
+	piece_list* pieces = piece_factory(3, 30, 20, 60);
+	if (pieces != NULL)
+		print_sub("piece_factory ok\n", 1);
+	else {
+		print_sub("piece_factory fail\n", 1);
+		return false;
+	}
+
+	piece_list_sort_desc(pieces);
+
+	size_t num_ele = 7;
+	char* combos[] = { "001", "010", "100", "101", "011", "110", "111" };
+	cc_value_type expected[][3] = {
+		{20.0},
+		{30.0},
+		{60.0},
+		{60.0, 20.0},
+		{30.0, 20.0},
+		{60.0, 30.0},
+		{60.0, 30.0, 20.0}
+	};
+
+	size_t exp_sizes[] = {1, 1, 1, 2, 2, 2, 3};
+
+	bool val_result = true;
+	bool size_result = true;
+
+	for (size_t i = 0; i < num_ele; ++i) {
+		piece_list* filtered = cc_filter_pieces(combos[i], pieces);
+
+		size_result |= filtered->size == exp_sizes[i];
+		
+		for (size_t j = 0; j < exp_sizes[i]; ++j)
+			val_result |= filtered->data[j]->size == expected[j][i];
+
+		piece_list_destroy_copy(filtered);
+	}
+
+	if (size_result)
+		print_sub("list size ok\n", 1);
+	else
+		print_sub("list size fail\n", 1);
+
+	if (val_result)
+		print_sub("values ok\n", 1);
+	else
+		print_sub("values fail\n", 1);
+
+
+	piece_list_destroy(pieces);
+	return size_result && val_result; 
+}
 
 bool test_max_capacity() { puts("\ntest_max_capacity():"); print_sub("Not Implemented\n", 1); return false; }
 
