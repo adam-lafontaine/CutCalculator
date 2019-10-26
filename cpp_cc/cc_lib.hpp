@@ -1,6 +1,7 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 using cc_bit_type = char;
 constexpr cc_bit_type cc_false = '0';
@@ -133,7 +134,7 @@ public:
     piece_list<T> const& pieces() const { return _pieces; }
     container_list<T> const& containers() const { return _containers; }
     T const& loss_per_piece() const { return _loss_per_piece; }
-    T const& tolerance() const { return _tolerance; }
+    T const& tolerance() const { return std::max(_tolerance, _loss_per_piece); }
 
 };
 

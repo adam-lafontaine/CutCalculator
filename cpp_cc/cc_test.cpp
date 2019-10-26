@@ -523,9 +523,6 @@ string CCTest::test_max_capacity() {
         { 10.5, 90.2, 62.4, 58.6, 25.6 }
     };
 
-    double loss = 0.5;
-    vector<double> expected;
-
     CC<double> my_cc;
 
     stringstream ss;
@@ -541,12 +538,10 @@ string CCTest::test_max_capacity() {
         ss << "   result = " << res << '\n';
         if(exp != res)
             success = "Fail";
-        
-        my_cc.loss_per_piece(loss);
-        exp += loss;
+
         res = my_cc.max_capacity();
 
-        ss << "     loss: " << loss << '\n';
+        //ss << "     loss: " << loss << '\n';
         ss << "expected = " << exp << '\n';
         ss << "  result = " << res << '\n';
         if(exp != res)
@@ -565,6 +560,9 @@ string CCTest::test_build_piece_combos() {
     print("\nTest build_piece_combos()");
 
     string success = "Pass";
+
+	stringstream ss;
+	ss << "All combos:\n";
 
     auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0 });
     auto containers = container_factory<double>({ 300.0, 200.0, 150.0 });
@@ -586,35 +584,63 @@ string CCTest::test_build_piece_combos() {
         { "111", 110.0 }
     };
 
-    stringstream ss;
+    auto result = my_cc._piece_combos;
+    auto not_found = result.end();
 
-    auto result = &(my_cc._piece_combos);
+	auto const test = [&](auto const& item) {
+		auto key = item.first;
 
-    auto not_found = result->end();
+		ss << "key: " << key;
 
-    for(auto const& item : expected) {
-        auto key = item.first;
+		if (result.find(key) == not_found) {
+			ss << " not found\n";
+			success = "Fail";
+			return;
+		}
+		ss << '\n';
 
-        ss << "key: " << key;
+		auto exp = item.second;
+		auto res = result[key]->combo_size;
+		ss << "expected = " << exp << '\n';
+		ss << "  result = " << res << '\n';
+		if (exp != res)
+			success = "Fail";
+	};
 
-        if(result->find(key) == not_found) {
-            ss << " not found\n";
-            success = "Fail";
-            continue;
-        }
-        ss << '\n';
+	std::for_each(expected.begin(), expected.end(), test);
+	if (result.size() != expected.size()) {
+		ss << "piece_combo size mismatch\n";
+		success = "Fail";
+	}
 
-        auto exp = item.second;
-        auto res = (*result)[key]->combo_size;
-        ss << "expected = " << exp << '\n';
-        ss << "  result = " << res << '\n';
-        if(exp != res)
-            success = "Fail";
-    }
+	ss << "Combos too large:\n";
+	
+	auto pieces_2 = piece_factory<double>({ 90.0, 60.0, 180.0 });
+	auto containers_2 = container_factory<double>({ 300.0, 200.0, 150.0 });
+	my_cc.pieces(pieces_2);
+	my_cc.containers(containers_2);
+	my_cc.build_piece_combos();
+
+	vector<pair<string, double>> expected_2{
+		{ "001", 60.0 },
+		{ "010", 90.0 },
+		{ "011", 150.0 },
+		{ "100", 180.0 },
+		{ "101", 240.0 },
+		{ "110", 270.0 },
+		//{ "111", 330.0 } too large
+	};
+
+	result = my_cc._piece_combos;
+	not_found = result.end();
+
+	std::for_each(expected_2.begin(), expected_2.end(), test);
+	if (result.size() != expected_2.size()) {
+		ss << "piece_combo size mismatch\n";
+		success = "Fail";
+	}
     
     print(ss.str());
-
-    result = nullptr;
 
     return success;
 }

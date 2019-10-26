@@ -204,7 +204,7 @@ T CC<T>::combo_size(cc_combo_key const& binary) const noexcept {
             result += size + _loss_per_piece;
     }
 
-    return result;
+	return result;
 }
 
 //------------------------------------
@@ -233,7 +233,7 @@ T CC<T>::max_capacity() const noexcept {
 		return 0;
 
     // last item because list is sorted
-    return _containers[_containers.size() - 1]->capacity + _loss_per_piece;
+    return _containers[_containers.size() - 1]->capacity;
 }
 
 //------------------------------
@@ -287,7 +287,7 @@ result_ptr<T> CC<T>::best_match() noexcept {
                 result->binary = binary;
 				best_container_it = c_it;
 
-                if(diff <= _tolerance) {
+                if(diff <= tolerance()) {
                     result->combo = combo;
                     result->pieces = filter_pieces(binary);
                     result->container = std::move(*best_container_it);
