@@ -26,6 +26,8 @@ char* skip_binary(char* const binary);
 
 cc_value_type cc_combo_size(char* const binary, piece_list* pieces, cc_value_type loss_per_piece);
 piece_list* cc_filter_pieces(char* const binary, piece_list* pieces);
+cc_value_type cc_max_capacity(container_list* containers);
+
 
 
 

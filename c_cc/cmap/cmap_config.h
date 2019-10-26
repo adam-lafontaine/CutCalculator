@@ -2,7 +2,7 @@
 #define __CMAP_CONFIG_H__
 
 // include desired character options for string keys
-static const char KEY_CHARS[] = "abcdefghijklmnopqrstuvwxyz";
+static const char KEY_CHARS[] = "01";
 
 // define value type at implementation
 // e.g. typedef int cmap_value_t

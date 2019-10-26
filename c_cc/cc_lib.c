@@ -163,3 +163,35 @@ piece_list* cc_filter_pieces(char* const binary, piece_list* pieces) {
 
 	return list;
 }
+
+cc_value_type cc_max_capacity(container_list* containers) {
+	if (containers->size == 0)
+		return 0;
+
+	// last element because list is sorted
+	return containers->data[containers->size - 1]->capacity;
+}
+
+cmap* cc_build_piece_combos(container_list* containers, piece_list* pieces, cc_value_type loss) {
+	cmap* piece_combos = cmap_create();
+
+	cc_value_type max_cap = cc_max_capacity(containers);
+	char* binary = to_binary(1, pieces->size);
+
+	while (has_bit(binary)) {
+		cc_value_type size = cc_combo_size(binary, pieces, loss);
+		if (size <= max_cap) {
+			cmap_add(piece_combos, binary, size);
+			binary = next_binary(binary);
+		}
+		else {
+			char* ptr = binary;
+			binary = skip_binary(binary);
+			free(ptr);
+		}
+	}
+
+	free(binary);
+
+	return piece_combos;
+}

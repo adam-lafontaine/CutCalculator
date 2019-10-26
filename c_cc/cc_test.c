@@ -33,6 +33,8 @@ piece_list* piece_factory(size_t num, ...) {
 
 	va_end(ap);
 
+	piece_list_sort_desc(list);
+
 	return list;
 }
 
@@ -55,6 +57,10 @@ container_list* container_factory(size_t num, ...) {
 	}
 
 	va_end(ap);
+
+	cc_value_type cap = 0;
+
+	container_list_sort_asc(list);
 
 	return list;
 }
@@ -448,8 +454,6 @@ bool test_filter_pieces() {
 		return false;
 	}
 
-	piece_list_sort_desc(pieces);
-
 	size_t num_ele = 7;
 	char* combos[] = { "001", "010", "100", "101", "011", "110", "111" };
 	cc_value_type expected[][3] = {
@@ -493,9 +497,103 @@ bool test_filter_pieces() {
 	return size_result && val_result; 
 }
 
-bool test_max_capacity() { puts("\ntest_max_capacity():"); print_sub("Not Implemented\n", 1); return false; }
+bool test_max_capacity() { 
+	puts("\ntest_max_capacity():"); 
 
-bool test_build_piece_combos() { puts("\ntest_build_piece_combos():"); print_sub("Not Implemented\n", 1); return false; }
+	container_list* c_lists[3];
+	c_lists[0] = container_factory(3, 300.0, 200.0, 150.0);
+	c_lists[1] = container_factory(4, 60.0, 40.0, 20.0, 80.0);
+	c_lists[2] = container_factory(5, 10.5, 90.2, 62.4, 58.6, 25.6);
+
+	size_t num_ele = 3;
+
+	cc_value_type expected[] = { 300.0, 80.0, 90.2 };
+
+	bool result = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		result |= cc_max_capacity(c_lists[i]) == expected[i];
+		container_list_destroy(c_lists[i]);
+	}
+
+	if (result)
+		print_sub("max capacity ok\n", 1);
+	else
+		print_sub("max capacity fail\n", 1);
+
+	print_sub("Not Implemented\n", 1); 
+	return result; 
+}
+
+bool test_build_piece_combos() { 
+	puts("\ntest_build_piece_combos():"); 
+
+	piece_list* pieces = piece_factory(3, 30.0, 20.0, 60.0);
+	container_list* containers = container_factory(3, 300.0, 200.0, 150.0);
+
+	cmap* piece_combos = cc_build_piece_combos(containers, pieces, 0);
+
+	char* keys[] = { "001", "010", "011", "100", "101", "110", "111" };
+	cc_value_type values[] = { 20, 30, 50, 60, 80, 90, 110 };
+
+	size_t num_ele = 7;
+	bool k_result = true;
+	bool v_result = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		piece_combo* combo = cmap_get(piece_combos, keys[i]);
+		k_result |= combo != NULL && strcmp(combo->binary, keys[i]) == 0;
+		v_result |= combo != NULL && combo->combo_size == values[i];
+	}
+
+	if (k_result)
+		print_sub("keys ok\n", 1);
+	else
+		print_sub("keys fail\n", 1);
+
+	if (v_result)
+		print_sub("values ok\n", 1);
+	else
+		print_sub("values fail\n", 1);
+	
+	cmap_destroy(piece_combos);
+	piece_list_destroy(pieces);
+	
+	pieces = piece_factory(3, 90.0, 60.0, 180.0);
+	piece_combos = cc_build_piece_combos(containers, pieces, 0);
+	char* keys_2[] = { "001", "010", "011", "100", "101", "110", /*"111" too large*/ };
+	cc_value_type values_2[] = { 60, 90, 150, 180, 240, 270, /*330 too large*/ };
+
+	num_ele = 6;
+	bool k_result_2 = true;
+	bool v_result_2 = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		piece_combo* combo = cmap_get(piece_combos, keys[i]);
+		k_result_2 |= combo != NULL && strcmp(combo->binary, keys_2[i]) == 0;
+		v_result_2 |= combo != NULL && combo->combo_size == values_2[i];
+	}
+
+	if (k_result_2)
+		print_sub("keys large ok\n", 1);
+	else
+		print_sub("keys large fail\n", 1);
+
+	if (v_result_2)
+		print_sub("values large ok\n", 1);
+	else
+		print_sub("values large fail\n", 1);
+
+	bool max_result = cmap_get(piece_combos, "111") == NULL;
+	if (max_result)
+		print_sub("max ok\n", 1);
+	else
+		print_sub("max fail\n", 1);
+
+
+	cmap_destroy(piece_combos);
+	piece_list_destroy(pieces);
+	container_list_destroy(containers);
+	
+	return k_result && v_result && k_result_2 && v_result_2 && max_result; 
+}
 
 bool test_best_match() { puts("\ntest_best_match():"); print_sub("Not Implemented\n", 1); return false; }
 

@@ -89,8 +89,8 @@ bool piece_list_push_back(piece_list* list, piece* value) {
 
 int compare_desc(const void* p_lhs, const void* p_rhs) {
 
-	const piece* lhs = (const piece*)p_lhs;
-	const piece* rhs = (const piece*)p_rhs;
+	const piece* lhs = *(const piece**)p_lhs;
+	const piece* rhs = *(const piece**)p_rhs;
 
 	if (lhs->size < rhs->size) return 1;
 	if (lhs->size > rhs->size) return -1;

@@ -82,8 +82,8 @@ bool container_list_push_back(container_list* list, container* value) {
 
 int compare_asc(const void* p_lhs, const void* p_rhs) {
 
-	const container* lhs = (const container*)p_lhs;
-	const container* rhs = (const container*)p_rhs;
+	const container* lhs = *(const container**)p_lhs;
+	const container* rhs = *(const container**)p_rhs;
 
 	if (lhs->capacity < rhs->capacity) return -1;
 	if (lhs->capacity > rhs->capacity) return 1;
