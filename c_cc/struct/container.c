@@ -93,3 +93,29 @@ int compare_asc(const void* p_lhs, const void* p_rhs) {
 void container_list_sort_asc(container_list* list) {
 	qsort(list->data, list->size, sizeof(container*), compare_asc);
 }
+
+// removes element from list and releases memory
+void container_list_erase(container_list* list, size_t index) {
+	container_destroy(list->data[index]);
+
+	while (index < list->size - 1)
+		list->data[index++] = list->data[index];
+
+	list->data[index] = NULL;
+	--list->size;
+}
+
+// removes element from list and returns it for new owner
+container* container_list_remove(container_list* list, size_t index) {
+	container* ele = list->data[index];
+
+	list->data[index] = NULL;
+
+	while (index < list->size - 1)
+		list->data[index++] = list->data[index];
+
+	list->data[index] = NULL;
+	--list->size;
+
+	return ele;
+}

@@ -23,11 +23,13 @@ bool has_common_bit(char* const bin_1, char* const bin_2);
 char* next_binary(char* const binary);
 char* skip_binary(char* const binary);
 
+typedef cc_value_type ccvt;
 
 cc_value_type cc_combo_size(char* const binary, piece_list* pieces, cc_value_type loss_per_piece);
 piece_list* cc_filter_pieces(char* const binary, piece_list* pieces);
 cc_value_type cc_max_capacity(container_list* containers);
-
+cmap* cc_build_piece_combos(container_list* containers, piece_list* pieces, cc_value_type loss);
+result* cc_best_match(container_list* containers, piece_list* pieces, cmap* piece_combos, ccvt loss, ccvt tolerance);
 
 
 

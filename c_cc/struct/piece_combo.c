@@ -14,6 +14,9 @@ piece_combo* piece_combo_create(const char* binary, cc_value_type combo_size) {
 }
 
 void piece_combo_destroy(piece_combo* pc_combo) {
+	if (pc_combo == NULL)
+		return;
+
 	if (pc_combo->binary != NULL)
 		free(pc_combo->binary); // piece_combo owns char*
 

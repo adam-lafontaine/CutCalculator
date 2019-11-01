@@ -195,3 +195,42 @@ cmap* cc_build_piece_combos(container_list* containers, piece_list* pieces, cc_v
 
 	return piece_combos;
 }
+
+result* cc_best_match(container_list* containers, piece_list* pieces, cmap* piece_combos, ccvt loss, ccvt tolerance) {
+	if (containers->size == 0)
+		return NULL;
+
+	cc_value_type max_cap = cc_max_capacity(containers);
+	cc_value_type best_diff = max_cap;
+	size_t best_ct_idx = 0;
+	char* best_binary = NULL;
+
+	for (piece_combo* pc = cmap_get_first(piece_combos); pc != NULL; pc = cmap_get_next(piece_combos, pc->binary)) {
+		char* binary = pc->binary;
+		cc_value_type size = pc->combo_size;
+
+		for (size_t ct_idx = 0; ct_idx < containers->size; ++ct_idx) {
+			container* ct = containers->data[ct_idx];
+			cc_value_type diff = ct->capacity - size;
+
+			if ((-1 * loss) <= diff && diff < best_diff) {
+				best_diff = diff;
+				best_ct_idx = ct_idx;
+				best_binary = binary;
+
+				if (diff < tolerance) {
+					//container_list_remove(containers, ct_idx);
+
+					return result_create(pc, cc_filter_pieces(binary, pieces), ct, diff);
+				}
+			}
+		}
+	}
+
+	return result_create(
+		cmap_get(piece_combos, best_binary),
+		cc_filter_pieces(best_binary, pieces),
+		containers->data[best_ct_idx],
+		//container_list_remove(containers, best_ct_idx),
+		best_diff);
+}

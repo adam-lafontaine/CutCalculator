@@ -4,7 +4,7 @@
 #define LIST_BLOCK_SIZE 64
 
 void piece_combo_destroy(piece_combo* pc_combo);
-void piece_list_destroy(piece_list* list);
+void piece_list_destroy_copy(piece_list* list);
 void container_destroy(container* pc);
 
 result* result_create(piece_combo* combo, piece_list* pieces, container* container, cc_value_type delta) {
@@ -12,7 +12,7 @@ result* result_create(piece_combo* combo, piece_list* pieces, container* contain
 	if (res == NULL)
 		return NULL;
 
-	res->binary = ""; // combo->binary
+	//res->binary = combo->binary;
 	res->combo = combo;
 	res->pieces = pieces;
 	res->container = container;
@@ -25,9 +25,15 @@ void result_destroy(result* res) {
 	if (res == NULL)
 		return;
 
-	piece_combo_destroy(res->combo);
-	piece_list_destroy(res->pieces);
-	container_destroy(res->container);
+	//piece_combo_destroy(res->combo);
+	//piece_list_destroy(res->pieces);
+	//container_destroy(res->container);
+
+	//free(res->combo);
+
+	piece_list_destroy_copy(res->pieces);
+
+	free(res);
 }
 
 

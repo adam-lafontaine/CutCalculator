@@ -595,7 +595,52 @@ bool test_build_piece_combos() {
 	return k_result && v_result && k_result_2 && v_result_2 && max_result; 
 }
 
-bool test_best_match() { puts("\ntest_best_match():"); print_sub("Not Implemented\n", 1); return false; }
+bool test_best_match() { 
+	puts("\ntest_best_match():"); 
+
+	piece_list* pieces = piece_factory(5, 30.0, 20.0, 60.0, 40.0, 50.0);
+	container_list* containers = container_factory(3, 85.0, 90.0, 110.0);
+
+	cc_value_type loss = 0.25;
+	cc_value_type tol = 0;
+
+	cmap* piece_combos = cc_build_piece_combos(containers, pieces, loss);
+	result* res = cc_best_match(containers, pieces, piece_combos, loss, tol);
+
+	char* binary = "10001";
+	cc_value_type combo_size = 80.5;
+	cc_value_type pcs[] = { 20.0, 60.0 };
+	cc_value_type container = 85.0;
+	cc_value_type delta = 4.5;
+
+	bool match_result = true;
+	match_result &= strcmp(res->combo->binary, binary) == 0;
+	match_result &= res->combo->combo_size == combo_size;
+	match_result &= res->container->capacity == container;
+	match_result &= res->delta == delta;
+
+	size_t num_ele = 2;
+	match_result &= res->pieces->size == num_ele;
+
+	for (size_t i = 0; i < num_ele; ++i) {
+		match_result &= res->pieces->data[i]->size == pcs[i];
+	}
+	
+	
+
+	if (match_result)
+		print_sub(" ok\n", 1);
+	else
+		print_sub(" fail\n", 1);
+
+	result_destroy(res);
+	cmap_destroy(piece_combos);
+	piece_list_destroy(pieces);
+	container_list_destroy(containers);
+	
+	
+	return match_result; 
+}
 
 bool test_remove_combos() { puts("\ntest_remove_combos():"); print_sub("Not Implemented\n", 1); return false; }
 

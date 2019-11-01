@@ -11,7 +11,7 @@ static const char KEY_CHARS[] = "01";
 //#define CMAP_VALUE_IS_PTR
 
 // do not touch
-#define CMAP_KEY_LENGTH sizeof KEY_CHARS - 1
+#define CMAP_KEY_LENGTH sizeof KEY_CHARS
 
 
 // defines how a character is mapped to an array index
