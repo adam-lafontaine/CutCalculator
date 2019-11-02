@@ -250,7 +250,7 @@ bool test_pieces() {
 	for (size_t i = 0; i < num_ele; ++i) {
 		piece* pc = piece_create(values[i]);
 		piece_list_push_back(list, pc);
-		pb_result |= list->size == i + 1;
+		pb_result &= list->size == i + 1;
 	}
 		
 	if (pb_result)
@@ -262,7 +262,7 @@ bool test_pieces() {
 	for (size_t i = list->size; i <= new_size; ++i) {
 		piece* pc = piece_create(10);
 		piece_list_push_back(list, pc);
-		pb_result |= list->size == i + 1;
+		pb_result &= list->size == i + 1;
 	}
 	bool cap_result = list->capacity > cap;
 	if (cap_result)
@@ -282,7 +282,7 @@ bool test_pieces() {
 	piece_list_sort_desc(list);
 	bool sort_result = true;
 	for (size_t i = 0; i < num_ele; ++i)
-		sort_result |= list->data[i]->size == sorted[i];
+		sort_result &= list->data[i]->size == sorted[i];
 
 	if (sort_result)
 		print_sub("sort ok\n", 1);
@@ -324,7 +324,7 @@ bool test_containers() {
 	for (size_t i = 0; i < num_ele; ++i) {
 		container* ct = container_create(values[i]);
 		container_list_push_back(list, ct);
-		pb_result |= list->size == i + 1;
+		pb_result &= list->size == i + 1;
 	}
 
 	if (pb_result)
@@ -336,7 +336,7 @@ bool test_containers() {
 	for (size_t i = list->size; i <= new_size; ++i) {
 		container* ct = container_create(10);
 		container_list_push_back(list, ct);
-		pb_result |= list->size == i + 1;
+		pb_result &= list->size == i + 1;
 	}
 	bool cap_result = list->capacity > cap;
 	if (cap_result)
@@ -356,7 +356,7 @@ bool test_containers() {
 	container_list_sort_asc(list);
 	bool sort_result = true;
 	for (size_t i = 0; i < num_ele; ++i)
-		sort_result |= list->data[i]->capacity == sorted[i];
+		sort_result &= list->data[i]->capacity == sorted[i];
 
 	if (sort_result)
 		print_sub("sort ok\n", 1);
@@ -369,8 +369,8 @@ bool test_containers() {
 	return c_result && lc_result && pb_result && cap_result && sort_result;
 }
 
-bool test_piece_combos() {
-	puts("\ntest_piece_combos():");
+bool test_piece_combo() {
+	puts("\ntest_piece_combo():");
 
 	unsigned key_num = 25;
 	char* key = to_binary(key_num, 8);
@@ -388,7 +388,7 @@ bool test_piece_combos() {
 	for (size_t i = 0; i < num_ele; ++i) {
 		char* key = to_binary(key_nums[i], 8);
 		piece_combo* combo = piece_combo_create(key, values[i]);
-		result |= strcmp(combo->binary, key) == 0 && combo->combo_size == values[i];
+		result &= strcmp(combo->binary, key) == 0 && combo->combo_size == values[i];
 		piece_combo_destroy(combo);
 	}
 
@@ -403,7 +403,7 @@ bool test_piece_combos() {
 bool test_combo_size() { 
 	puts("\ntest_combo_size():"); 
 
-	piece_list* pieces = piece_factory(3, 30, 60, 40);
+	piece_list* pieces = piece_factory(3, 30.0, 60.0, 40.0);
 	if(pieces != NULL)
 		print_sub("piece_factory ok\n", 1);
 	else {
@@ -411,16 +411,25 @@ bool test_combo_size() {
 		return false;
 	}
 
-	piece_list_sort_desc(pieces);
+	size_t num_ele = 3;
+	cc_value_type sorted[] = { 60.0, 40.0, 30.0 };
+	bool sorted_result = true;
+	for (size_t i = 0; i < num_ele; ++i)
+		sorted_result &= pieces->data[i]->size == sorted[i];
 
-	size_t num_ele = 7;
+	if (sorted)
+		print_sub("sorted ok\n", 1);
+	else
+		print_sub("sorted fail\n", 1);
+
+	num_ele = 7;
 	char* combos[] = { "001", "010", "100", "101", "011", "110", "111" };
 	cc_value_type loss = 0.0;
 	cc_value_type expected[] = { 30.0, 40.0, 60.0, 90.0, 70.0, 100.0, 130.0 };	
 
 	bool no_loss = true;
 	for (size_t i = 0; i < num_ele; ++i) {
-		no_loss |= cc_combo_size(combos[i], pieces, loss) == expected[i];
+		no_loss &= cc_combo_size(combos[i], pieces, loss) == expected[i];
 	}
 
 	if (no_loss)
@@ -432,21 +441,21 @@ bool test_combo_size() {
 	cc_value_type expected_2[] = { 30.25, 40.25, 60.25, 90.5, 70.5, 100.5, 130.75 };
 	bool with_loss = true;
 	for (size_t i = 0; i < num_ele; ++i) {
-		with_loss |= cc_combo_size(combos[i], pieces, loss) == expected[i];
+		with_loss &= cc_combo_size(combos[i], pieces, loss) == expected_2[i];
 	}
-	if (no_loss)
+	if (with_loss)
 		print_sub("with loss ok\n", 1);
 	else
 		print_sub("with loss fail\n", 1);
 
 	piece_list_destroy(pieces);
-	return no_loss && with_loss; 
+	return sorted_result && no_loss && with_loss;
 }
 
 bool test_filter_pieces() { 
 	puts("\ntest_filter_pieces():"); 
 
-	piece_list* pieces = piece_factory(3, 30, 20, 60);
+	piece_list* pieces = piece_factory(3, 30.0, 20.0, 60.0);
 	if (pieces != NULL)
 		print_sub("piece_factory ok\n", 1);
 	else {
@@ -473,11 +482,12 @@ bool test_filter_pieces() {
 
 	for (size_t i = 0; i < num_ele; ++i) {
 		piece_list* filtered = cc_filter_pieces(combos[i], pieces);
+		piece_list_sort_desc(filtered);
 
-		size_result |= filtered->size == exp_sizes[i];
+		size_result &= filtered->size == exp_sizes[i];
 		
 		for (size_t j = 0; j < exp_sizes[i]; ++j)
-			val_result |= filtered->data[j]->size == expected[j][i];
+			val_result &= filtered->data[j]->size == expected[i][j];
 
 		piece_list_destroy_copy(filtered);
 	}
@@ -511,7 +521,7 @@ bool test_max_capacity() {
 
 	bool result = true;
 	for (size_t i = 0; i < num_ele; ++i) {
-		result |= cc_max_capacity(c_lists[i]) == expected[i];
+		result &= cc_max_capacity(c_lists[i]) == expected[i];
 		container_list_destroy(c_lists[i]);
 	}
 
@@ -519,8 +529,7 @@ bool test_max_capacity() {
 		print_sub("max capacity ok\n", 1);
 	else
 		print_sub("max capacity fail\n", 1);
-
-	print_sub("Not Implemented\n", 1); 
+		
 	return result; 
 }
 
@@ -540,8 +549,8 @@ bool test_build_piece_combos() {
 	bool v_result = true;
 	for (size_t i = 0; i < num_ele; ++i) {
 		piece_combo* combo = cmap_get(piece_combos, keys[i]);
-		k_result |= combo != NULL && strcmp(combo->binary, keys[i]) == 0;
-		v_result |= combo != NULL && combo->combo_size == values[i];
+		k_result &= combo != NULL && strcmp(combo->binary, keys[i]) == 0;
+		v_result &= combo != NULL && combo->combo_size == values[i];
 	}
 
 	if (k_result)
@@ -567,8 +576,8 @@ bool test_build_piece_combos() {
 	bool v_result_2 = true;
 	for (size_t i = 0; i < num_ele; ++i) {
 		piece_combo* combo = cmap_get(piece_combos, keys[i]);
-		k_result_2 |= combo != NULL && strcmp(combo->binary, keys_2[i]) == 0;
-		v_result_2 |= combo != NULL && combo->combo_size == values_2[i];
+		k_result_2 &= combo != NULL && strcmp(combo->binary, keys_2[i]) == 0;
+		v_result_2 &= combo != NULL && combo->combo_size == values_2[i];
 	}
 
 	if (k_result_2)
@@ -595,6 +604,34 @@ bool test_build_piece_combos() {
 	return k_result && v_result && k_result_2 && v_result_2 && max_result; 
 }
 
+bool test_iterate_piece_combos() {
+	puts("\ntest_iterate_piece_combos():");
+
+	piece_list* pieces = piece_factory(3, 30.0, 20.0, 60.0);
+	container_list* containers = container_factory(3, 300.0, 200.0, 150.0);
+
+	cmap* piece_combos = cc_build_piece_combos(containers, pieces, 0.0);
+
+	char* keys[] = { "111", "110", "101", "100", "011", "010", "001" };
+
+	bool result = true;
+
+	size_t i = 0;
+	piece_combo* next_pc;
+	for (piece_combo* pc = cmap_get_first(piece_combos); pc != NULL; pc = cmap_get_next(piece_combos, pc->binary)) {
+
+		result &= strcmp(pc->binary, keys[i]) == 0;
+		++i;
+	}
+
+	cmap_destroy(piece_combos);
+	piece_list_destroy(pieces);
+	container_list_destroy(containers);
+
+	return result;
+
+}
+
 bool test_best_match() { 
 	puts("\ntest_best_match():"); 
 
@@ -608,8 +645,8 @@ bool test_best_match() {
 	result* res = cc_best_match(containers, pieces, piece_combos, loss, tol);
 
 	char* binary = "10001";
-	cc_value_type combo_size = 80.5;
 	cc_value_type pcs[] = { 20.0, 60.0 };
+	cc_value_type combo_size = 80.5;	
 	cc_value_type container = 85.0;
 	cc_value_type delta = 4.5;
 
@@ -624,9 +661,7 @@ bool test_best_match() {
 
 	for (size_t i = 0; i < num_ele; ++i) {
 		match_result &= res->pieces->data[i]->size == pcs[i];
-	}
-	
-	
+	}	
 
 	if (match_result)
 		print_sub(" ok\n", 1);
@@ -636,15 +671,94 @@ bool test_best_match() {
 	result_destroy(res);
 	cmap_destroy(piece_combos);
 	piece_list_destroy(pieces);
-	container_list_destroy(containers);
-	
+	container_list_destroy(containers);	
 	
 	return match_result; 
 }
 
-bool test_remove_combos() { puts("\ntest_remove_combos():"); print_sub("Not Implemented\n", 1); return false; }
+bool test_remove_combos() { 
+	puts("\ntest_remove_combos():"); 
 
-bool test_sort() { puts("\ntest_sort():"); print_sub("Not Implemented\n", 1); return false; }
+	cc_value_type loss = 0.0;
+	cc_value_type tol = 0.0;
+
+	piece_list* pieces = piece_factory(3, 30.0, 20.0, 60.0);
+	container_list* containers = container_factory(3, 300.0, 200.0, 150.0);
+
+	cmap* piece_combos = cc_build_piece_combos(containers, pieces, loss);
+
+	char* binary = "010";
+	cc_remove_combos(piece_combos, binary, containers);
+
+	size_t num_ele = 4;
+	char* removed_keys[] = { "010", "011", "110", "111" };
+	bool remove_result = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		piece_combo* pc = cmap_get(piece_combos, removed_keys[i]);
+		remove_result &= cmap_get(piece_combos, removed_keys[i]) == NULL;
+	}
+
+	if (remove_result)
+		print_sub("remove ok\n", 1);
+	else
+		print_sub("remove fail\n", 1);
+
+	num_ele = 3;
+	char* keys[] = { "001", "100", "101" };
+	cc_value_type values[] = { 20, 60, 80 };
+
+	bool key_result = true;
+	bool val_result = true;
+	for (size_t i = 0; i < num_ele; ++i) {
+		piece_combo* combo = cmap_get(piece_combos, keys[i]);
+		key_result &= combo != NULL && strcmp(combo->binary, keys[i]) == 0;
+		val_result &= combo != NULL && combo->combo_size == values[i];
+	}
+
+	if (key_result)
+		print_sub("keys ok\n", 1);
+	else
+		print_sub("keys fail\n", 1);
+
+	if (val_result)
+		print_sub("values ok\n", 1);
+	else
+		print_sub("values fail\n", 1);
+
+
+	cmap_destroy(piece_combos);
+	piece_list_destroy(pieces);
+	container_list_destroy(containers);
+
+	return remove_result && key_result && val_result; 
+}
+
+bool test_sort() { 
+	puts("\ntest_sort():"); 
+	
+	piece_list* pieces = piece_factory(9,
+		10.0, 10.0, 10.0,
+		48.0, 48.0, 48.0,
+		30.0, 30.0, 30.0
+		);
+
+	container_list* containers = container_factory(10, 
+		100.0, 100.0, 100.0, 100.0, 100.0,
+		100.0, 100.0, 100.0, 100.0, 100.0);
+
+	cc_value_type loss = 0.0;
+	cc_value_type tol = 0.0;
+
+	cc_sort_dto* sorted = cc_sort(containers, pieces, loss, tol);
+
+
+	
+	piece_list_destroy(pieces);
+	container_list_destroy(containers);
+	cc_sort_dto_destroy(sorted);
+	
+	return false; 
+}
 
 
 //==============================

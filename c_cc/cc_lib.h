@@ -30,6 +30,8 @@ piece_list* cc_filter_pieces(char* const binary, piece_list* pieces);
 cc_value_type cc_max_capacity(container_list* containers);
 cmap* cc_build_piece_combos(container_list* containers, piece_list* pieces, cc_value_type loss);
 result* cc_best_match(container_list* containers, piece_list* pieces, cmap* piece_combos, ccvt loss, ccvt tolerance);
+void cc_remove_combos(cmap* piece_combos, char* const binary, container_list* containers);
+cc_sort_dto* cc_sort(container_list* containers, piece_list* pieces, ccvt loss, ccvt tolerance);
 
 
 

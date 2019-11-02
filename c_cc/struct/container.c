@@ -109,10 +109,10 @@ void container_list_erase(container_list* list, size_t index) {
 container* container_list_remove(container_list* list, size_t index) {
 	container* ele = list->data[index];
 
-	list->data[index] = NULL;
-
-	while (index < list->size - 1)
-		list->data[index++] = list->data[index];
+	while (index < list->size - 1) {
+		list->data[index] = list->data[index + 1];
+		++index;
+	}		
 
 	list->data[index] = NULL;
 	--list->size;

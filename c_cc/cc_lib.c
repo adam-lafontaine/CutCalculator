@@ -213,24 +213,66 @@ result* cc_best_match(container_list* containers, piece_list* pieces, cmap* piec
 			container* ct = containers->data[ct_idx];
 			cc_value_type diff = ct->capacity - size;
 
-			if ((-1 * loss) <= diff && diff < best_diff) {
-				best_diff = diff;
-				best_ct_idx = ct_idx;
-				best_binary = binary;
+			bool is_better_diff = (-1 * loss) <= diff && diff < best_diff;
 
-				if (diff < tolerance) {
-					//container_list_remove(containers, ct_idx);
+			if (!is_better_diff)
+				continue;
 
-					return result_create(pc, cc_filter_pieces(binary, pieces), ct, diff);
-				}
-			}
+			best_diff = diff;
+			best_ct_idx = ct_idx;
+			best_binary = binary;
+
+			if (diff > tolerance)
+				continue;
+
+			return result_create(
+				cmap_remove(piece_combos, best_binary),
+				cc_filter_pieces(best_binary, pieces),
+				container_list_remove(containers, best_ct_idx),
+				best_diff);
 		}
 	}
 
 	return result_create(
-		cmap_get(piece_combos, best_binary),
+		cmap_remove(piece_combos, best_binary),
 		cc_filter_pieces(best_binary, pieces),
-		containers->data[best_ct_idx],
-		//container_list_remove(containers, best_ct_idx),
+		container_list_remove(containers, best_ct_idx),
 		best_diff);
+}
+
+void cc_remove_combos(cmap* piece_combos, char* const binary, container_list* containers) {
+
+	bool has_max = containers->size > 0;
+	cc_value_type max_cap = has_max ? cc_max_capacity(containers) : 0;
+
+	piece_combo* next_pc;
+	for (piece_combo* pc = cmap_get_first(piece_combos); pc != NULL; pc = next_pc) {
+		next_pc = cmap_get_next(piece_combos, pc->binary); // get next before this is erased
+
+		if (pc->combo_size > max_cap || has_common_bit(pc->binary, binary))
+			cmap_erase(piece_combos, pc->binary);			
+	}
+
+}
+
+cc_sort_dto* cc_sort(container_list* containers, piece_list* pieces, ccvt loss, ccvt tolerance) {
+
+	cmap* piece_combos = cc_build_piece_combos(containers, pieces, loss);
+
+	result_list* sorted = result_list_create(10);
+
+	while (containers->size > 0 && !cmap_empty(piece_combos)) {
+		result* match = cc_best_match(containers, pieces, piece_combos, loss, tolerance);
+		cc_remove_combos(piece_combos, match->combo->binary, containers);
+		result_list_push_back(sorted, match);
+	}
+
+	bool success = cmap_empty(piece_combos);
+	char* message = success ? "solution found" : "not enough containers";
+
+	cmap_destroy(piece_combos);		
+
+	cc_sort_dto* dto = cc_sort_dto_create(sorted, success, message);
+
+	return dto;
 }

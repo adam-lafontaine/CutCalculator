@@ -25,12 +25,8 @@ void result_destroy(result* res) {
 	if (res == NULL)
 		return;
 
-	//piece_combo_destroy(res->combo);
-	//piece_list_destroy(res->pieces);
-	//container_destroy(res->container);
-
-	//free(res->combo);
-
+	piece_combo_destroy(res->combo);
+	container_destroy(res->container);
 	piece_list_destroy_copy(res->pieces);
 
 	free(res);

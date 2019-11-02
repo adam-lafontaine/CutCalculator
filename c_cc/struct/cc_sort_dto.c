@@ -11,7 +11,7 @@ cc_sort_dto* cc_sort_dto_create(result_list* results, bool success, const char* 
 
 	dto->data = results;
 	dto->success = success;
-	strcpy_s(dto->message, strlen(message), message);
+	strcpy_s(dto->message, strlen(message) + 1, message);
 
 	return dto;
 }
