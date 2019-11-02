@@ -26,7 +26,7 @@ void print(string const& label, std::initializer_list<T> const& list) {
 
 template<typename T>
 void print(string const& label, T value) {
-    cout << label << ": " << value << endl;
+    cout << label << ": " << value << '\n';
 }
 
 template<typename T>
@@ -71,9 +71,9 @@ string CCTest::test_has_bit() {
         auto src = source[i];
         auto exp = expected[i] ? "true" : "false";
         auto res = has_bit(src) ? "true" : "false";
-        ss << "  binary = " << src << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "  binary = " << src << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -100,9 +100,9 @@ string CCTest::test_flip_bit() {
         auto src = source[i];
         auto exp = expected[i];
         auto res = flip_bit(src);
-        ss << "     bit = " << src << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "     bit = " << src << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -134,9 +134,9 @@ string CCTest::test_to_binary() {
         auto num_bits = get<1>(item);
         auto exp = get<2>(item);
         auto res = to_binary(value, num_bits);
-        ss << "value = " << value << ", num_bits = " << num_bits << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;        
+        ss << "value = " << value << ", num_bits = " << num_bits << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';        
         if(exp != res)
             success = "Fail";
     }    
@@ -169,9 +169,9 @@ string CCTest::test_to_decimal() {
         auto bin = item.first;
         auto exp = item.second;
         auto res = to_decimal(bin);
-        ss << "  binary = " << bin << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "  binary = " << bin << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -204,9 +204,9 @@ string CCTest::test_has_common_bit() {
         auto bin_2 = get<1>(item);
         auto exp = get<2>(item) ? "true" : "false";
         auto res = has_common_bit(bin_1, bin_2) ? "true" : "false";
-        ss << "bin_1 = " << bin_1 << ", bin_2 = " << bin_2 << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "bin_1 = " << bin_1 << ", bin_2 = " << bin_2 << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
                 success = "Fail";
     }    
@@ -237,9 +237,9 @@ string CCTest::test_next_binary() {
         auto bin = item.first;
         auto exp = item.second;
         auto res = next_binary(bin);
-        ss << "  binary = " << bin << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "  binary = " << bin << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -268,9 +268,9 @@ string CCTest::test_skip_binary() {
         auto bin = item.first;
         auto exp = item.second;
         auto res = skip_binary(bin);
-        ss << "  binary = " << bin << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "  binary = " << bin << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -328,9 +328,9 @@ string CCTest::test_pieces() {
         auto label = get<0>(item);
         auto exp = get<1>(item);
         auto res = get<2>(item);
-        ss << label << ":" << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << label << ":\n";
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -388,9 +388,9 @@ string CCTest::test_containers() {
         auto label = get<0>(item);
         auto exp = get<1>(item);
         auto res = get<2>(item);
-        ss << label << ":" << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << label << ":\n";
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -423,9 +423,9 @@ string CCTest::test_combo_size() {
         auto combo = combos[i];
         auto res = my_cc.combo_size(combo);
         auto exp = expected[i];
-        ss << combo << ":" << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << combo << ":\n";
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -445,9 +445,9 @@ string CCTest::test_combo_size() {
         auto combo = combos[i];
         auto res = my_cc.combo_size(combo);
         auto exp = expected_2[i];
-        ss << combo << ":" << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << combo << ":\n";
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -498,9 +498,9 @@ string CCTest::test_filter_pieces() {
         auto expected = expected_sizes[i];
         auto res = vector_to_string(sizes);
         auto exp = vector_to_string(expected);
-        ss << combo << ":" << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << combo << ":\n";
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -523,9 +523,6 @@ string CCTest::test_max_capacity() {
         { 10.5, 90.2, 62.4, 58.6, 25.6 }
     };
 
-    double loss = 0.5;
-    vector<double> expected;
-
     CC<double> my_cc;
 
     stringstream ss;
@@ -536,19 +533,17 @@ string CCTest::test_max_capacity() {
         my_cc.loss_per_piece(0.0);
         auto exp = max(list);
         auto res = my_cc.max_capacity();
-        ss << "capacities: " << list_to_string(list) << endl;
-        ss << " expected = " << exp << endl;
-        ss << "   result = " << res << endl;
+        ss << "capacities: " << list_to_string(list) << '\n';
+        ss << " expected = " << exp << '\n';
+        ss << "   result = " << res << '\n';
         if(exp != res)
             success = "Fail";
-        
-        my_cc.loss_per_piece(loss);
-        exp += loss;
+
         res = my_cc.max_capacity();
 
-        ss << "     loss: " << loss << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        //ss << "     loss: " << loss << '\n';
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
 
@@ -565,6 +560,9 @@ string CCTest::test_build_piece_combos() {
     print("\nTest build_piece_combos()");
 
     string success = "Pass";
+
+	stringstream ss;
+	ss << "All combos:\n";
 
     auto pieces = piece_factory<double>({ 30.0, 20.0, 60.0 });
     auto containers = container_factory<double>({ 300.0, 200.0, 150.0 });
@@ -586,35 +584,63 @@ string CCTest::test_build_piece_combos() {
         { "111", 110.0 }
     };
 
-    stringstream ss;
+    auto result = my_cc._piece_combos;
+    auto not_found = result.end();
 
-    auto result = &(my_cc._piece_combos);
+	auto const test = [&](auto const& item) {
+		auto key = item.first;
 
-    auto not_found = result->end();
+		ss << "key: " << key;
 
-    for(auto const& item : expected) {
-        auto key = item.first;
+		if (result.find(key) == not_found) {
+			ss << " not found\n";
+			success = "Fail";
+			return;
+		}
+		ss << '\n';
 
-        ss << "key: " << key;
+		auto exp = item.second;
+		auto res = result[key]->combo_size;
+		ss << "expected = " << exp << '\n';
+		ss << "  result = " << res << '\n';
+		if (exp != res)
+			success = "Fail";
+	};
 
-        if(result->find(key) == not_found) {
-            ss << " not found" << endl;
-            success = "Fail";
-            continue;
-        }
-        ss << endl;
+	std::for_each(expected.begin(), expected.end(), test);
+	if (result.size() != expected.size()) {
+		ss << "piece_combo size mismatch\n";
+		success = "Fail";
+	}
 
-        auto exp = item.second;
-        auto res = (*result)[key]->combo_size;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
-        if(exp != res)
-            success = "Fail";
-    }
+	ss << "Combos too large:\n";
+	
+	auto pieces_2 = piece_factory<double>({ 90.0, 60.0, 180.0 });
+	auto containers_2 = container_factory<double>({ 300.0, 200.0, 150.0 });
+	my_cc.pieces(pieces_2);
+	my_cc.containers(containers_2);
+	my_cc.build_piece_combos();
+
+	vector<pair<string, double>> expected_2{
+		{ "001", 60.0 },
+		{ "010", 90.0 },
+		{ "011", 150.0 },
+		{ "100", 180.0 },
+		{ "101", 240.0 },
+		{ "110", 270.0 },
+		//{ "111", 330.0 } too large
+	};
+
+	result = my_cc._piece_combos;
+	not_found = result.end();
+
+	std::for_each(expected_2.begin(), expected_2.end(), test);
+	if (result.size() != expected_2.size()) {
+		ss << "piece_combo size mismatch\n";
+		success = "Fail";
+	}
     
     print(ss.str());
-
-    result = nullptr;
 
     return success;
 }
@@ -664,9 +690,9 @@ string CCTest::test_best_match() {
     for(auto const& item : expected) {
         auto exp = item.second;
         auto res = result[item.first];
-        ss << item.first << ":" << endl;
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << item.first << ":\n";
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
     }
@@ -721,8 +747,8 @@ string CCTest::test_remove_combos() {
 
     stringstream ss;
     
-    ss << "combos: " << vector_to_string<string>(combos) << endl;
-    ss << "binary: " << binary << endl;
+    ss << "combos: " << vector_to_string<string>(combos) << '\n';
+    ss << "binary: " << binary << '\n';
 
     my_cc.remove_combos(binary);
 
@@ -732,8 +758,8 @@ string CCTest::test_remove_combos() {
     auto exp = vector_to_string(exp_str);
     auto res = vector_to_string(result);
 
-    ss << "expected: " << exp << endl;
-    ss << "  result: " << res << endl;
+    ss << "expected: " << exp << '\n';
+    ss << "  result: " << res << '\n';
 
     if(exp != res)
         success = "Fail";    
@@ -771,13 +797,13 @@ string CCTest::test_sort() {
 
     CC<double> my_cc;
 
-    ss <<"No loss per piece:" << endl;
+    ss <<"No loss per piece:\n";
     my_cc.pieces(pieces);
     my_cc.containers(containers);
     my_cc.loss_per_piece(0.0);
 
     auto result_dto = my_cc.sort();
-    ss << result_dto.message << endl;
+    ss << result_dto.message << '\n';
     if(!result_dto.success)
         success = "Fail";    
 
@@ -785,8 +811,8 @@ string CCTest::test_sort() {
     auto res_data = result_dto.data;
     auto exp_count = expected.size();
     auto res_count = res_data.size();
-    ss << "expected count = " << exp_count << endl;
-    ss << "  sorted count = " << res_count << endl;
+    ss << "expected count = " << exp_count << '\n';
+    ss << "  sorted count = " << res_count << '\n';
     if(exp_count != res_count)
         success = "Fail";
 
@@ -800,19 +826,19 @@ string CCTest::test_sort() {
         auto lambda = [](auto const& pc) -> double { return pc->size; };
         transform(beg, end, piece_sizes.begin(), lambda);
         
-        ss << "pieces:" << endl;
+        ss << "pieces:\n";
         auto exp = list_to_string(expected[i].first);
         auto res = vector_to_string(piece_sizes);
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
 
-        ss << "delta:" <<endl;
+        ss << "delta:\n";
         auto exp_delta = expected[i].second;
         auto res_delta = result->delta;
-        ss << "expected = " << exp_delta << endl;
-        ss << "  result = " << res_delta << endl;
+        ss << "expected = " << exp_delta << '\n';
+        ss << "  result = " << res_delta << '\n';
         if(exp_delta != res_delta)
             success = "Fail";
     }
@@ -836,13 +862,13 @@ string CCTest::test_sort() {
     expected.push_back({ { 48.0, 48.0 }, 3.5 });
     expected.push_back({ { 10.0, 30.0, 30.0 }, 29.25 });
 
-    ss << "With loss per piece:" << endl;
+    ss << "With loss per piece:\n";
     my_cc.pieces(pieces);
     my_cc.containers(containers);
     my_cc.loss_per_piece(0.25);
 
     result_dto = my_cc.sort();
-    ss << result_dto.message << endl;
+    ss << result_dto.message << '\n';
     if(!result_dto.success)
         success = "Fail";
     
@@ -850,8 +876,8 @@ string CCTest::test_sort() {
     res_data = result_dto.data;
     exp_count = expected.size();
     res_count = res_data.size();
-    ss << "expected count = " << exp_count << endl;
-    ss << "  sorted count = " << res_count << endl;
+    ss << "expected count = " << exp_count << '\n';
+    ss << "  sorted count = " << res_count << '\n';
     if(exp_count != res_count)
         success = "Fail";
     
@@ -864,19 +890,19 @@ string CCTest::test_sort() {
         auto lambda = [](auto const& pc) -> double { return pc->size; };
         transform(beg, end, piece_sizes.begin(), lambda);
         
-        ss << "pieces:" << endl;
+        ss << "pieces:\n";
         auto exp = list_to_string(expected[i].first);
         auto res = vector_to_string(piece_sizes);
-        ss << "expected = " << exp << endl;
-        ss << "  result = " << res << endl;
+        ss << "expected = " << exp << '\n';
+        ss << "  result = " << res << '\n';
         if(exp != res)
             success = "Fail";
 
-        ss << "delta:" <<endl;
+        ss << "delta:\n";
         auto exp_delta = expected[i].second;
         auto res_delta = result->delta;
-        ss << "expected = " << exp_delta << endl;
-        ss << "  result = " << res_delta << endl;
+        ss << "expected = " << exp_delta << '\n';
+        ss << "  result = " << res_delta << '\n';
         if(exp_delta != res_delta)
             success = "Fail";
     }

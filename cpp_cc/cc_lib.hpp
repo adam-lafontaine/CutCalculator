@@ -1,6 +1,7 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 using cc_bit_type = char;
 constexpr cc_bit_type cc_false = '0';
@@ -75,7 +76,7 @@ struct Result {
     piece_combo_ptr<T> combo;
     piece_list<T> pieces;
     container_ptr<T> container;
-    T delta;
+	T delta{};
 
 };
 
@@ -84,7 +85,7 @@ struct CCSortDTO {
     public:
 
     result_list<T> data;
-    bool success;
+    bool success = false;
     std::string message;
 
 };
@@ -103,43 +104,45 @@ private:
 
     result_list<T>              _results;
 
-    T _loss_per_piece = 0;
-    T _tolerance = 0;
+	T _loss_per_piece{};
+	T _tolerance{};
        
-    T combo_size(cc_combo_key const& binary) const;
-    piece_list<T> filter_pieces(cc_combo_key const& binary) const;
-    T max_capacity() const;
+    T combo_size(cc_combo_key const& binary) const noexcept;
+    piece_list<T> filter_pieces(cc_combo_key const& binary) const noexcept;
+    T max_capacity() const noexcept;
 
-    void build_piece_combos();
+    void build_piece_combos() noexcept;
     
-    result_ptr<T> best_match();
-    void remove_combos(cc_combo_key const& binary);
+    result_ptr<T> best_match() noexcept;
+    void remove_combos(cc_combo_key const& binary) noexcept;
 
 public:
     CC() {}
 
-    CCSortDTO<T> sort();
+    CCSortDTO<T> sort() noexcept;
 
     // setters
     void pieces(piece_list<T>& pieces);
     void containers(container_list<T>& containers);
-    void loss_per_piece(T const& loss) { _loss_per_piece = loss; }
-    void tolerance (T const& tolerance) { _tolerance = tolerance; }
+	void pieces(piece_list<T>&& pieces);
+	void containers(container_list<T>&& containers);
+    void loss_per_piece(T const& loss) noexcept { _loss_per_piece = loss; }
+    void tolerance (T const& tolerance) noexcept { _tolerance = tolerance; }
     
 
     // getters
     piece_list<T> const& pieces() const { return _pieces; }
     container_list<T> const& containers() const { return _containers; }
     T const& loss_per_piece() const { return _loss_per_piece; }
-    T const& tolerance() const { return _tolerance; }
+    T const& tolerance() const { return std::max(_tolerance, _loss_per_piece); }
 
 };
 
 // binary functions
-bool has_bit(cc_combo_key const& binary);
-cc_bit_type flip_bit(cc_bit_type bit);
-cc_combo_key to_binary(u_int_t value, unsigned num_bits);
-u_int_t to_decimal(cc_combo_key const& binary);    
-bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2);
-cc_combo_key next_binary(cc_combo_key const& binary);
-cc_combo_key skip_binary(cc_combo_key const& binary);
+bool has_bit(cc_combo_key const& binary) noexcept;
+cc_bit_type flip_bit(cc_bit_type bit) noexcept;
+cc_combo_key to_binary(u_int_t value, unsigned num_bits) noexcept;
+u_int_t to_decimal(cc_combo_key const& binary) noexcept;
+bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) noexcept;
+cc_combo_key next_binary(cc_combo_key const& binary) noexcept;
+cc_combo_key skip_binary(cc_combo_key const& binary) noexcept;
