@@ -10,8 +10,9 @@
 //======= HELPERS ==============================
 
 void print_sub(const char* msg, unsigned level) {
-	printf("%*s%s",
-		level, "  ", msg);
+	size_t width = strlen(msg) + 2 * level;
+	printf("% *s",
+		width, msg);
 }
 
 piece_list* piece_factory(size_t num, ...) {
@@ -617,7 +618,6 @@ bool test_iterate_piece_combos() {
 	bool result = true;
 
 	size_t i = 0;
-	piece_combo* next_pc;
 	for (piece_combo* pc = cmap_get_first(piece_combos); pc != NULL; pc = cmap_get_next(piece_combos, pc->binary)) {
 
 		result &= strcmp(pc->binary, keys[i]) == 0;
@@ -751,13 +751,107 @@ bool test_sort() {
 
 	cc_sort_dto* sorted = cc_sort(containers, pieces, loss, tol);
 
+	cc_value_type exp_pcs[][4] = {
+		{ 10.0, 30.0, 30.0, 30.0 },
+		{ 48.0, 48.0 },
+		{ 10.0, 10.0, 48.0 }
+	};
 
+	size_t exp_pc_sz[] = { 4, 2, 3 };
+
+	cc_value_type exp_delta[] = { 0.0, 4.0, 32.0 };
+
+	bool pc_result = true;
+	bool sz_result = true;
+	bool delta_result = true;
+	size_t num_ele = 3;
+	for (size_t i = 0; i < num_ele; ++i) {
+		result* res = sorted->result_data->data[i];
+		delta_result &= res->delta == exp_delta[i];
+		sz_result = res->pieces->size == exp_pc_sz[i];
+		
+		for (size_t j = 0; j < exp_pc_sz[i]; ++j) {
+			pc_result &= res->pieces->data[j]->size == exp_pcs[i][j];
+		}
+	}
+
+	print_sub("No Loss:\n", 1);
+
+	if (delta_result)
+		print_sub("delta ok\n", 2);
+	else
+		print_sub("delta fail\n", 2);
+
+	if (sz_result)
+		print_sub("num pieces ok\n", 2);
+	else
+		print_sub("num pieces fail\n", 2);
+
+	if (pc_result)
+		print_sub("pieces ok\n", 2);
+	else
+		print_sub("pieces fail\n", 2);
 	
 	piece_list_destroy(pieces);
 	container_list_destroy(containers);
 	cc_sort_dto_destroy(sorted);
+
+	pieces = piece_factory(9,
+		10.0, 10.0, 10.0,
+		48.0, 48.0, 48.0,
+		30.0, 30.0, 30.0
+	);
+
+	containers = container_factory(10,
+		100.0, 100.0, 100.0, 100.0, 100.0,
+		100.0, 100.0, 100.0, 100.0, 100.0);
+
+	loss = 0.25;
+
+	sorted = cc_sort(containers, pieces, loss, tol);
+
+	cc_value_type exp_pcs_2[][4] = {
+		{ 10.0, 10.0, 30.0, 48.0 },
+		{ 48.0, 48.0 },
+		{ 10.0, 30.0, 30.0 }
+	};
+
+	size_t exp_pc_sz_2[] = { 4, 2, 3 };
+
+	cc_value_type exp_delta_2[] = { 1.0, 3.5, 29.25 };
+
+	for (size_t i = 0; i < num_ele; ++i) {
+		result* res = sorted->result_data->data[i];
+		delta_result &= res->delta == exp_delta_2[i];
+		sz_result = res->pieces->size == exp_pc_sz_2[i];
+
+		for (size_t j = 0; j < exp_pc_sz_2[i]; ++j) {
+			pc_result &= res->pieces->data[j]->size == exp_pcs_2[i][j];
+		}
+	}
+
+	print_sub("With Loss:\n", 1);
+
+	if (delta_result)
+		print_sub("delta ok\n", 2);
+	else
+		print_sub("delta fail\n", 2);
+
+	if (sz_result)
+		print_sub("num pieces ok\n", 2);
+	else
+		print_sub("num pieces fail\n", 2);
+
+	if (pc_result)
+		print_sub("pieces ok\n", 2);
+	else
+		print_sub("pieces fail\n", 2);
+
+	piece_list_destroy(pieces);
+	container_list_destroy(containers);
+	cc_sort_dto_destroy(sorted);
 	
-	return false; 
+	return delta_result && sz_result && pc_result; 
 }
 
 

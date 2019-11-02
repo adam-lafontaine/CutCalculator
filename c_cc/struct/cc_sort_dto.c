@@ -9,7 +9,7 @@ cc_sort_dto* cc_sort_dto_create(result_list* results, bool success, const char* 
 	if (dto == NULL)
 		return NULL;
 
-	dto->data = results;
+	dto->result_data = results;
 	dto->success = success;
 	strcpy_s(dto->message, strlen(message) + 1, message);
 
@@ -20,7 +20,7 @@ void cc_sort_dto_destroy(cc_sort_dto* dto) {
 	if (dto == NULL)
 		return;
 
-	result_list_destroy(dto->data);
+	result_list_destroy(dto->result_data);
 
 	free(dto);
 }

@@ -7,7 +7,7 @@
 
 typedef struct CCSortDTO {
 
-	result_list* data;
+	result_list* result_data;
 	bool success;
 	char message[64];
 
