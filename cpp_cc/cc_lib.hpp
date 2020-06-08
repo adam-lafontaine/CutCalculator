@@ -4,8 +4,8 @@
 #include <algorithm>
 
 using cc_bit_type = char;
-constexpr cc_bit_type cc_false = '0';
-constexpr cc_bit_type cc_true = '1';
+constexpr cc_bit_type CC_FALSE = '0';
+constexpr cc_bit_type CC_TRUE = '1';
 
 //using cc_combo_key = std::string;
 using cc_combo_key = std::basic_string<cc_bit_type>;
@@ -97,15 +97,15 @@ class CC {
     friend class CCTest;
 
 private:    
-    piece_list<T>               _pieces;
-    container_list<T>           _containers;
+    piece_list<T>               pieces_;
+    container_list<T>           containers_;
 
-    cc_dict<piece_combo_ptr<T>> _piece_combos;
+    cc_dict<piece_combo_ptr<T>> piece_combos_;
 
-    result_list<T>              _results;
+    result_list<T>              results_;
 
-	T _loss_per_piece{};
-	T _tolerance{};
+	T loss_per_piece_{};
+	T tolerance_{};
        
     T combo_size(cc_combo_key const& binary) const noexcept;
     piece_list<T> filter_pieces(cc_combo_key const& binary) const noexcept;
@@ -126,15 +126,15 @@ public:
     void containers(container_list<T>& containers);
 	void pieces(piece_list<T>&& pieces);
 	void containers(container_list<T>&& containers);
-    void loss_per_piece(T const& loss) noexcept { _loss_per_piece = loss; }
-    void tolerance (T const& tolerance) noexcept { _tolerance = tolerance; }
+    void loss_per_piece(T const& loss) noexcept { loss_per_piece_ = loss; }
+    void tolerance (T const& tolerance) noexcept { tolerance_ = tolerance; }
     
 
     // getters
-    piece_list<T> const& pieces() const { return _pieces; }
-    container_list<T> const& containers() const { return _containers; }
-    T const& loss_per_piece() const { return _loss_per_piece; }
-    T const& tolerance() const { return std::max(_tolerance, _loss_per_piece); }
+    piece_list<T> const& pieces() const { return pieces_; }
+    container_list<T> const& containers() const { return containers_; }
+    T const& loss_per_piece() const { return loss_per_piece_; }
+    T const& tolerance() const { return std::max(tolerance_, loss_per_piece_); }
 
 };
 

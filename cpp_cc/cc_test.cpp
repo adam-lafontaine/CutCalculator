@@ -584,7 +584,7 @@ string CCTest::test_build_piece_combos() {
         { "111", 110.0 }
     };
 
-    auto result = my_cc._piece_combos;
+    auto result = my_cc.piece_combos_;
     auto not_found = result.end();
 
 	auto const test = [&](auto const& item) {
@@ -631,7 +631,7 @@ string CCTest::test_build_piece_combos() {
 		//{ "111", 330.0 } too large
 	};
 
-	result = my_cc._piece_combos;
+	result = my_cc.piece_combos_;
 	not_found = result.end();
 
 	std::for_each(expected_2.begin(), expected_2.end(), test);
@@ -731,8 +731,8 @@ string CCTest::test_remove_combos() {
         return ss.str();
         };
 
-    vector<cc_combo_key> combos(my_cc._piece_combos.size());
-    std::transform(my_cc._piece_combos.begin(), my_cc._piece_combos.end(), combos.begin(), func_1);
+    vector<cc_combo_key> combos(my_cc.piece_combos_.size());
+    std::transform(my_cc.piece_combos_.begin(), my_cc.piece_combos_.end(), combos.begin(), func_1);
 
     auto binary = "010";
 
@@ -752,8 +752,8 @@ string CCTest::test_remove_combos() {
 
     my_cc.remove_combos(binary);
 
-    vector<string> result(my_cc._piece_combos.size());
-    std::transform(my_cc._piece_combos.begin(), my_cc._piece_combos.end(), result.begin(), func_1);
+    vector<string> result(my_cc.piece_combos_.size());
+    std::transform(my_cc.piece_combos_.begin(), my_cc.piece_combos_.end(), result.begin(), func_1);
 
     auto exp = vector_to_string(exp_str);
     auto res = vector_to_string(result);

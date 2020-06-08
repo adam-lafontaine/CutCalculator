@@ -14,14 +14,14 @@ template class CC<double>;
 
 
 bool has_bit(cc_combo_key const& binary) noexcept {
-    return binary.find(cc_true) != std::string::npos;
+    return binary.find(CC_TRUE) != std::string::npos;
 }
 
 //--------------------------------
 
 
 cc_bit_type flip_bit(cc_bit_type const bit) noexcept {
-    return bit == cc_false ? cc_true : cc_false;
+    return bit == CC_FALSE ? CC_TRUE : CC_FALSE;
 }
 
 //--------------------------------------
@@ -29,11 +29,11 @@ cc_bit_type flip_bit(cc_bit_type const bit) noexcept {
 
 cc_combo_key to_binary(u_int_t value, unsigned const num_bits) noexcept {
     
-    cc_bit_type const bin_values[] = {cc_false, cc_true};
+    cc_bit_type const bin_values[] = {CC_FALSE, CC_TRUE};
 
     auto const min_bits = static_cast<unsigned>(log2(value)+1);
 
-    cc_combo_key binary(std::max(num_bits, min_bits), cc_false);
+    cc_combo_key binary(std::max(num_bits, min_bits), CC_FALSE);
 
     auto bin_idx = binary.size();
 
@@ -57,7 +57,7 @@ u_int_t to_decimal(cc_combo_key const& binary) noexcept {
     // this works too
     /*
     auto const cond_f = [&](auto const& bit){
-        if(bit == cc_true)
+        if(bit == CC_TRUE)
             val += static_cast<u_int_t>(std::pow(2, exp));
 
         ++exp;
@@ -69,7 +69,7 @@ u_int_t to_decimal(cc_combo_key const& binary) noexcept {
 
     // this is shorter    
     for(auto it = binary.rbegin(); it != binary.rend(); ++it) {
-        if(*it == cc_true)
+        if(*it == CC_TRUE)
             val += static_cast<u_int_t>(std::pow(2, exp));
 
         ++exp;
@@ -88,7 +88,7 @@ bool has_common_bit(cc_combo_key const& bin_1, cc_combo_key const& bin_2) noexce
     auto const last_2 = bin_2.size() - 1;
 
     for(size_t i = 0; i <= last_1 && i <= last_2; ++i) {        
-        if(bin_1[last_1 - i] == cc_true && bin_2[last_2 - i] == cc_true)
+        if(bin_1[last_1 - i] == CC_TRUE && bin_2[last_2 - i] == CC_TRUE)
             return true;
     }
 
@@ -106,7 +106,7 @@ cc_combo_key next_binary(cc_combo_key const& binary) noexcept {
     // expresses intent
     for(int i = num_bits - 1; i >= 0; --i) { // auto breaks
         next_bin[i] = flip_bit(next_bin[i]);
-        if(next_bin[i] == cc_true)
+        if(next_bin[i] == CC_TRUE)
             break;
     }
 */
@@ -115,7 +115,7 @@ cc_combo_key next_binary(cc_combo_key const& binary) noexcept {
     
     // C style
 	// set bits to true until a true bit is found
-    for(int i = binary.size() - 1; i >= 0 && (next_bin[i] = flip_bit(next_bin[i])) != cc_true; --i)
+    for(int i = binary.size() - 1; i >= 0 && (next_bin[i] = flip_bit(next_bin[i])) != CC_TRUE; --i)
 		;
     
     return next_bin;
@@ -129,11 +129,11 @@ cc_combo_key skip_binary(cc_combo_key const& binary) noexcept {
     auto const num_bits = binary.size();
 	cc_combo_key next_bin = binary;
 
-    next_bin[num_bits - 1] = cc_true;
+    next_bin[num_bits - 1] = CC_TRUE;
 
 	int i = num_bits - 2;
-	while(i >= 0 && next_bin[i] != cc_true)
-		next_bin[i--] = cc_true;
+	while(i >= 0 && next_bin[i] != CC_TRUE)
+		next_bin[i--] = CC_TRUE;
 
     return next_binary(next_bin);
 }
@@ -143,14 +143,14 @@ cc_combo_key skip_binary(cc_combo_key const& binary) noexcept {
 template<typename T>
 void CC<T>::pieces(piece_list<T>& pieces) {
 
-    _pieces.resize(pieces.size());
-    _pieces.clear();
+    pieces_.resize(pieces.size());
+    pieces_.clear();
 
     for(auto& item : pieces){
-        _pieces.push_back(std::move(item));
+        pieces_.push_back(std::move(item));
     }
 
-    std::sort(_pieces.begin(), _pieces.end(), descending<T>);
+    std::sort(pieces_.begin(), pieces_.end(), descending<T>);
 }
 
 //----------------------------------------
@@ -158,14 +158,14 @@ void CC<T>::pieces(piece_list<T>& pieces) {
 template<typename T>
 void CC<T>::containers(container_list<T>& containers) {
 
-    _containers.resize(containers.size());
-    _containers.clear();
+    containers_.resize(containers.size());
+    containers_.clear();
 
     for(auto& container : containers) {
-        _containers.push_back(std::move(container));
+        containers_.push_back(std::move(container));
     }
 
-    std::sort(_containers.begin(), _containers.end(), ascending<T>);
+    std::sort(containers_.begin(), containers_.end(), ascending<T>);
 }
 
 //-------------------------------------
@@ -173,9 +173,9 @@ void CC<T>::containers(container_list<T>& containers) {
 template<typename T>
 void CC<T>::pieces(piece_list<T>&& pieces) {
 
-	_pieces = std::move(pieces);
+	pieces_ = std::move(pieces);
 
-	std::sort(_pieces.begin(), _pieces.end(), descending<T>);
+	std::sort(pieces_.begin(), pieces_.end(), descending<T>);
 }
 
 //----------------------------------------
@@ -183,9 +183,9 @@ void CC<T>::pieces(piece_list<T>&& pieces) {
 template<typename T>
 void CC<T>::containers(container_list<T>&& containers) {
 
-	_containers = std::move(containers);
+	containers_ = std::move(containers);
 
-	std::sort(_containers.begin(), _containers.end(), ascending<T>);
+	std::sort(containers_.begin(), containers_.end(), ascending<T>);
 }
 
 //--------------------------------------
@@ -195,13 +195,13 @@ T CC<T>::combo_size(cc_combo_key const& binary) const noexcept {
 
     T result = 0; // T is numeric
     auto const num_bits = binary.size();
-    auto const num_pieces = _pieces.size();
+    auto const num_pieces = pieces_.size();
 
     for(size_t i = 0; i < num_bits && i < num_pieces; ++i) {
         auto const bit = binary[num_bits - 1 - i];        
-		if (bit == cc_true) {
-			auto const size = _pieces[num_pieces - 1 - i]->size;
-			result += size + _loss_per_piece;
+		if (bit == CC_TRUE) {
+			auto const size = pieces_[num_pieces - 1 - i]->size;
+			result += size + loss_per_piece_;
 		}
             
     }
@@ -216,11 +216,11 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) const noexcept {
 
     piece_list<T> list;
     auto const num_bits = binary.size();
-    auto const num_pieces = _pieces.size();
+    auto const num_pieces = pieces_.size();
 
     for(size_t i = 0; i < num_bits && i < num_pieces; ++i) {
-        if(binary[num_bits - 1 - i] == cc_true)
-            list.push_back(_pieces[num_pieces - 1 - i]);
+        if(binary[num_bits - 1 - i] == CC_TRUE)
+            list.push_back(pieces_[num_pieces - 1 - i]);
     }
 
     return list;
@@ -231,11 +231,11 @@ piece_list<T> CC<T>::filter_pieces(cc_combo_key const& binary) const noexcept {
 template<typename T>
 T CC<T>::max_capacity() const noexcept {
 
-	if (_containers.empty())
+	if (containers_.empty())
 		return 0;
 
     // last item because list is sorted
-    return _containers[_containers.size() - 1]->capacity;
+    return containers_[containers_.size() - 1]->capacity;
 }
 
 //------------------------------
@@ -243,18 +243,18 @@ T CC<T>::max_capacity() const noexcept {
 template<typename T>
 void CC<T>::build_piece_combos() noexcept {
 
-    _piece_combos.clear();
+    piece_combos_.clear();
 
-    if(_containers.empty())
+    if(containers_.empty())
         return;
 
-    auto binary = to_binary(1, _pieces.size());
+    auto binary = to_binary(1, pieces_.size());
     auto max_cap = max_capacity();
 
     while(has_bit(binary)) {
         auto const size = combo_size(binary);
         if(size <= max_cap) {
-            _piece_combos[binary] = std::make_shared<PieceCombo<T>>(binary, size);
+            piece_combos_[binary] = std::make_shared<PieceCombo<T>>(binary, size);
             binary = next_binary(binary);
         }
         else
@@ -269,21 +269,21 @@ result_ptr<T> CC<T>::best_match() noexcept {
 
     result_ptr<T> result = std::make_shared<Result<T>>();
 
-    if(_containers.empty())
+    if(containers_.empty())
         return result;
 
     auto const max_cap = max_capacity();
     auto best_diff = max_cap;
-    auto best_container_it = _containers.begin();
+    auto best_container_it = containers_.begin();
 
-	auto const is_better = [&](auto diff) { return diff >= -1 * _loss_per_piece && diff < best_diff; };
+	auto const is_better = [&](auto diff) { return diff >= -1 * loss_per_piece_ && diff < best_diff; };
 
-    for(auto it = _piece_combos.rbegin(); it != _piece_combos.rend(); ++it) {
+    for(auto it = piece_combos_.rbegin(); it != piece_combos_.rend(); ++it) {
         auto const binary = it->first;
         auto const combo = it->second;
         auto const size = combo->combo_size;
 
-        for(auto c_it = _containers.begin(); c_it != _containers.end(); ++c_it) {          
+        for(auto c_it = containers_.begin(); c_it != containers_.end(); ++c_it) {          
             auto diff = (*c_it)->capacity - size;
 
 			if (!is_better(diff))
@@ -293,23 +293,23 @@ result_ptr<T> CC<T>::best_match() noexcept {
 			result->binary = binary;
 			best_container_it = c_it;
 
-			if (diff > _tolerance)
+			if (diff > tolerance_)
 				continue;
 
 			result->combo = combo;
 			result->pieces = filter_pieces(binary);
 			result->container = std::move(*best_container_it);
-			_containers.erase(best_container_it);
+			containers_.erase(best_container_it);
 			result->delta = diff;
 
 			return result;            
         }
     }    
 
-    result->combo = _piece_combos[result->binary];
+    result->combo = piece_combos_[result->binary];
     result->pieces = filter_pieces(result->binary);
     result->container = std::move(*best_container_it);    
-    _containers.erase(best_container_it);
+    containers_.erase(best_container_it);
 	result->delta = best_diff;
 
     return result;
@@ -320,7 +320,7 @@ result_ptr<T> CC<T>::best_match() noexcept {
 template<typename T>
 void CC<T>::remove_combos(cc_combo_key const& binary) noexcept {
 
-    bool has_max = !_containers.empty();
+    bool has_max = !containers_.empty();
 	T max_cap{};
 
     if(has_max)
@@ -331,17 +331,12 @@ void CC<T>::remove_combos(cc_combo_key const& binary) noexcept {
         (has_max && combo.second->combo_size > max_cap);
     };
 
-    // erase - remove idiom does not work for std::map    
-    /*
-    _piece_combos.erase(std::remove_if(_piece_combos.begin(), _piece_combos.end(), cond_f), _piece_combos.end());
-    */
-
     
-    auto it = _piece_combos.begin();
-    auto const end = _piece_combos.end();
+    auto it = piece_combos_.begin();
+    auto const end = piece_combos_.end();
     while(it != end) {
         if(cond_f(*it))
-            _piece_combos.erase(it++);
+            piece_combos_.erase(it++);
         else 
             ++it;
 
@@ -354,19 +349,19 @@ CCSortDTO<T> CC<T>::sort() noexcept {
 
     build_piece_combos();
 
-    _results.clear();
+    results_.clear();
 
-    while(!_containers.empty() && !_piece_combos.empty()) {
+    while(!containers_.empty() && !piece_combos_.empty()) {
         auto match = best_match();
         remove_combos(match->binary);
-        _results.push_back(match);
+        results_.push_back(match);
     }
 
     CCSortDTO<T> dto;
 
-    dto.data = _results;
+    dto.data = results_;
 
-    if(_piece_combos.empty()) {
+    if(piece_combos_.empty()) {
         dto.success = true;
         dto.message = "solution found";
     }
