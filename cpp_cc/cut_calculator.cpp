@@ -107,7 +107,7 @@ static bool test_has_bit()
 	bool result = true;
 
 	combo_bin source[] = { "01110", "000", "1010110", "0000000", "0001000" };
-	bool expected[] = { true, false, true, false, true };
+	bool expected[]    = { true,    false, true,      false,     true };
 	constexpr u32 N = 5;
 
 	for (u32 i = 0; i < N; ++i)
@@ -126,6 +126,82 @@ static bool test_has_bit()
 }
 
 
+static bool test_has_common_bit()
+{
+	bool result = true;
+
+	combo_bin source1[] = { "01110", "100", "1010110", "0001000", "0001000", "010101010101010101" };
+	combo_bin source2[] = { "01010", "010", "0101010", "1111111", "0001000", "101010101010101010" };
+	bool expected[]     = { true,    false, true,      true,      true,      false };
+	constexpr u32 N = 6;
+
+	for (u32 i = 0; i < N; ++i)
+	{
+		auto& src1 = source1[i];
+		auto& src2 = source2[i];
+		auto exp = expected[i];
+		result &= has_common_bit(src1, src2) == exp;
+	}
+
+	if (!result)
+	{
+		printf("test_has_common_bit: FAIL\n");
+	}
+
+	return result;
+}
+
+
+static bool test_next_binary()
+{
+	bool result = true;
+
+	combo_bin source[]   = { "01110", "000", "101", "1010110", "0000000", "01011111", "1111111111" };
+	combo_bin expected[] = { "01111", "001", "110", "1010111", "0000001", "01100000", "0000000000" };
+	constexpr u32 N = 7;
+
+	for (u32 i = 0; i < N; ++i)
+	{
+		auto& src = source[i];
+		auto& exp = expected[i];
+		next_binary(src);
+		result &= src == exp;
+	}
+
+	if (!result)
+	{
+		printf("test_next_binary: FAIL\n");
+	}
+
+	return result;
+}
+
+
+static bool test_skip_binary()
+{
+	bool result = true;
+
+	combo_bin source[]   = { "01110", "01111", "11001000", "1010110", "0000100", "01011111", "1111111111" };
+	combo_bin expected[] = { "10000", "10000", "11010000", "1011000", "0001000", "01100000", "0000000000" };
+	constexpr u32 N = 7;
+
+	for (u32 i = 0; i < N; ++i)
+	{
+		auto& src = source[i];
+		auto& exp = expected[i];
+		skip_binary(src);
+		result &= src == exp;
+	}
+
+	if (!result)
+	{
+		printf("test_skip_binary: FAIL\n");
+	}
+
+	return result;
+}
+
+
 namespace cut_calculator
 {
 	bool test_binary_ops()
@@ -133,6 +209,9 @@ namespace cut_calculator
 		bool result = true;
 
 		result &= test_has_bit();
+		result &= test_has_common_bit();
+		result &= test_next_binary();
+		result &= test_skip_binary();
 
 		if (result)
 		{
