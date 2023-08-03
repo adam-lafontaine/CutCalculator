@@ -32,5 +32,8 @@ namespace cut_calculator
 
 
 	std::vector<ContainerItems> sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff = 0.0f);
+
+
+	bool test_binary_ops();
 }
 

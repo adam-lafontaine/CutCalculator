@@ -5,36 +5,18 @@
 #include <numeric>
 #include <string>
 #include <cassert>
+#include <cstdio>
 
 
 using cc_bit = char;
 constexpr cc_bit CC_FALSE = '0';
 constexpr cc_bit CC_TRUE = '1';
 
-using combo_key = std::basic_string<cc_bit>;
+using combo_bin = std::basic_string<cc_bit>;
 
 
 
-static bool has_common_bit(combo_key const& bin_1, combo_key const& bin_2)
-{
-	// bin_1 & bin_2;
-
-	auto const last_1 = bin_1.size() - 1;
-	auto const last_2 = bin_2.size() - 1;
-
-	for (size_t i = 0; i <= last_1 && i <= last_2; ++i) 
-	{
-		if (bin_1[last_1 - i] == CC_TRUE && bin_2[last_2 - i] == CC_TRUE)
-		{
-			return true;
-		}			
-	}
-
-	return false;
-}
-
-
-static bool has_bit(combo_key const& bin)
+static bool has_bit(combo_bin const& bin)
 {
 	// bin > 0;
 
@@ -50,7 +32,26 @@ static bool has_bit(combo_key const& bin)
 }
 
 
-static void flip_bit(combo_key& bin, u32 bit)
+static bool has_common_bit(combo_bin const& bin_1, combo_bin const& bin_2)
+{
+	// bin_1 & bin_2;
+
+	auto const last_1 = bin_1.size() - 1;
+	auto const last_2 = bin_2.size() - 1;
+
+	for (size_t i = 0; i <= last_1 && i <= last_2; ++i)
+	{
+		if (bin_1[last_1 - i] == CC_TRUE && bin_2[last_2 - i] == CC_TRUE)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+static void flip_bit(combo_bin& bin, u32 bit)
 {
 	// bin = (1 << bit) ^ bin;
 
@@ -58,16 +59,16 @@ static void flip_bit(combo_key& bin, u32 bit)
 }
 
 
-static combo_key first_binary(u32 len)
+static combo_bin first_binary(u32 len)
 {
-	combo_key bin(len, CC_FALSE);
+	combo_bin bin(len, CC_FALSE);
 	bin.back() = CC_TRUE;
 
 	return bin;
 }
 
 
-static void next_binary(combo_key& bin)
+static void next_binary(combo_bin& bin)
 {
 	// bin += 1;
 
@@ -84,7 +85,7 @@ static void next_binary(combo_key& bin)
 }
 
 
-static void skip_binary(combo_key& bin)
+static void skip_binary(combo_bin& bin)
 {
 	// bin = (bin - 1) | bin + 1;
 
@@ -101,10 +102,52 @@ static void skip_binary(combo_key& bin)
 }
 
 
+static bool test_has_bit()
+{
+	bool result = true;
+
+	combo_bin source[] = { "01110", "000", "1010110", "0000000", "0001000" };
+	bool expected[] = { true, false, true, false, true };
+	constexpr u32 N = 5;
+
+	for (u32 i = 0; i < N; ++i)
+	{
+		auto& src = source[i];
+		auto exp = expected[i];
+		result &= has_bit(src) == exp;
+	}
+
+	if (!result)
+	{
+		printf("test_has_bit: FAIL\n");
+	}
+
+	return result;
+}
+
+
+namespace cut_calculator
+{
+	bool test_binary_ops()
+	{
+		bool result = true;
+
+		result &= test_has_bit();
+
+		if (result)
+		{
+			printf("test_binary_ops: OK\n");
+		}
+
+		return result;
+	}
+}
+
+
 class ComboSizePair
 {
 public:
-	combo_key bin;
+	combo_bin bin;
 	f32 size;
 };
 
@@ -117,7 +160,7 @@ private:
 
 public:
 
-	void add(combo_key const& bin, f32 size)
+	void add(combo_bin const& bin, f32 size)
 	{
 		sorted_data_ids.push_back((u32)data.size());
 		data.push_back({ bin, size });
@@ -136,11 +179,11 @@ public:
 		auto end = sorted_data_ids.end();
 		auto data_id = id_at(offset);
 
-		std::remove(begin, end, data_id);
+		std::ignore = std::remove(begin, end, data_id);
 	}
 
 
-	void remove_common(combo_key const& bin)
+	void remove_common(combo_bin const& bin)
 	{
 		for (auto it = sorted_data_ids.rbegin(); it != sorted_data_ids.rend(); --it)
 		{
@@ -156,7 +199,7 @@ public:
 
 	f32 size_at(u32 offset) const { return data[id_at(offset)].size; }
 
-	u64 length() const { return sorted_data_ids.size(); }
+	u32 length() const { return (u32)sorted_data_ids.size(); }
 
 	std::vector<ComboSizePair>& get_data() { return data; }
 };
@@ -200,7 +243,7 @@ public:
 		auto end = sorted_data_ids.end();
 		auto data_id = id_at(offset);
 
-		std::remove(begin, end, data_id);
+		std::ignore = std::remove(begin, end, data_id);
 	}
 
 
@@ -212,7 +255,7 @@ public:
 
 	f32 max_value() const { return data[sorted_data_ids.back()]; }
 
-	u64 length() const { return sorted_data_ids.size(); }
+	u32 length() const { return (u32)sorted_data_ids.size(); }
 };
 
 
@@ -254,7 +297,7 @@ public:
 	}
 
 
-	f32 combo_size(combo_key const& bin) const
+	f32 combo_size(combo_bin const& bin) const
 	{
 		f32 size = 0.0f;
 
@@ -270,7 +313,7 @@ public:
 	}
 
 
-	std::vector<u32> combo_items(combo_key const& bin)
+	std::vector<u32> combo_items(combo_bin const& bin)
 	{
 		std::vector<u32> item_ids;
 		item_ids.reserve(bin.length());
@@ -287,7 +330,7 @@ public:
 	}
 
 
-	u64 length() const { return sorted_data_ids.size(); }
+	u32 length() const { return (u32)sorted_data_ids.size(); }
 };
 
 
