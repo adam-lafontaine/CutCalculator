@@ -1,22 +1,8 @@
-#include <cstdint>
-
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using f32 = float;
-using f64 = double;
-using i8 = int8_t;
-using i16 = short;
-using i32 = int32_t;
-using cstr = const char*;
-using b32 = u32;
+#include "cut_calculator.hpp"
 
 
 #include <algorithm>
 #include <numeric>
-#include <vector>
-#include <map>
 #include <string>
 #include <cassert>
 
@@ -220,7 +206,7 @@ public:
 
 	f32 value_at(u32 offset) const
 	{
-		return data[sorted_data_ids[offset]];
+		return data[id_at(offset)];
 	}
 
 
@@ -394,66 +380,59 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 }
 
 
-class ContainerItems
+
+namespace cut_calculator
 {
-public:
-	u32 container_id = 0;
-	std::vector<u32> item_ids;
-
-	f32 container_capacity = 0.0f;
-	f32 item_size = 0.0f;
-};
-
-
-std::vector<ContainerItems> sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities)
-{
-	ItemSizeList size_list;
-	ContainerCapacityList capacity_list;
-
-	size_list.set_data(item_sizes);
-	size_list.sort();
-
-	capacity_list.set_data(container_capacities);
-	capacity_list.sort();
-
-	auto combo_list = build_combos(size_list, capacity_list.max_value());
-
-	std::vector<int> capacity_combos(capacity_list.length(), -1);
-
-	while (combo_list.length() && capacity_list.length())
+	std::vector<ContainerItems> sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff)
 	{
-		auto match = best_match(combo_list, capacity_list);
+		ItemSizeList size_list;
+		ContainerCapacityList capacity_list;
 
-		auto capacity_id = capacity_list.id_at(match.capacity_offset);
-		auto combo_id = combo_list.id_at(match.combo_offset);
+		size_list.set_data(item_sizes);
+		size_list.sort();
 
-		capacity_combos[capacity_id] = combo_id;
+		capacity_list.set_data(container_capacities);
+		capacity_list.sort();
 
-		capacity_list.remove_at(match.capacity_offset);
-		combo_list.remove_at(match.combo_offset);
-	}
+		auto combo_list = build_combos(size_list, capacity_list.max_value());
 
-	auto& combo_sizes = combo_list.get_data();
-	std::vector<ContainerItems> result;
+		std::vector<int> capacity_combos(capacity_list.length(), -1);
 
-	for (int cap_id = 0; cap_id < capacity_combos.size(); ++cap_id)
-	{
-		auto combo_id = capacity_combos[cap_id];
-		if (combo_id < 0)
+		while (combo_list.length() && capacity_list.length())
 		{
-			continue;
+			auto match = best_match(combo_list, capacity_list, acc_diff);
+
+			auto capacity_id = capacity_list.id_at(match.capacity_offset);
+			auto combo_id = combo_list.id_at(match.combo_offset);
+
+			capacity_combos[capacity_id] = combo_id;
+
+			capacity_list.remove_at(match.capacity_offset);
+			combo_list.remove_at(match.combo_offset);
 		}
 
-		auto& combo = combo_sizes[combo_id];
+		auto& combo_sizes = combo_list.get_data();
+		std::vector<ContainerItems> result;
 
-		ContainerItems res{};
-		res.container_id = cap_id;
-		res.container_capacity = container_capacities[cap_id];
-		res.item_ids = size_list.combo_items(combo.bin);
-		res.item_size = combo.size;
+		for (int cap_id = 0; cap_id < capacity_combos.size(); ++cap_id)
+		{
+			auto combo_id = capacity_combos[cap_id];
+			if (combo_id < 0)
+			{
+				continue;
+			}
 
-		result.push_back(std::move(res));
+			auto& combo = combo_sizes[combo_id];
+
+			ContainerItems res{};
+			res.container_id = cap_id;
+			res.container_capacity = container_capacities[cap_id];
+			res.item_ids = size_list.combo_items(combo.bin);
+			res.item_size = combo.size;
+
+			result.push_back(std::move(res));
+		}
+
+		return result;
 	}
-
-	return result;
 }
