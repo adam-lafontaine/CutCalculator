@@ -236,6 +236,58 @@ static bool test_skip_binary()
 }
 
 
+static bool test_combine_binary()
+{
+	bool result = true;
+
+	combo_bin source1[]  = { "01110", "100", "1010110", "0001000", "0001000", "010101010101010101" };
+	combo_bin source2[]  = { "01010", "010", "0101010", "1111111", "0001000", "101010101010101010" };
+	combo_bin expected[] = { "01110", "110", "1111110", "1111111", "0001000", "111111111111111111" };
+	constexpr u32 N = 6;
+
+	for (u32 i = 0; i < N; ++i)
+	{
+		auto& src1 = source1[i];
+		auto& src2 = source2[i];
+		auto& exp = expected[i];
+		combine_binary(src1, src2);
+		result &= src1 == exp;
+	}
+
+	if (!result)
+	{
+		printf("test_combine_binary: FAIL\n");
+	}
+
+	return result;
+}
+
+
+static bool test_flip_all_bits()
+{
+	bool result = true;
+
+	combo_bin source[]   = { "01110", "000", "101", "1010110", "0100000", "01011111", "1111111111" };
+	combo_bin expected[] = { "10001", "111", "010", "0101001", "1011111", "10100000", "0000000000" };
+	constexpr u32 N = 7;
+
+	for (u32 i = 0; i < N; ++i)
+	{
+		auto& src = source[i];
+		auto& exp = expected[i];
+		flip_all_bits(src);
+		result &= src == exp;
+	}
+
+	if (!result)
+	{
+		printf("test_flip_all_bits: FAIL\n");
+	}
+
+	return result;
+}
+
+
 namespace cut_calculator
 {
 	bool test_binary_ops()
@@ -246,6 +298,8 @@ namespace cut_calculator
 		result &= test_has_common_bit();
 		result &= test_next_binary();
 		result &= test_skip_binary();
+		result &= test_combine_binary();
+		result &= test_flip_all_bits();
 
 		if (result)
 		{

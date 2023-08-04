@@ -110,12 +110,12 @@ static void test_sort_results(std::vector<f32> const& items, std::vector<f32> co
 
 	if (result)
 	{
-		printf("test_sort_results: OK\n");
+		printf("sort_result: OK\n");
 	}
 }
 
 
-static void test_stuff()
+static void test_easy()
 {
 	std::vector<f32> container_capacities
 	{
@@ -134,7 +134,6 @@ static void test_stuff()
 
 	print(item_sizes, container_capacities, result);
 	test_sort_results(item_sizes, container_capacities, result);
-
 }
 
 int main()
@@ -144,7 +143,7 @@ int main()
 		return 1;
 	}
 
-	test_stuff();
+	test_easy();
 
 	return 0;
 }
