@@ -32,16 +32,16 @@ static bool has_bit(combo_bin const& bin)
 }
 
 
-static bool has_common_bit(combo_bin const& bin_1, combo_bin const& bin_2)
+static bool has_common_bit(combo_bin const& bin1, combo_bin const& bin2)
 {
 	// bin_1 & bin_2;
 
-	auto const last_1 = bin_1.size() - 1;
-	auto const last_2 = bin_2.size() - 1;
+	auto const last_1 = bin1.size() - 1;
+	auto const last_2 = bin2.size() - 1;
 
 	for (size_t i = 0; i <= last_1 && i <= last_2; ++i)
 	{
-		if (bin_1[last_1 - i] == CC_TRUE && bin_2[last_2 - i] == CC_TRUE)
+		if (bin1[last_1 - i] == CC_TRUE && bin2[last_2 - i] == CC_TRUE)
 		{
 			return true;
 		}
@@ -56,6 +56,13 @@ static void flip_bit(combo_bin& bin, u32 bit)
 	// bin = (1 << bit) ^ bin;
 
 	bin[bit] = bin[bit] == CC_TRUE ? CC_FALSE : CC_TRUE;
+}
+
+
+static combo_bin zero_binary(u32 len)
+{
+	combo_bin bin(len, CC_FALSE);
+	return bin;
 }
 
 
@@ -99,6 +106,33 @@ static void skip_binary(combo_bin& bin)
 	}
 
 	next_binary(bin);
+}
+
+
+static void combine_binary(combo_bin& bin, combo_bin const& other)
+{
+	// bin = bin | other;
+
+	auto const last = (int)bin.length() - 1;
+
+	for (u32 i = 0; i < (u32)bin.length(); ++i)
+	{
+		if (other[i] == CC_TRUE || bin[i] == CC_TRUE)
+		{
+			bin[i] = CC_TRUE;
+		}
+	}
+}
+
+
+static void flip_all_bits(combo_bin& bin)
+{
+	// bin = ~bin;
+
+	for (auto& bit : bin)
+	{
+		bit = bit == CC_TRUE ? CC_FALSE : CC_TRUE;
+	}
 }
 
 
@@ -523,44 +557,55 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 
 namespace cut_calculator
 {
-	std::vector<ContainerItems> sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff)
+	SortResult sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff)
 	{
-		ItemSizeList size_list;
-		ContainerCapacityList capacity_list;
+		ItemSizeList item_list;
+		ContainerCapacityList container_list;
 
-		size_list.set_data(item_sizes);
-		size_list.sort();
+		item_list.set_data(item_sizes);
+		item_list.sort();
 
-		capacity_list.set_data(container_capacities);
-		capacity_list.sort();
+		container_list.set_data(container_capacities);
+		container_list.sort();
 
-		auto combo_list = build_combos(size_list, capacity_list.max_value());
+		auto combo_list = build_combos(item_list, container_list.max_value());
 
-		std::vector<int> capacity_combos(capacity_list.length(), -1);
+		auto const n_items = item_list.length();
+		auto const n_containers = container_list.length();
+
+		std::vector<int> container_combos(n_containers, -1);
 
 		auto& combo_sizes = combo_list.get_data();
 
-		while (combo_list.length() && capacity_list.length())
-		{
-			auto match = best_match(combo_list, capacity_list, acc_diff);
+		auto items_bin = zero_binary(n_items);
 
-			auto capacity_id = capacity_list.id_at(match.capacity_offset);
+		while (combo_list.length() && container_list.length())
+		{
+			auto match = best_match(combo_list, container_list, acc_diff);
+
+			auto capacity_id = container_list.id_at(match.capacity_offset);
 			auto combo_id = combo_list.id_at(match.combo_offset);
 
-			capacity_combos[capacity_id] = combo_id;
+			container_combos[capacity_id] = combo_id;
 
-			capacity_list.remove_at(match.capacity_offset);
-			combo_list.remove_common(combo_sizes[combo_id].bin);
+			auto& item_combo = combo_sizes[combo_id].bin;
+			combine_binary(items_bin, item_combo);
+
+			container_list.remove_at(match.capacity_offset);
+			combo_list.remove_common(item_combo);
 		}
-
 		
-		std::vector<ContainerItems> result;
+		SortResult result;
 
-		for (int cap_id = 0; cap_id < capacity_combos.size(); ++cap_id)
+		flip_all_bits(items_bin);
+		result.unsorted_item_ids = item_list.combo_items(items_bin);
+
+		for (int cap_id = 0; cap_id < container_combos.size(); ++cap_id)
 		{
-			auto combo_id = capacity_combos[cap_id];
+			auto combo_id = container_combos[cap_id];
 			if (combo_id < 0)
 			{
+				result.unsorted_container_ids.push_back(cap_id);
 				continue;
 			}
 
@@ -569,10 +614,10 @@ namespace cut_calculator
 			ContainerItems res{};
 			res.container_id = cap_id;
 			res.container_capacity = container_capacities[cap_id];
-			res.item_ids = size_list.combo_items(combo.bin);
+			res.item_ids = item_list.combo_items(combo.bin);
 			res.item_size = combo.size;
 
-			result.push_back(std::move(res));
+			result.sorted.push_back(std::move(res));
 		}
 
 		return result;

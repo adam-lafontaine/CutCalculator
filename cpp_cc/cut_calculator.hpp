@@ -31,7 +31,18 @@ namespace cut_calculator
 	};
 
 
-	std::vector<ContainerItems> sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff = 0.0f);
+	class SortResult
+	{
+	public:
+
+		std::vector<ContainerItems> sorted;
+
+		std::vector<u32> unsorted_container_ids;
+		std::vector<u32> unsorted_item_ids;
+	};
+
+
+	SortResult sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff = 0.0f);
 
 
 	bool test_binary_ops();
