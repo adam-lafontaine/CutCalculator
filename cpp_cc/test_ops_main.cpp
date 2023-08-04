@@ -84,6 +84,7 @@ static bool test_container_ids(std::vector<f32> const& containers, cc::SortResul
 
 	if (ids.size() != containers.size())
 	{
+		printf("container_ids: bad count\n");
 		return false;
 	}
 
@@ -93,6 +94,7 @@ static bool test_container_ids(std::vector<f32> const& containers, cc::SortResul
 	{
 		if (ids[i] != i)
 		{
+			printf("container_ids: bad id\n");
 			return false;
 		}
 	}
@@ -107,6 +109,7 @@ static bool test_container_capacities(std::vector<f32> const& containers, cc::So
 	{
 		if (c.container_capacity != containers[c.container_id])
 		{
+			printf("container_capacities: bad capacity\n");
 			return false;
 		}
 
@@ -134,6 +137,7 @@ static bool test_item_ids(std::vector<f32> const& items, cc::SortResult const& s
 
 	if (ids.size() != items.size())
 	{
+		printf("item_ids: bad count\n");
 		return false;
 	}
 
@@ -143,6 +147,7 @@ static bool test_item_ids(std::vector<f32> const& items, cc::SortResult const& s
 	{
 		if (ids[i] != i)
 		{
+			printf("item_ids: bad id\n");
 			return false;
 		}
 	}
@@ -163,6 +168,7 @@ static bool test_item_sizes(std::vector<f32> const& items, cc::SortResult const&
 
 		if (c.item_size != size)
 		{
+			printf("item_sizes: bad size\n");
 			return false;
 		}
 	}
@@ -171,12 +177,13 @@ static bool test_item_sizes(std::vector<f32> const& items, cc::SortResult const&
 }
 
 
-static bool test_capacity_size(cc::SortResult const& sort_result)
+static bool test_capacity_item_size(cc::SortResult const& sort_result)
 {
 	for (auto const& c : sort_result.sorted)
 	{
 		if (c.container_capacity < c.item_size)
 		{
+			printf("capacity_item_size: bad container capacity/item size\n");
 			return false;
 		}
 	}
@@ -187,12 +194,26 @@ static bool test_capacity_size(cc::SortResult const& sort_result)
 
 static bool test_unsorted(std::vector<f32> const& items, std::vector<f32> const& containers, cc::SortResult const& sort_result)
 {
+	for (auto const& r : sort_result.sorted)
+	{
+		auto leftover = r.container_capacity - r.item_size;
+		for (auto i : sort_result.unsorted_item_ids)
+		{
+			if (items[i] <= leftover)
+			{
+				printf("unsorted: unsorted item\n");
+				return false;
+			}
+		}
+	}
+
 	for (auto c : sort_result.unsorted_container_ids)
 	{
 		for (auto i : sort_result.unsorted_item_ids)
 		{
 			if (containers[c] >= items[i])
 			{
+				printf("unsorted: unused container\n");
 				return false;
 			}
 		}
@@ -210,7 +231,7 @@ static void test_sort_results(std::vector<f32> const& items, std::vector<f32> co
 	result &= test_container_capacities(containers, sort_result);
 	result &= test_item_ids(items, sort_result);
 	result &= test_item_sizes(items, sort_result);
-	result &= test_capacity_size(sort_result);
+	result &= test_capacity_item_size(sort_result);
 	result &= test_unsorted(items, containers, sort_result);
 
 	if (result)
@@ -238,8 +259,7 @@ static void test_easy()
 	auto result = cc::sort(item_sizes, container_capacities);
 
 	test_sort_results(item_sizes, container_capacities, result);
-	print(item_sizes, container_capacities, result);
-	
+	print(item_sizes, container_capacities, result);	
 }
 
 int main()
