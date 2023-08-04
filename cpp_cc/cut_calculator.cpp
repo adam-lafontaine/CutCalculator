@@ -375,6 +375,28 @@ namespace
 		}
 
 
+		void remove_large(f32 max_capacity)
+		{
+			if (max_capacity <= 0.0f)
+			{
+				return;
+			}
+
+			int last = (int)n_data_ids - 1;
+
+			for (int i = last; i >= 0; --i)
+			{
+				auto offset = (u32)i;
+				auto size = data[id_at(offset)].size;
+
+				if (size > max_capacity)
+				{
+					remove_at(offset);
+				}
+			}
+		}
+
+
 		f32 size_at(u32 offset) const { return data[id_at(offset)].size; }
 
 		u32 length() const { return n_data_ids; }
@@ -647,6 +669,7 @@ namespace cut_calculator
 
 			container_list.remove_at(match.capacity_offset);
 			combo_list.remove_common(item_combo);
+			combo_list.remove_large(container_list.max_value());
 		}
 		
 		SortResult result;
