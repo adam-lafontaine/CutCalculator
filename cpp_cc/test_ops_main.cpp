@@ -369,7 +369,7 @@ int main()
 	//test_easy();
 	//test_extra_containers();
 	//test_extra_items();
-	test_many_items();
+	//test_many_items();
 
 	return 0;
 }
