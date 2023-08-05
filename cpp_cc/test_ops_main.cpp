@@ -322,7 +322,7 @@ static void test_many_items()
 		15, 21, 27, 33, 39, 45,
 	};*/
 
-	std::vector<f32> container_capacities
+	/*std::vector<f32> container_capacities
 	{
 		147, 183, 219, 255
 	};
@@ -335,9 +335,9 @@ static void test_many_items()
 		25, 31, 37, 43,
 		26, 32, 38, 44,
 		27, 33, 39, 45,
-	};
+	};*/
 
-	/*std::vector<f32> container_capacities
+	std::vector<f32> container_capacities
 	{
 		183, 219, 255
 	};
@@ -350,7 +350,7 @@ static void test_many_items()
 		31, 37, 43,
 		32, 38, 44,
 		33, 39, 45,
-	};*/
+	};
 
 	auto result = cc::sort(item_sizes, container_capacities);
 
@@ -369,7 +369,7 @@ int main()
 	//test_easy();
 	//test_extra_containers();
 	//test_extra_items();
-	//test_many_items();
+	test_many_items();
 
 	return 0;
 }

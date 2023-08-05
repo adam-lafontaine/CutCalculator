@@ -548,26 +548,6 @@ namespace
 }
 
 
-
-#if 0
-static f32 item_combo_size(u64 item_combo)
-{
-	f32 size = 0.0f;
-
-	u64 p = 1;
-	for (u32 i = 0; i < n_items; ++i, p *= 2)
-	{
-		if (p & item_combo)
-		{
-			size += item_size(i);
-		}
-	}
-
-	return size;
-}
-#endif
-
-
 static ComboSizeList build_combos(ItemSizeList const& item_sizes, f32 max_capacity)
 {
 	ComboSizeList list;
