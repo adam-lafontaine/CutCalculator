@@ -1,4 +1,5 @@
 #include "cut_calculator.hpp"
+#include "profiler.hpp"
 
 #include <cstdio>
 #include <algorithm>
@@ -369,7 +370,12 @@ int main()
 	//test_easy();
 	//test_extra_containers();
 	//test_extra_items();
-	test_many_items();
+
+	perf::profile_init();
+
+	PROFILE(test_many_items());
+
+	perf::profile_report();
 
 	return 0;
 }

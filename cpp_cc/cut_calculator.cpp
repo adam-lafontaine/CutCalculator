@@ -351,6 +351,8 @@ namespace
 
 		f32 size_at(u32 offset) const { return data[id_at(offset)].size; }
 
+		ComboSizePair data_at(u32 offset) const { return data[id_at(offset)]; }
+
 		u32 length() const { return n_data_ids; }
 
 		std::vector<ComboSizePair>& get_data() { return data; }
@@ -438,7 +440,7 @@ namespace
 		{
 			auto begin = sorted_data_ids.begin();
 			auto end = sorted_data_ids.end();
-			std::sort(begin, end, [&](u64 a, u64 b) { return data[b] < data[a]; });
+			std::sort(begin, end, [&](u64 a, u64 b) { return data[b] > data[a]; });
 		}
 
 
@@ -546,7 +548,8 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 
 		for (u32 cap_offset = 0; cap_offset < capacities.length(); ++cap_offset)
 		{
-			auto diff = capacities.value_at(cap_offset) - size;
+			auto cap = capacities.value_at(cap_offset);
+			auto diff = cap - size;
 
 			if (diff < 0.0f || diff >= best_diff)
 			{
@@ -568,6 +571,37 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 }
 
 
+static void print_binary(combo_bin bin, u32 len)
+{
+	u64 p = 1 << (len - 1);
+	for (u32 i = 0; i < len; ++i, p = p >> 1)
+	{
+		if (p & bin)
+		{
+			printf("1");
+		}
+		else
+		{
+			printf("0");
+		}
+	}
+}
+
+
+static void print_combos(ComboSizeList const& combos, u32 len)
+{
+	auto last = combos.length() - 1;
+	auto first = last > 9 ? last - 9 : 0;
+
+	for (int i = last; i >= first; --i)
+	{
+		auto combo = combos.data_at(i);
+		print_binary(combo.bin, len);
+		printf(", %f\n", combo.size);
+	}
+}
+
+
 namespace cut_calculator
 {
 	SortResult sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff)
@@ -579,14 +613,14 @@ namespace cut_calculator
 		item_list.sort();
 
 		container_list.set_data(container_capacities);
-		container_list.sort();
-
-		
+		container_list.sort();		
 
 		auto combo_list = build_combos(item_list, container_list.max_value());
 
 		auto const n_items = item_list.length();
 		auto const n_containers = container_list.length();
+
+		print_combos(combo_list, n_items);
 
 		std::vector<int> container_combos(n_containers, -1);
 
@@ -601,6 +635,8 @@ namespace cut_calculator
 
 			auto capacity_id = container_list.id_at(match.capacity_offset);
 			auto combo_id = combo_list.id_at(match.combo_offset);
+
+			printf("%u/%u/%u\n", combo_list.length(), capacity_id, combo_id);
 
 			container_combos[capacity_id] = combo_id;
 

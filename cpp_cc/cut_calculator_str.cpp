@@ -399,6 +399,8 @@ namespace
 
 		f32 size_at(u32 offset) const { return data[id_at(offset)].size; }
 
+		ComboSizePair data_at(u32 offset) const { return data[id_at(offset)]; }
+
 		u32 length() const { return n_data_ids; }
 
 		std::vector<ComboSizePair>& get_data() { return data; }
@@ -588,7 +590,8 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 
 		for (u32 cap_offset = 0; cap_offset < capacities.length(); ++cap_offset)
 		{
-			auto diff = capacities.value_at(cap_offset) - size;
+			auto cap = capacities.value_at(cap_offset);
+			auto diff = cap - size;
 
 			if (diff < 0.0f || diff >= best_diff)
 			{
@@ -610,6 +613,19 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 }
 
 
+static void print_combos(ComboSizeList const& combos)
+{
+	auto last = combos.length() - 1;
+	auto first = last > 9 ? last - 9 : 0;
+
+	for (int i = last; i >= first; --i)
+	{
+		auto combo = combos.data_at(i);
+		printf("%s, %f\n", combo.bin.c_str(), combo.size);
+	}
+}
+
+
 
 namespace cut_calculator
 {
@@ -625,6 +641,7 @@ namespace cut_calculator
 		container_list.sort();
 
 		auto combo_list = build_combos(item_list, container_list.max_value());
+		print_combos(combo_list);
 
 		auto const n_items = item_list.length();
 		auto const n_containers = container_list.length();
@@ -641,6 +658,8 @@ namespace cut_calculator
 
 			auto capacity_id = container_list.id_at(match.capacity_offset);
 			auto combo_id = combo_list.id_at(match.combo_offset);
+
+			printf("%u/%u/%u\n", combo_list.length(), capacity_id, combo_id);
 
 			container_combos[capacity_id] = combo_id;
 

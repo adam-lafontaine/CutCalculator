@@ -18,12 +18,18 @@
     <ClCompile Include="..\..\cpp_cc\test_ops_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cpp_cc\cc_impl.cpp">
+    <ClCompile Include="..\..\cpp_cc\profiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp_cc\cut_calculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\cpp_cc\cut_calculator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp_cc\profiler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
