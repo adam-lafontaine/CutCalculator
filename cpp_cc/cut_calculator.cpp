@@ -317,7 +317,7 @@ namespace
 			for (int i = last; i >= 0; --i)
 			{
 				auto offset = (u32)i;
-				auto& combo = data[id_at(offset)].bin;
+				auto combo = data[id_at(offset)].bin;
 
 				if (has_common_bit(combo, bin))
 				{
@@ -339,7 +339,7 @@ namespace
 			for (int i = last; i >= 0; --i)
 			{
 				auto offset = (u32)i;
-				auto size = data[id_at(offset)].size;
+				auto size = size_at(offset);
 
 				if (size > max_capacity)
 				{

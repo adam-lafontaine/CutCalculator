@@ -131,7 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\cpp_cc\cut_calculator.cpp" />
+    <ClCompile Include="..\..\cpp_cc\cc_impl.cpp" />
     <ClCompile Include="..\..\cpp_cc\test_ops_main.cpp" />
   </ItemGroup>
   <ItemGroup>

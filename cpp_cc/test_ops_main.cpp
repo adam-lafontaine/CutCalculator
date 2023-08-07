@@ -112,9 +112,9 @@ static bool test_container_capacities(std::vector<f32> const& containers, cc::So
 			printf("container_capacities: bad capacity\n");
 			return false;
 		}
-
-		return true;
 	}
+
+	return true;
 }
 
 
