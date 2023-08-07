@@ -4,3 +4,12 @@ Profile Report:
 
 Profile Report:
 2.13e+09: test_many_items() x 1
+
+Profile Report:
+2.04e+09: test_many_items() x 1
+
+Profile Report:
+8.23e+10: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+8.02e+08: cc::sort(item_sizes, container_capacities) x 1

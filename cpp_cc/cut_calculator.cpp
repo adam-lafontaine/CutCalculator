@@ -3,16 +3,17 @@
 #include <algorithm>
 #include <numeric>
 #include <cassert>
-#include <cstdio>
+//#include <cstdio>
 
 
 using combo_bin = u64;
 
-constexpr combo_bin zero_binary = 0;
+constexpr combo_bin binary_zero = 0;
+constexpr combo_bin binary_one = 0;
+
+constexpr u64 binary_last = binary_zero - 1;
 
 constexpr u64 mask = ((u64)1 << 4) - 1;
-
-constexpr u64 last = (u64)0 - 1;
 
 
 static inline combo_bin combo_mask(u32 len)
@@ -310,23 +311,6 @@ namespace
 		}
 
 
-		void remove_common(combo_bin bin)
-		{
-			int last = (int)n_data_ids - 1;
-
-			for (int i = last; i >= 0; --i)
-			{
-				auto offset = (u32)i;
-				auto combo = data[id_at(offset)].bin;
-
-				if (has_common_bit(combo, bin))
-				{
-					remove_at(offset);
-				}
-			}
-		}
-
-
 		void remove_large(f32 max_capacity)
 		{
 			if (max_capacity <= 0.0f)
@@ -351,7 +335,7 @@ namespace
 
 		f32 size_at(u32 offset) const { return data[id_at(offset)].size; }
 
-		ComboSizePair data_at(u32 offset) const { return data[id_at(offset)]; }
+		combo_bin combo_at(u32 offset) const { return data[id_at(offset)].bin; }
 
 		u32 length() const { return n_data_ids; }
 
@@ -512,7 +496,7 @@ static ComboSizeList build_combos(ItemSizeList const& item_sizes, f32 max_capaci
 	ComboSizeList list;
 
 	f32 combo_size = 0.0f;
-	auto combo = (combo_bin)1;
+	auto combo = binary_one;
 	auto mask = combo_mask(item_sizes.length());
 
 	while (has_bit(combo))
@@ -533,7 +517,7 @@ static ComboSizeList build_combos(ItemSizeList const& item_sizes, f32 max_capaci
 }
 
 
-static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapacityList const& capacities, f32 acc_diff = 0.0f)
+static ComboCapacityMatch best_match(ComboSizeList const& combos, combo_bin excluded_items, ContainerCapacityList const& capacities, f32 acc_diff = 0.0f)
 {
 	ComboCapacityMatch match{};
 
@@ -544,6 +528,13 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 	for (int i = last; i >= 0; --i)
 	{
 		u32 combo_offset = (u32)i;
+		auto combo = combos.combo_at(combo_offset);
+
+		if (has_common_bit(combo, excluded_items))
+		{
+			continue;
+		}
+
 		auto size = combos.size_at(combo_offset);
 
 		for (u32 cap_offset = 0; cap_offset < capacities.length(); ++cap_offset)
@@ -571,35 +562,35 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 }
 
 
-static void print_binary(combo_bin bin, u32 len)
-{
-	u64 p = 1 << (len - 1);
-	for (u32 i = 0; i < len; ++i, p = p >> 1)
-	{
-		if (p & bin)
-		{
-			printf("1");
-		}
-		else
-		{
-			printf("0");
-		}
-	}
-}
-
-
-static void print_combos(ComboSizeList const& combos, u32 len)
-{
-	auto last = combos.length() - 1;
-	auto first = last > 9 ? last - 9 : 0;
-
-	for (int i = last; i >= first; --i)
-	{
-		auto combo = combos.data_at(i);
-		print_binary(combo.bin, len);
-		printf(", %f\n", combo.size);
-	}
-}
+//static void print_binary(combo_bin bin, u32 len)
+//{
+//	u64 p = 1 << (len - 1);
+//	for (u32 i = 0; i < len; ++i, p = p >> 1)
+//	{
+//		if (p & bin)
+//		{
+//			printf("1");
+//		}
+//		else
+//		{
+//			printf("0");
+//		}
+//	}
+//}
+//
+//
+//static void print_combos(ComboSizeList const& combos, u32 len)
+//{
+//	auto last = combos.length() - 1;
+//	auto first = last > 9 ? last - 9 : 0;
+//
+//	for (int i = last; i >= first; --i)
+//	{
+//		auto combo = combos.data_at(i);
+//		print_binary(combo.bin, len);
+//		printf(", %f\n", combo.size);
+//	}
+//}
 
 
 namespace cut_calculator
@@ -620,23 +611,19 @@ namespace cut_calculator
 		auto const n_items = item_list.length();
 		auto const n_containers = container_list.length();
 
-		print_combos(combo_list, n_items);
-
 		std::vector<int> container_combos(n_containers, -1);
 
 		auto& combo_sizes = combo_list.get_data();		
 
-		auto items_bin = (combo_bin)0;
+		auto items_bin = binary_zero;
 		auto items_mask = combo_mask(n_items);
 
 		while (combo_list.length() && container_list.length())
 		{
-			auto match = best_match(combo_list, container_list, acc_diff);
+			auto match = best_match(combo_list, items_bin, container_list, acc_diff);
 
 			auto capacity_id = container_list.id_at(match.capacity_offset);
 			auto combo_id = combo_list.id_at(match.combo_offset);
-
-			printf("%u/%u/%u\n", combo_list.length(), capacity_id, combo_id);
 
 			container_combos[capacity_id] = combo_id;
 
@@ -644,7 +631,6 @@ namespace cut_calculator
 			combine_binary(items_bin, item_combo);
 
 			container_list.remove_at(match.capacity_offset);
-			combo_list.remove_common(item_combo);
 			combo_list.remove_large(container_list.max_value());
 		}
 

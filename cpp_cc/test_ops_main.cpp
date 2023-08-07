@@ -353,7 +353,7 @@ static void test_many_items()
 		33, 39, 45,
 	};
 
-	auto result = cc::sort(item_sizes, container_capacities);
+	auto result = PROFILE( cc::sort(item_sizes, container_capacities) );
 
 	test_sort_results(item_sizes, container_capacities, result);
 	print(item_sizes, container_capacities, result);
@@ -373,7 +373,7 @@ int main()
 
 	perf::profile_init();
 
-	PROFILE(test_many_items());
+	test_many_items();
 
 	perf::profile_report();
 
