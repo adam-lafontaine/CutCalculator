@@ -524,7 +524,7 @@ namespace cut_calculator
 
 		SortResult result;
 
-		while (items_bin != bin::last && container_list.length())
+		while (items_bin != items_mask && container_list.length())
 		{
 			auto match = best_match(item_list, container_list, items_bin);
 
