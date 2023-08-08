@@ -382,9 +382,9 @@ int main()
 		return 1;
 	}
 
-	//test_easy();
-	//test_extra_containers();
-	//test_extra_items();
+	/*test_easy();
+	test_extra_containers();
+	test_extra_items();*/
 
 	perf::profile_init();
 

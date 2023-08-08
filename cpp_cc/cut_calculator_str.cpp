@@ -346,7 +346,7 @@ namespace
 			auto end = sorted_data_ids.end();
 			std::iota(begin, end, 0);
 
-			n_data_ids = (u32)capacities.size();
+			n_data_ids = (u32)data.size();
 		}
 
 
@@ -393,6 +393,8 @@ namespace
 		std::vector<f32> data;
 		std::vector<u32> sorted_data_ids;
 
+		u32 n_data_ids = 0;
+
 	public:
 
 		void set_data(std::vector<f32> const& sizes)
@@ -402,6 +404,8 @@ namespace
 			auto begin = sorted_data_ids.begin();
 			auto end = sorted_data_ids.end();
 			std::iota(begin, end, 0);
+
+			n_data_ids = (u32)data.size();
 		}
 
 
@@ -455,7 +459,32 @@ namespace
 		}
 
 
-		u32 length() const { return (u32)sorted_data_ids.size(); }
+		void remove_at(u32 offset)
+		{
+			auto begin = sorted_data_ids.begin();
+			auto end = begin + n_data_ids;
+			auto data_id = id_at(offset);
+
+			std::ignore = std::remove(begin, end, data_id);
+			--n_data_ids;
+		}
+
+
+		void remove_combo_items(combo_bin const& bin)
+		{
+			auto last = (int)bin.length() - 1;
+
+			for (int i = last; i >= 0; --i)
+			{
+				if (bin[i] == bin::CC_TRUE)
+				{
+					remove_at(i);
+				}
+			}
+		}
+
+
+		u32 length() const { return n_data_ids; }
 	};
 
 
@@ -469,7 +498,7 @@ namespace
 }
 
 
-static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacityList const& capacities, combo_bin const& excluded)
+static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacityList const& capacities)
 {
 	ComboCapacityMatch match{};
 
@@ -477,14 +506,11 @@ static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacit
 	auto max_capacity = capacities.max_value();
 	auto best_diff = capacities.max_value();
 	auto combo = bin::one(sizes.length());
+	match.combo = combo;
 
 	while (bin::has_bit(combo))
 	{
-		if (bin::has_common_bit(combo, excluded))
-		{
-			bin::skip_binary(combo);
-			continue;
-		}
+		
 
 		combo_size = sizes.combo_size(combo);
 		if (combo_size > max_capacity)
@@ -504,7 +530,7 @@ static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacit
 			}
 
 			best_diff = diff;
-			match.combo = combo;
+			std::copy(combo.begin(), combo.end(), match.combo.begin());
 			match.capacity_offset = cap_offset;
 		}
 
@@ -532,14 +558,14 @@ namespace cut_calculator
 		auto const n_items = item_list.length();
 		auto const n_containers = container_list.length();
 
-		auto items_bin = bin::zero(n_items);
+		//auto items_bin = bin::zero(n_items);
 		auto last_bin = bin::last(n_items);
 
 		SortResult result;
 
-		while (items_bin != last_bin && container_list.length())
+		while (item_list.length() && container_list.length())
 		{
-			auto match = best_match(item_list, container_list, items_bin);
+			auto match = best_match(item_list, container_list);
 
 			auto capacity_id = container_list.id_at(match.capacity_offset);
 
@@ -552,13 +578,19 @@ namespace cut_calculator
 
 			result.sorted.push_back(std::move(res));
 
-			bin::combine_binary(items_bin, match.combo);
+			//bin::combine_binary(items_bin, match.combo);
 
+			item_list.remove_combo_items(match.combo);
 			container_list.remove_at(match.capacity_offset);
 		}		
 
-		bin::flip_all_bits(items_bin);
-		result.unsorted_item_ids = item_list.combo_items(items_bin);
+		//bin::flip_all_bits(items_bin);
+		//result.unsorted_item_ids = item_list.combo_items(items_bin);
+
+		for (u32 i = 0; i < item_list.length(); ++i)
+		{
+			result.unsorted_item_ids.push_back(item_list.id_at(i));
+		}
 
 		for (u32 i = 0; i < container_list.length(); ++i)
 		{
