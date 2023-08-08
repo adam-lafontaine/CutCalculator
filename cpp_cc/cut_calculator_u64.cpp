@@ -239,8 +239,6 @@ namespace bin
 }
 
 
-
-
 namespace cut_calculator
 {
 	bool test_binary_ops()
@@ -473,8 +471,9 @@ namespace
 	{
 	public:
 		u32 capacity_offset = 0;
-
 		combo_bin combo = bin::zero;
+
+		bool success = false;
 	};
 }
 
@@ -482,6 +481,7 @@ namespace
 static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacityList const& capacities)
 {
 	ComboCapacityMatch match{};
+	match.success = false;
 
 	f32 combo_size = 0.0f;
 	auto max_capacity = capacities.max_value();
@@ -511,6 +511,7 @@ static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacit
 			best_diff = diff;
 			match.combo = combo;
 			match.capacity_offset = cap_offset;
+			match.success = true;
 		}
 
 		bin::next_binary(combo, mask);
@@ -538,6 +539,10 @@ namespace cut_calculator
 		while (item_list.length() && container_list.length())
 		{
 			auto match = best_match(item_list, container_list);
+			if (!match.combo)
+			{
+				break;
+			}
 
 			auto capacity_id = container_list.id_at(match.capacity_offset);
 

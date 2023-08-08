@@ -306,6 +306,28 @@ static void test_extra_items()
 }
 
 
+static void test_unsortable()
+{
+	std::vector<f32> container_capacities
+	{
+		39, 22, 7, 38
+	};
+
+	std::vector<f32> item_sizes
+	{
+		13, 13, 13,
+		7,
+		11, 11,
+		50
+	};
+
+	auto result = cc::sort(item_sizes, container_capacities);
+
+	test_sort_results(item_sizes, container_capacities, result);
+	print(item_sizes, container_capacities, result);
+}
+
+
 static void test_many_items()
 {
 	std::vector<f32> container_capacities
@@ -382,15 +404,16 @@ int main()
 		return 1;
 	}
 
-	/*test_easy();
+	test_easy();
 	test_extra_containers();
-	test_extra_items();*/
+	test_extra_items();
+	test_unsortable();
 
-	perf::profile_init();
+	/*perf::profile_init();
 
 	test_many_items();
 
-	perf::profile_report();
+	perf::profile_report();*/
 
 	return 0;
 }
