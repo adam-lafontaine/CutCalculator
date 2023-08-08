@@ -539,7 +539,7 @@ namespace cut_calculator
 		while (item_list.length() && container_list.length())
 		{
 			auto match = best_match(item_list, container_list);
-			if (!match.combo)
+			if (!match.success)
 			{
 				break;
 			}
