@@ -14,8 +14,6 @@ namespace bin
 	constexpr combo_bin zero = 0;
 	constexpr combo_bin one = 1;
 
-	constexpr combo_bin last = ~zero;
-
 
 	static inline combo_bin combo_mask(u32 len)
 	{
@@ -375,12 +373,9 @@ namespace
 			auto len = (u32)data.size();
 
 			u64 p = 1;
-			for (u32 i = 0; i < len; ++i, p *= 2)
+			for (u32 i = 0; i < len; ++i, p = p << (u64)1)
 			{
-				if (p & bin)
-				{
-					size += value_at(i);
-				}
+				size += ((f32)(int)(bool)(p & bin)) * value_at(i);
 			}
 
 			return size;
@@ -395,7 +390,7 @@ namespace
 			auto len = (u32)data.size();
 
 			u64 p = 1;
-			for (u32 i = 0; i < len; ++i, p *= 2)
+			for (u32 i = 0; i < len; ++i, p = p << (u64)1)
 			{
 				if (p & bin)
 				{
@@ -416,12 +411,12 @@ namespace
 	public:
 		u32 capacity_offset = 0;
 
-		combo_bin combo = bin::last;
-		f32 combo_size = 0.0f;
+		combo_bin combo = bin::zero;
+		//f32 combo_size = 0.0f;
 	};
 
 
-	static void print_binary(combo_bin bin, u32 len)
+	/*static void print_binary(combo_bin bin, u32 len)
 	{
 		auto p = bin::one << (len - 1);
 		for (u32 i = 0; i < len; ++i, p = p >> 1)
@@ -435,7 +430,7 @@ namespace
 				printf("0");
 			}
 		}
-	}
+	}*/
 
 
 	/*static void print_combos(ComboSizeList const& combos, u32 len)
@@ -490,7 +485,7 @@ static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacit
 
 			best_diff = diff;
 			match.combo = combo;
-			match.combo_size = combo_size;
+			//match.combo_size = combo_size;
 			match.capacity_offset = cap_offset;
 		}
 
@@ -517,14 +512,12 @@ namespace cut_calculator
 		auto const n_items = item_list.length();
 		auto const n_containers = container_list.length();
 
-		std::vector<int> container_ids(n_containers, -1);
-
 		auto items_bin = bin::zero;
 		auto items_mask = bin::combo_mask(n_items);
 
 		SortResult result;
 
-		while (items_bin != items_mask && container_list.length())
+		while (items_bin < items_mask && container_list.length())
 		{
 			auto match = best_match(item_list, container_list, items_bin);
 
@@ -534,7 +527,8 @@ namespace cut_calculator
 			res.container_id = capacity_id;
 			res.container_capacity = container_capacities[capacity_id];
 			res.item_ids = item_list.combo_items(match.combo);
-			res.item_size = match.combo_size;
+			
+			res.item_size = item_list.combo_size(match.combo);// match.combo_size;
 
 			result.sorted.push_back(std::move(res));
 

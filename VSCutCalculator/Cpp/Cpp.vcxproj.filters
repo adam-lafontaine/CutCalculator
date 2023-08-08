@@ -21,7 +21,7 @@
     <ClCompile Include="..\..\cpp_cc\profiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cpp_cc\cut_calculator.cpp">
+    <ClCompile Include="..\..\cpp_cc\cc_impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

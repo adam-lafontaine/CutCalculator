@@ -9,283 +9,300 @@
 
 
 using cc_bit = char;
-constexpr cc_bit CC_FALSE = '0';
-constexpr cc_bit CC_TRUE = '1';
+
 
 using combo_bin = std::basic_string<cc_bit>;
 
 
-
-static bool has_bit(combo_bin const& bin)
+namespace bin
 {
-	// bin > 0;
+	constexpr cc_bit CC_FALSE = '0';
+	constexpr cc_bit CC_TRUE = '1';
 
-	for (auto c : bin)
+	static bool has_bit(combo_bin const& bin)
 	{
-		if (c == CC_TRUE)
+		// bin > 0;
+
+		for (auto c : bin)
 		{
-			return true;
+			if (c == CC_TRUE)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	static bool has_common_bit(combo_bin const& bin1, combo_bin const& bin2)
+	{
+		// bin_1 & bin_2;
+
+		auto const last_1 = bin1.size() - 1;
+		auto const last_2 = bin2.size() - 1;
+
+		for (size_t i = 0; i <= last_1 && i <= last_2; ++i)
+		{
+			if (bin1[last_1 - i] == CC_TRUE && bin2[last_2 - i] == CC_TRUE)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	static void flip_bit(combo_bin& bin, u32 bit)
+	{
+		// bin = (1 << bit) ^ bin;
+
+		bin[bit] = bin[bit] == CC_TRUE ? CC_FALSE : CC_TRUE;
+	}
+
+
+	static combo_bin zero(u32 len)
+	{
+		combo_bin bin(len, CC_FALSE);
+		return bin;
+	}
+
+
+	static combo_bin one(u32 len)
+	{
+		combo_bin bin(len, CC_FALSE);
+		bin.back() = CC_TRUE;
+
+		return bin;
+	}
+
+
+	static void next_binary(combo_bin& bin)
+	{
+		// bin += 1;
+
+		auto const last = (int)bin.length() - 1;
+
+		for (int i = last; i >= 0; --i)
+		{
+			flip_bit(bin, i);
+			if (bin[i] == CC_TRUE)
+			{
+				break;
+			}
 		}
 	}
 
-	return false;
-}
 
-
-static bool has_common_bit(combo_bin const& bin1, combo_bin const& bin2)
-{
-	// bin_1 & bin_2;
-
-	auto const last_1 = bin1.size() - 1;
-	auto const last_2 = bin2.size() - 1;
-
-	for (size_t i = 0; i <= last_1 && i <= last_2; ++i)
+	static void skip_binary(combo_bin& bin)
 	{
-		if (bin1[last_1 - i] == CC_TRUE && bin2[last_2 - i] == CC_TRUE)
-		{
-			return true;
-		}
-	}
+		// bin = (bin - 1) | bin + 1;
 
-	return false;
-}
+		auto const last = (int)bin.length() - 1;
 
+		bin[last] = CC_TRUE;
 
-static void flip_bit(combo_bin& bin, u32 bit)
-{
-	// bin = (1 << bit) ^ bin;
-
-	bin[bit] = bin[bit] == CC_TRUE ? CC_FALSE : CC_TRUE;
-}
-
-
-static combo_bin zero_binary(u32 len)
-{
-	combo_bin bin(len, CC_FALSE);
-	return bin;
-}
-
-
-static combo_bin first_binary(u32 len)
-{
-	combo_bin bin(len, CC_FALSE);
-	bin.back() = CC_TRUE;
-
-	return bin;
-}
-
-
-static void next_binary(combo_bin& bin)
-{
-	// bin += 1;
-
-	auto const last = (int)bin.length() - 1;
-
-	for (int i = last; i >= 0; --i)
-	{
-		flip_bit(bin, i);
-		if (bin[i] == CC_TRUE)
-		{
-			break;
-		}
-	}
-}
-
-
-static void skip_binary(combo_bin& bin)
-{
-	// bin = (bin - 1) | bin + 1;
-
-	auto const last = (int)bin.length() - 1;
-
-	bin[last] = CC_TRUE;
-
-	for (int i = last - 1; i >= 0 && bin[i] == CC_FALSE; --i)
-	{
-		bin[i] = CC_TRUE;
-	}
-
-	next_binary(bin);
-}
-
-
-static void combine_binary(combo_bin& bin, combo_bin const& other)
-{
-	// bin = bin | other;
-
-	auto const last = (int)bin.length() - 1;
-
-	for (u32 i = 0; i < (u32)bin.length(); ++i)
-	{
-		if (other[i] == CC_TRUE || bin[i] == CC_TRUE)
+		for (int i = last - 1; i >= 0 && bin[i] == CC_FALSE; --i)
 		{
 			bin[i] = CC_TRUE;
 		}
+
+		next_binary(bin);
 	}
+
+
+	static void combine_binary(combo_bin& bin, combo_bin const& other)
+	{
+		// bin = bin | other;
+
+		auto const last = (int)bin.length() - 1;
+
+		for (u32 i = 0; i < (u32)bin.length(); ++i)
+		{
+			if (other[i] == CC_TRUE || bin[i] == CC_TRUE)
+			{
+				bin[i] = CC_TRUE;
+			}
+		}
+	}
+
+
+	static void flip_all_bits(combo_bin& bin)
+	{
+		// bin = ~bin;
+
+		for (auto& bit : bin)
+		{
+			bit = bit == CC_TRUE ? CC_FALSE : CC_TRUE;
+		}
+	}
+
+
+	static combo_bin last(u32 len)
+	{
+		auto bin = zero(len);
+		flip_all_bits(bin);
+
+		return bin;
+	}
+
+
+	static bool test_has_bit()
+	{
+		bool result = true;
+
+		combo_bin source[] = { "01110", "000", "1010110", "0000000", "0001000" };
+		bool expected[]    = { true,    false, true,      false,     true };
+		constexpr u32 N = 5;
+
+		for (u32 i = 0; i < N; ++i)
+		{
+			auto& src = source[i];
+			auto exp = expected[i];
+			result &= has_bit(src) == exp;
+		}
+
+		if (!result)
+		{
+			printf("test_has_bit: FAIL\n");
+		}
+
+		return result;
+	}
+
+
+	static bool test_has_common_bit()
+	{
+		bool result = true;
+
+		combo_bin source1[] = { "01110", "100", "1010110", "0001000", "0001000", "010101010101010101" };
+		combo_bin source2[] = { "01010", "010", "0101010", "1111111", "0001000", "101010101010101010" };
+		bool expected[]     = { true,    false, true,      true,      true,      false };
+		constexpr u32 N = 6;
+
+		for (u32 i = 0; i < N; ++i)
+		{
+			auto& src1 = source1[i];
+			auto& src2 = source2[i];
+			auto exp = expected[i];
+			result &= has_common_bit(src1, src2) == exp;
+		}
+
+		if (!result)
+		{
+			printf("test_has_common_bit: FAIL\n");
+		}
+
+		return result;
+	}
+
+
+	static bool test_next_binary()
+	{
+		bool result = true;
+
+		combo_bin source[]   = { "01110", "000", "101", "1010110", "0000000", "01011111", "1111111111" };
+		combo_bin expected[] = { "01111", "001", "110", "1010111", "0000001", "01100000", "0000000000" };
+		constexpr u32 N = 7;
+
+		for (u32 i = 0; i < N; ++i)
+		{
+			auto& src = source[i];
+			auto& exp = expected[i];
+			next_binary(src);
+			result &= src == exp;
+		}
+
+		if (!result)
+		{
+			printf("test_next_binary: FAIL\n");
+		}
+
+		return result;
+	}
+
+
+	static bool test_skip_binary()
+	{
+		bool result = true;
+
+		combo_bin source[]   = { "01110", "01111", "11001000", "1010110", "0000100", "01011111", "1111111111" };
+		combo_bin expected[] = { "10000", "10000", "11010000", "1011000", "0001000", "01100000", "0000000000" };
+		constexpr u32 N = 7;
+
+		for (u32 i = 0; i < N; ++i)
+		{
+			auto& src = source[i];
+			auto& exp = expected[i];
+			skip_binary(src);
+			result &= src == exp;
+		}
+
+		if (!result)
+		{
+			printf("test_skip_binary: FAIL\n");
+		}
+
+		return result;
+	}
+
+
+	static bool test_combine_binary()
+	{
+		bool result = true;
+
+		combo_bin source1[]  = { "01110", "100", "1010110", "0001000", "0001000", "010101010101010101" };
+		combo_bin source2[]  = { "01010", "010", "0101010", "1111111", "0001000", "101010101010101010" };
+		combo_bin expected[] = { "01110", "110", "1111110", "1111111", "0001000", "111111111111111111" };
+		constexpr u32 N = 6;
+
+		for (u32 i = 0; i < N; ++i)
+		{
+			auto& src1 = source1[i];
+			auto& src2 = source2[i];
+			auto& exp = expected[i];
+			combine_binary(src1, src2);
+			result &= src1 == exp;
+		}
+
+		if (!result)
+		{
+			printf("test_combine_binary: FAIL\n");
+		}
+
+		return result;
+	}
+
+
+	static bool test_flip_all_bits()
+	{
+		bool result = true;
+
+		combo_bin source[]   = { "01110", "000", "101", "1010110", "0100000", "01011111", "1111111111" };
+		combo_bin expected[] = { "10001", "111", "010", "0101001", "1011111", "10100000", "0000000000" };
+		constexpr u32 N = 7;
+
+		for (u32 i = 0; i < N; ++i)
+		{
+			auto& src = source[i];
+			auto& exp = expected[i];
+			flip_all_bits(src);
+			result &= src == exp;
+		}
+
+		if (!result)
+		{
+			printf("test_flip_all_bits: FAIL\n");
+		}
+
+		return result;
+	}
+
 }
 
 
-static void flip_all_bits(combo_bin& bin)
-{
-	// bin = ~bin;
 
-	for (auto& bit : bin)
-	{
-		bit = bit == CC_TRUE ? CC_FALSE : CC_TRUE;
-	}
-}
-
-
-static bool test_has_bit()
-{
-	bool result = true;
-
-	combo_bin source[] = { "01110", "000", "1010110", "0000000", "0001000" };
-	bool expected[]    = { true,    false, true,      false,     true };
-	constexpr u32 N = 5;
-
-	for (u32 i = 0; i < N; ++i)
-	{
-		auto& src = source[i];
-		auto exp = expected[i];
-		result &= has_bit(src) == exp;
-	}
-
-	if (!result)
-	{
-		printf("test_has_bit: FAIL\n");
-	}
-
-	return result;
-}
-
-
-static bool test_has_common_bit()
-{
-	bool result = true;
-
-	combo_bin source1[] = { "01110", "100", "1010110", "0001000", "0001000", "010101010101010101" };
-	combo_bin source2[] = { "01010", "010", "0101010", "1111111", "0001000", "101010101010101010" };
-	bool expected[]     = { true,    false, true,      true,      true,      false };
-	constexpr u32 N = 6;
-
-	for (u32 i = 0; i < N; ++i)
-	{
-		auto& src1 = source1[i];
-		auto& src2 = source2[i];
-		auto exp = expected[i];
-		result &= has_common_bit(src1, src2) == exp;
-	}
-
-	if (!result)
-	{
-		printf("test_has_common_bit: FAIL\n");
-	}
-
-	return result;
-}
-
-
-static bool test_next_binary()
-{
-	bool result = true;
-
-	combo_bin source[]   = { "01110", "000", "101", "1010110", "0000000", "01011111", "1111111111" };
-	combo_bin expected[] = { "01111", "001", "110", "1010111", "0000001", "01100000", "0000000000" };
-	constexpr u32 N = 7;
-
-	for (u32 i = 0; i < N; ++i)
-	{
-		auto& src = source[i];
-		auto& exp = expected[i];
-		next_binary(src);
-		result &= src == exp;
-	}
-
-	if (!result)
-	{
-		printf("test_next_binary: FAIL\n");
-	}
-
-	return result;
-}
-
-
-static bool test_skip_binary()
-{
-	bool result = true;
-
-	combo_bin source[]   = { "01110", "01111", "11001000", "1010110", "0000100", "01011111", "1111111111" };
-	combo_bin expected[] = { "10000", "10000", "11010000", "1011000", "0001000", "01100000", "0000000000" };
-	constexpr u32 N = 7;
-
-	for (u32 i = 0; i < N; ++i)
-	{
-		auto& src = source[i];
-		auto& exp = expected[i];
-		skip_binary(src);
-		result &= src == exp;
-	}
-
-	if (!result)
-	{
-		printf("test_skip_binary: FAIL\n");
-	}
-
-	return result;
-}
-
-
-static bool test_combine_binary()
-{
-	bool result = true;
-
-	combo_bin source1[]  = { "01110", "100", "1010110", "0001000", "0001000", "010101010101010101" };
-	combo_bin source2[]  = { "01010", "010", "0101010", "1111111", "0001000", "101010101010101010" };
-	combo_bin expected[] = { "01110", "110", "1111110", "1111111", "0001000", "111111111111111111" };
-	constexpr u32 N = 6;
-
-	for (u32 i = 0; i < N; ++i)
-	{
-		auto& src1 = source1[i];
-		auto& src2 = source2[i];
-		auto& exp = expected[i];
-		combine_binary(src1, src2);
-		result &= src1 == exp;
-	}
-
-	if (!result)
-	{
-		printf("test_combine_binary: FAIL\n");
-	}
-
-	return result;
-}
-
-
-static bool test_flip_all_bits()
-{
-	bool result = true;
-
-	combo_bin source[]   = { "01110", "000", "101", "1010110", "0100000", "01011111", "1111111111" };
-	combo_bin expected[] = { "10001", "111", "010", "0101001", "1011111", "10100000", "0000000000" };
-	constexpr u32 N = 7;
-
-	for (u32 i = 0; i < N; ++i)
-	{
-		auto& src = source[i];
-		auto& exp = expected[i];
-		flip_all_bits(src);
-		result &= src == exp;
-	}
-
-	if (!result)
-	{
-		printf("test_flip_all_bits: FAIL\n");
-	}
-
-	return result;
-}
 
 
 namespace cut_calculator
@@ -294,12 +311,12 @@ namespace cut_calculator
 	{
 		bool result = true;
 
-		result &= test_has_bit();
-		result &= test_has_common_bit();
-		result &= test_next_binary();
-		result &= test_skip_binary();
-		result &= test_combine_binary();
-		result &= test_flip_all_bits();
+		result &= bin::test_has_bit();
+		result &= bin::test_has_common_bit();
+		result &= bin::test_next_binary();
+		result &= bin::test_skip_binary();
+		result &= bin::test_combine_binary();
+		result &= bin::test_flip_all_bits();
 
 		if (result)
 		{
@@ -315,7 +332,7 @@ namespace cut_calculator
 
 namespace
 {
-	class ComboSizePair
+	/*class ComboSizePair
 	{
 	public:
 		combo_bin bin;
@@ -389,7 +406,7 @@ namespace
 		u32 length() const { return n_data_ids; }
 
 		std::vector<ComboSizePair>& get_data() { return data; }
-	};
+	};*/
 
 
 	class ContainerCapacityList
@@ -495,7 +512,7 @@ namespace
 
 			for (u32 i = 0; i < bin.length(); ++i)
 			{
-				if (bin[i] == CC_TRUE)
+				if (bin[i] == bin::CC_TRUE)
 				{
 					size += value_at(i);
 				}
@@ -512,7 +529,7 @@ namespace
 
 			for (u32 i = 0; i < bin.length(); ++i)
 			{
-				if (bin[i] == CC_TRUE)
+				if (bin[i] == bin::CC_TRUE)
 				{
 					item_ids.push_back(id_at(i));
 				}
@@ -529,12 +546,14 @@ namespace
 	class ComboCapacityMatch
 	{
 	public:
-		u32 combo_offset = 0;
+		//u32 combo_offset = 0;
 		u32 capacity_offset = 0;
+
+		combo_bin combo;
 	};
 }
 
-
+/*
 static ComboSizeList build_combos(ItemSizeList const& item_sizes, f32 max_capacity)
 {
 	ComboSizeList list;
@@ -604,6 +623,7 @@ static ComboCapacityMatch best_match(ComboSizeList& combos, combo_bin const& exc
 
 	return match;
 }
+*/
 
 /*
 static void print_combos(ComboSizeList const& combos)
@@ -619,9 +639,108 @@ static void print_combos(ComboSizeList const& combos)
 }*/
 
 
+static ComboCapacityMatch best_match(ItemSizeList const& sizes, ContainerCapacityList const& capacities, combo_bin const& excluded)
+{
+	ComboCapacityMatch match{};
+
+	f32 combo_size = 0.0f;
+	auto max_capacity = capacities.max_value();
+	auto best_diff = capacities.max_value();
+	auto combo = bin::one(sizes.length());
+
+	while (bin::has_bit(combo))
+	{
+		if (bin::has_common_bit(combo, excluded))
+		{
+			bin::skip_binary(combo);
+			continue;
+		}
+
+		combo_size = sizes.combo_size(combo);
+		if (combo_size > max_capacity)
+		{
+			bin::skip_binary(combo);
+			continue;			
+		}
+
+		for (u32 cap_offset = 0; cap_offset < capacities.length(); ++cap_offset)
+		{
+			auto cap = capacities.value_at(cap_offset);
+			auto diff = cap - combo_size;
+
+			if (diff < 0.0f || diff > best_diff)
+			{
+				continue;
+			}
+
+			best_diff = diff;
+			match.combo = combo;
+			//match.combo_size = combo_size;
+			match.capacity_offset = cap_offset;
+		}
+
+		bin::next_binary(combo);
+	}
+
+	return match;
+}
+
+
 
 namespace cut_calculator
 {
+	SortResult sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities)
+	{
+		ItemSizeList item_list;
+		ContainerCapacityList container_list;
+
+		item_list.set_data(item_sizes);
+		item_list.sort();
+
+		container_list.set_data(container_capacities);
+		container_list.sort();
+
+		auto const n_items = item_list.length();
+		auto const n_containers = container_list.length();
+
+		auto items_bin = bin::zero(n_items);
+		auto last_bin = bin::last(n_items);
+
+		SortResult result;
+
+		while (items_bin != last_bin && container_list.length())
+		{
+			auto match = best_match(item_list, container_list, items_bin);
+
+			auto capacity_id = container_list.id_at(match.capacity_offset);
+
+			ContainerItems res{};
+			res.container_id = capacity_id;
+			res.container_capacity = container_capacities[capacity_id];
+			res.item_ids = item_list.combo_items(match.combo);
+			
+			res.item_size = item_list.combo_size(match.combo);
+
+			result.sorted.push_back(std::move(res));
+
+			bin::combine_binary(items_bin, match.combo);
+
+			container_list.remove_at(match.capacity_offset);
+		}		
+
+		bin::flip_all_bits(items_bin);
+		result.unsorted_item_ids = item_list.combo_items(items_bin);
+
+		for (u32 i = 0; i < container_list.length(); ++i)
+		{
+			result.unsorted_container_ids.push_back(container_list.id_at(i));
+		}
+
+		return result;
+	}
+
+
+	/*
 	SortResult sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff)
 	{
 		ItemSizeList item_list;
@@ -690,4 +809,5 @@ namespace cut_calculator
 
 		return result;
 	}
+	*/
 }
