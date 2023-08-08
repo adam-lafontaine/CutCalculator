@@ -42,7 +42,7 @@ namespace cut_calculator
 	};
 
 
-	SortResult sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities, f32 acc_diff = 0.0f);
+	SortResult sort(std::vector<f32> const& item_sizes, std::vector<f32> const& container_capacities);
 
 
 	bool test_binary_ops();

@@ -308,7 +308,7 @@ static void test_extra_items()
 
 static void test_many_items()
 {
-	/*std::vector<f32> container_capacities
+	std::vector<f32> container_capacities
 	{
 		75, 111, 147, 183, 219, 255
 	};
@@ -321,7 +321,7 @@ static void test_many_items()
 		13, 19, 25, 31, 37, 43,
 		14, 20, 26, 32, 38, 44,
 		15, 21, 27, 33, 39, 45,
-	};*/
+	};
 
 	/*std::vector<f32> container_capacities
 	{
@@ -338,7 +338,7 @@ static void test_many_items()
 		27, 33, 39, 45,
 	};*/
 
-	std::vector<f32> container_capacities
+	/*std::vector<f32> container_capacities
 	{
 		183, 219, 255
 	};
@@ -351,7 +351,7 @@ static void test_many_items()
 		31, 37, 43,
 		32, 38, 44,
 		33, 39, 45,
-	};
+	};*/
 
 	auto result = PROFILE( cc::sort(item_sizes, container_capacities) );
 

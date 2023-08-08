@@ -358,23 +358,6 @@ namespace
 		}
 
 
-		void remove_common(combo_bin const& bin)
-		{
-			int last = (int)n_data_ids - 1;
-
-			for (int i = last; i >= 0; --i)
-			{
-				auto offset = (u32)i;
-				auto& combo = data[id_at(offset)].bin;
-
-				if (has_common_bit(combo, bin))
-				{
-					remove_at(offset);
-				}
-			}
-		}
-
-
 		void remove_large(f32 max_capacity)
 		{
 			if (max_capacity <= 0.0f)
@@ -399,7 +382,9 @@ namespace
 
 		f32 size_at(u32 offset) const { return data[id_at(offset)].size; }
 
-		ComboSizePair data_at(u32 offset) const { return data[id_at(offset)]; }
+		ComboSizePair& data_at(u32 offset) { return data[id_at(offset)]; }
+
+		//combo_bin* combo_ptr_at(u32 offset) const { return &(data[id_at(offset)].bin); }
 
 		u32 length() const { return n_data_ids; }
 
@@ -575,7 +560,7 @@ static ComboSizeList build_combos(ItemSizeList const& item_sizes, f32 max_capaci
 }
 
 
-static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapacityList const& capacities, f32 acc_diff = 0.0f)
+static ComboCapacityMatch best_match(ComboSizeList& combos, combo_bin const& excluded_items, ContainerCapacityList const& capacities, f32 acc_diff = 0.0f)
 {
 	ComboCapacityMatch match{};
 
@@ -586,7 +571,15 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 	for (int i = last; i >= 0; --i)
 	{
 		u32 combo_offset = (u32)i;
-		auto size = combos.size_at(combo_offset);
+
+		auto& combo_data = combos.data_at(combo_offset);
+
+		if (has_common_bit(combo_data.bin, excluded_items))
+		{
+			continue;
+		}
+
+		auto size = combo_data.size; // combos.size_at(combo_offset);
 
 		for (u32 cap_offset = 0; cap_offset < capacities.length(); ++cap_offset)
 		{
@@ -612,7 +605,7 @@ static ComboCapacityMatch best_match(ComboSizeList const& combos, ContainerCapac
 	return match;
 }
 
-
+/*
 static void print_combos(ComboSizeList const& combos)
 {
 	auto last = combos.length() - 1;
@@ -620,10 +613,10 @@ static void print_combos(ComboSizeList const& combos)
 
 	for (int i = last; i >= first; --i)
 	{
-		auto combo = combos.data_at(i);
-		printf("%s, %f\n", combo.bin.c_str(), combo.size);
+		auto combo = combos.combo_ptr_at(i);
+		printf("%s, %f\n", combo, combo.size);
 	}
-}
+}*/
 
 
 
@@ -641,7 +634,6 @@ namespace cut_calculator
 		container_list.sort();
 
 		auto combo_list = build_combos(item_list, container_list.max_value());
-		print_combos(combo_list);
 
 		auto const n_items = item_list.length();
 		auto const n_containers = container_list.length();
@@ -654,7 +646,7 @@ namespace cut_calculator
 
 		while (combo_list.length() && container_list.length())
 		{
-			auto match = best_match(combo_list, container_list, acc_diff);
+			auto match = best_match(combo_list, items_bin, container_list, acc_diff);
 
 			auto capacity_id = container_list.id_at(match.capacity_offset);
 			auto combo_id = combo_list.id_at(match.combo_offset);
@@ -667,7 +659,7 @@ namespace cut_calculator
 			combine_binary(items_bin, item_combo);
 
 			container_list.remove_at(match.capacity_offset);
-			combo_list.remove_common(item_combo);
+			//combo_list.remove_common(item_combo);
 			combo_list.remove_large(container_list.max_value());
 		}
 		

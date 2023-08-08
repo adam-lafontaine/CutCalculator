@@ -13,3 +13,27 @@ Profile Report:
 
 Profile Report:
 8.02e+08: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+4.08e+07: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+5.22e+07: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+3.64e+07: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+4.23e+07: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+3.55e+07: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+2.77e+07: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+6.26e+07: cc::sort(item_sizes, container_capacities) x 1
+
+Profile Report:
+1.77e+11: cc::sort(item_sizes, container_capacities) x 1
