@@ -8,6 +8,7 @@
 using combo_bin = u64;
 
 
+
 namespace bin
 {
 	constexpr combo_bin zero = 0;
@@ -52,7 +53,7 @@ namespace bin
 
 	static void combine_binary(combo_bin& bin, combo_bin other)
 	{
-		bin = bin | other;
+		bin |= other;
 	}
 
 
@@ -110,7 +111,7 @@ namespace bin
 
 		combo_bin source1[] = { 0b01110, 0b100, 0b1010110, 0b0001000, 0b0001000, 0b010101010101010101 };
 		combo_bin source2[] = { 0b01010, 0b010, 0b0101010, 0b1111111, 0b0001000, 0b101010101010101010 };
-		bool expected[] = { true,    false, true,      true,      true,      false };
+		bool expected[]     = { true,    false, true,      true,      true,      false };
 		constexpr u32 N = 6;
 
 		for (u32 i = 0; i < N; ++i)
