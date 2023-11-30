@@ -13,11 +13,24 @@ namespace bin
 {
 	constexpr combo_bin zero = 0;
 	constexpr combo_bin one = 1;
+	constexpr u32 max_len = 64;
 
 
 	static inline combo_bin combo_mask(u32 len)
 	{
-		return (one << len) - one;
+		assert(len <= max_len);
+		//return (one << len) - one;
+
+		combo_bin mask = zero;
+
+		u32 i = 0;
+		combo_bin p = one;
+		for (; i < len; ++i, p = p << one)
+		{
+			mask |= p;
+		}
+
+		return mask;
 	}
 
 
@@ -381,6 +394,8 @@ namespace
 			data.set_data(sizes);
 			n_data_ids = data.length;
 
+			assert(n_data_ids <= bin::max_len);
+
 			sorted_data_ids.resize(n_data_ids);
 			auto begin = sorted_data_ids.begin();
 			auto end = sorted_data_ids.end();
@@ -431,10 +446,10 @@ namespace
 			std::vector<u32> item_ids;
 			item_ids.reserve(len);
 
-			u64 p = 1;
-			for (u32 i = 0; i < len; ++i, p = p << (u64)1)
+			auto p = bin::one;
+			for (u32 i = 0; i < len; ++i, p = p << bin::one)
 			{
-				if (p & bin)
+				if (bin::has_common_bit(p, bin))
 				{
 					item_ids.push_back(id_at(i));
 				}
@@ -449,8 +464,8 @@ namespace
 			f32 size = 0.0f;
 			auto len = length();
 
-			u64 p = 1;
-			for (u32 i = 0; i < len; ++i, p = p << (u64)1)
+			auto p = bin::one;
+			for (u32 i = 0; i < len; ++i, p = p << bin::one)
 			{
 				size += ((f32)(int)(bool)(p & bin)) * value_at(i);
 			}

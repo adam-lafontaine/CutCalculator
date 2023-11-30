@@ -2,17 +2,32 @@ const std = @import("std");
 const testing = std.testing;
 const assert = std.debug.assert;
 
-const combo_bin = u128;
+const combo_bin = u16;
 
 const Bin = struct
 {
     const zero: combo_bin = 0;
     const one: combo_bin = 1;
+    const max_len: u7 = 16;
 
     fn combo_mask(len: anytype) combo_bin 
     {    
-        assert(len <= 128);
-        return (one << @truncate(len)) - one;
+        assert(len <= max_len);
+        //return (one << @truncate(len)) -% one;
+
+        //const shift = @shlWithOverflow(one, @truncate(len));
+        //return shift[0] -% one;
+
+        var mask = zero;
+
+        var i: u8 = 0;
+        var p = one;
+        while (i < len) : ({ i += 1; p = p << one; })
+        {
+            mask |= p;
+        }
+
+        return mask;
     }
 
     fn has_bit(bin: combo_bin) bool 
@@ -88,8 +103,8 @@ test "has_common_bit"
 {
     var result: bool = true;
 
-    const source1  = [_]combo_bin{ 0b01110, 0b100, 0b1010110, 0b0001000, 0b0001000, 0b010101010101010101 };
-    const source2  = [_]combo_bin{ 0b01010, 0b010, 0b0101010, 0b1111111, 0b0001000, 0b101010101010101010 };
+    const source1  = [_]combo_bin{ 0b01110, 0b100, 0b1010110, 0b0001000, 0b0001000, 0b0101010101010101 };
+    const source2  = [_]combo_bin{ 0b01010, 0b010, 0b0101010, 0b1111111, 0b0001000, 0b1010101010101010 };
     const expected =      [_]bool{ true,    false, true,      true,      true,      false };
 
     for (source1, source2, expected) |src1, src2, exp|
@@ -159,9 +174,9 @@ test "combine_binary"
 {
     var result: bool = true;
 
-    var source1  =   [_]combo_bin{ 0b01110, 0b100, 0b1010110, 0b0001000, 0b0001000, 0b010101010101010101 };
-    const source2  = [_]combo_bin{ 0b01010, 0b010, 0b0101010, 0b1111111, 0b0001000, 0b101010101010101010 };
-    const expected = [_]combo_bin{ 0b01110, 0b110, 0b1111110, 0b1111111, 0b0001000, 0b111111111111111111 };
+    var source1  =   [_]combo_bin{ 0b01110, 0b100, 0b1010110, 0b0001000, 0b0001000, 0b0101010101010101 };
+    const source2  = [_]combo_bin{ 0b01010, 0b010, 0b0101010, 0b1111111, 0b0001000, 0b1010101010101010 };
+    const expected = [_]combo_bin{ 0b01110, 0b110, 0b1111110, 0b1111111, 0b0001000, 0b1111111111111111 };
 
     for (&source1, source2, expected) |*src1, src2, exp|
     {
@@ -175,5 +190,7 @@ test "combine_binary"
 
 const ContainerCapacityList = struct
 {
-    
+    data: []f32 = undefined,
+
+    n_data_ids: u32 = 0,
 };
