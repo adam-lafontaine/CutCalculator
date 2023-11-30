@@ -268,10 +268,33 @@ namespace cut_calculator
 
 namespace
 {
+	template <typename T>
+	class Slice
+	{
+	public:
+		T* data = nullptr;
+		u32 length = 0;
+
+		template <typename TId>
+		T& operator[](TId index) const
+		{
+			assert((u32)index < length);
+			return data[index];
+		}
+
+		template <typename TContainer>	
+		void set_data(TContainer& c)
+		{
+			data = c.data();
+			length = (u32)c.size();
+		}
+	};
+
+
 	class ContainerCapacityList
 	{
 	private:
-		std::vector<f32> data;
+		Slice<const f32> data;
 		std::vector<u32> sorted_data_ids;
 
 		u32 n_data_ids = 0;
@@ -280,13 +303,13 @@ namespace
 
 		void set_data(std::vector<f32> const& capacities)
 		{
-			data = capacities;
-			sorted_data_ids.resize(data.size());
+			data.set_data(capacities);
+			n_data_ids = data.length;
+
+			sorted_data_ids.resize(n_data_ids);
 			auto begin = sorted_data_ids.begin();
 			auto end = sorted_data_ids.end();
 			std::iota(begin, end, 0);
-
-			n_data_ids = (u32)capacities.size();
 		}
 
 
@@ -346,7 +369,7 @@ namespace
 	class ItemSizeList
 	{
 	private:
-		std::vector<f32> data;
+		Slice<const f32> data;
 		std::vector<u32> sorted_data_ids;
 
 		u32 n_data_ids = 0;
@@ -355,13 +378,13 @@ namespace
 
 		void set_data(std::vector<f32> const& sizes)
 		{
-			data = sizes;
-			sorted_data_ids.resize(data.size());
+			data.set_data(sizes);
+			n_data_ids = data.length;
+
+			sorted_data_ids.resize(n_data_ids);
 			auto begin = sorted_data_ids.begin();
 			auto end = sorted_data_ids.end();
-			std::iota(begin, end, 0);
-
-			n_data_ids = (u32)data.size();
+			std::iota(begin, end, 0);			
 		}
 
 
@@ -424,7 +447,7 @@ namespace
 		f32 combo_size(combo_bin bin) const
 		{
 			f32 size = 0.0f;
-			auto len = (u32)data.size();
+			auto len = length();
 
 			u64 p = 1;
 			for (u32 i = 0; i < len; ++i, p = p << (u64)1)
